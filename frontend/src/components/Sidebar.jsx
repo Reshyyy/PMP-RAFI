@@ -1,18 +1,33 @@
+import { Box, Divider, Link, Typography } from '@mui/material';
 import React from 'react';
 
 const Sidebar = () => {
     return (
-        <div className="h-screen w-70 bg-gray-800 text-white left-0 overflow-y-auto">
-            <div className="p-6">
-                <h1 className="text-2xl font-bold mb-4">Sidebar</h1>
+        <Box
+            sx={{
+                height: '100vh',
+                width: '256px',
+                backgroundColor: '#2c3e50',
+                color: '#fff',
+                left: 0,
+                overflowY: 'auto',
+            }}
+        >
+            <Box sx={{ padding: '16px' }}>
+                <Typography variant="h4" fontWeight="bold" mb={4}>
+                    Sidebar
+                </Typography>
                 <nav>
-                    <a href="#" className="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">Home</a>
-                    <a href="#" className="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">About</a>
-                    <a href="#" className="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">Services</a>
-                    <a href="#" className="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">Contact</a>
+                    <Link href="#" underline="none" sx={{ display: 'block', py: 2.5, px: 4, borderRadius: 1, transition: 'background-color 200ms', color: 'white', fontSize: '1.2rem', '&:hover': { backgroundColor: '#4b5563' } }}>Home</Link>
+                    <Divider sx={{ backgroundColor: 'rgba(255, 255, 255, 0.5)' }} />
+                    <Link href="#" underline="none" sx={{ display: 'block', py: 2.5, px: 4, borderRadius: 1, transition: 'background-color 200ms', color: 'white', fontSize: '1.2rem', '&:hover': { backgroundColor: '#4b5563' } }}>About</Link>
+                    <Divider sx={{ backgroundColor: 'rgba(255, 255, 255, 0.5)' }} />
+                    <Link href="#" underline="none" sx={{ display: 'block', py: 2.5, px: 4, borderRadius: 1, transition: 'background-color 200ms', color: 'white', fontSize: '1.2rem', '&:hover': { backgroundColor: '#4b5563' } }}>Services</Link>
+                    <Divider sx={{ backgroundColor: 'rgba(255, 255, 255, 0.5)' }} />
+                    <Link href="#" underline="none" sx={{ display: 'block', py: 2.5, px: 4, borderRadius: 1, transition: 'background-color 200ms', color: 'white', fontSize: '1.2rem', '&:hover': { backgroundColor: '#4b5563' } }}>Contact</Link>
                 </nav>
-            </div>
-        </div>
+            </Box>
+        </Box>
     );
 };
 

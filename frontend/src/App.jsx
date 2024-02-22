@@ -20,8 +20,6 @@ import Upload from './pages/Upload';
 
 
 function App({ msalInstance }) {
-  
-
   return (
     <div>
       <MsalProvider instance={msalInstance}>

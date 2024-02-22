@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef } from 'react';
 import rafiBG from '/src/assets/rafiBG.png';
 import NavBar from '../components/NavBar';
 import Sidebar from '../components/Sidebar';
@@ -7,7 +7,10 @@ import CustomDatePicker from '../components/CustomDatePicker';
 import SearchBar from '../components/SearchBar';
 import TableFinal from '../components/TableFinal';
 import { TableMaterialTailwind } from '../components/TableMaterialTailwind';
-
+import { Box, Button, Grid, Input, } from '@mui/material';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import AddIcon from '@mui/icons-material/Add';
+import { Dialog, DialogActions, DialogContent, DialogTitle, TextField, FormControl, InputLabel, Select, MenuItem, FormControlLabel, RadioGroup, Radio, Typography } from '@mui/material';
 const HomePage = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -18,35 +21,6 @@ const HomePage = () => {
   const closeDialog = () => {
     setIsDialogOpen(false);
   };
-
-  const [tableData, setTableData] = useState([
-    // Initial table data
-    {
-      description: "PR-000024622 : RAFI - ITU INF - COMPUTERS | Laptop Replacement (Armand)",
-      specifications: "asdasdE",
-      type: "asdasd",
-      team: "asd",
-      recurring: 78,
-      qty: 121,
-      totalEstimatedAmount: "asda",
-      financialDimension: "asd",
-      targetDate: "1/12/12",
-      dateOfRequest: "1/12/12",
-      prNumber: "asdasd",
-      poNumber: "asdasd",
-      deliveryDate: "asdasd",
-      status: "asdasd",
-    },
-  ]);
-
-  const handleAddButton = () => {
-
-  };
-
-  const addRow = () => {
-    const newRow = { description: '', specs: '', type: '', team: '', recurring: '', qty: '', total_amount: '', fin_dim: '', targetDate: null };
-    setTableData([...tableData, newRow]);
-  }
 
   const [dialogValues, setDialogValues] = useState({
     description: '',
@@ -70,7 +44,6 @@ const HomePage = () => {
   const handleTypeChange = (value) => {
     setDialogValues({ ...dialogValues, type: value })
   }
-
 
   const handleRecurringChange = (value) => {
     setDialogValues({ ...dialogValues, recurring: value })
@@ -164,14 +137,100 @@ const HomePage = () => {
 
   }
 
-
   return (
-    <div className='grid grid-cols-12 bg-cover bg-center' style={{ backgroundImage: `url(${rafiBG})` }}>
+    <Grid container spacing={1} sx={{ backgroundSize: 'cover', backgroundPosition: 'center' }}>
 
+      {/* Test */}
       {/* Grid Sidebar */}
-      <div className='col-span-2'>
+      <Grid item xs={3} sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'start', alignItems: 'center' }}>
         <Sidebar />
-      </div>
+      </Grid>
+      <Grid item xs={8} sx={{  }}>
+        <Box sx={{ mt: 12 }}>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+            <Box>
+              <Button
+                onClick={openDialog}
+                sx={{
+                  backgroundColor: '#f6e05e', // Yellow-300
+                  '&:hover': {
+                    backgroundColor: '#90cdf4', // Blue-400
+                  },
+                  color: '#1a202c', // Gray-800
+                  fontWeight: 'bold',
+                  padding: '8px 16px', // py-2 px-4 in Tailwind CSS
+                  borderRadius: '9999px', // rounded-full in Tailwind CSS
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                }}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24" style={{ marginRight: '8px' }}>
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 4.5v15m7.5-7.5h-15" />
+                </svg>
+                Add
+              </Button>
+
+              {/* Upload */}
+              <Input
+                type="file"
+                sx={{ display: 'none' }}
+                onChange={handleFileInputChange}
+              />
+              <Button
+                onClick={handleUploadFile}
+                sx={{
+                  marginLeft: '8px', // ml-2 in Tailwind CSS
+                  backgroundColor: '#f6e05e', // Yellow-300
+                  '&:hover': {
+                    backgroundColor: '#90cdf4', // Blue-400
+                  },
+                  color: '#1a202c', // Gray-800
+                  fontWeight: 'bold',
+                  padding: '8px 16px', // py-2 px-4 in Tailwind CSS
+                  borderRadius: '9999px', // rounded in Tailwind CSS
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                }}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24" style={{ marginRight: '8px' }}>
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
+                </svg>
+                <span>Upload</span>
+              </Button>
+
+              {/* Export */}
+              <Button
+                className="ml-2"
+                sx={{
+                  backgroundColor: '#f6e05e', // Yellow-300
+                  '&:hover': {
+                    backgroundColor: '#90cdf4', // Blue-400
+                  },
+                  color: '#1a202c', // Gray-800
+                  fontWeight: 'bold',
+                  padding: '8px 16px', // py-2 px-4 in Tailwind CSS
+                  borderRadius: '9999px', // rounded in Tailwind CSS
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                }}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24" style={{ marginRight: '8px' }}>
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+                </svg>
+                <span>Export</span>
+              </Button>
+            </Box>
+
+            <Box>
+              <SearchBar />
+            </Box>
+          </Box>
+        </Box>
+      </Grid>
+      <Grid item xs={1} sx={{  }}>
+      
+      </Grid>
+
 
 
 
@@ -183,61 +242,17 @@ const HomePage = () => {
 
           <div className='flex justify-between'>
             {/* Action Buttons */}
-            <div>
-              <button onClick={openDialog} className="bg-yellow-300 hover:bg-blue-400 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                </svg>
-                <span>Add</span>
-              </button>
-
-              {/* Upload */}
-              {/* <input type="file" className="form-control" required onChange={handleFileInputChange} />
-              <button
-                onClick={handleUploadFile}
-                className="ml-1 bg-yellow-300 hover:bg-blue-400 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center"
-              >
-                Upload
-              </button> */}
 
 
 
-              <input
-                type="file"
-                style={{ display: 'none' }}
-                onChange={handleFileInputChange}
-              />
-
-              <button onClick={handleUploadFile} className="ml-2 bg-yellow-300 hover:bg-blue-400 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
-                </svg>
-                <span>Upload</span>
-              </button>
-
-
-
-
-              <button className="ml-2 bg-yellow-300 hover:bg-blue-400 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
-                </svg>
-
-                <span>Export</span>
-              </button>
-            </div>
-
-
-            <div>
-              <SearchBar />
-            </div>
+            
           </div>
 
           {/* Table */}
           {/* <TableFinal /> */}
           <TableMaterialTailwind />
           <div className='flex-wrap'>
-              Test
+            Test
           </div>
 
         </div>
@@ -386,7 +401,7 @@ const HomePage = () => {
           </div>
         </div>
       )}
-    </div >
+    </Grid>
   )
 }
 

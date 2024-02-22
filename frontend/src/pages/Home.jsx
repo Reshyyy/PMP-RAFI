@@ -4,12 +4,14 @@ import HomePage from './HomePage'
 import NavBar from '../components/NavBar'
 import LoginPage from './LoginPage'
 import NavBar2 from '../components/NavBar2'
+import NavbarMUI from '../components/NavbarMUI'
+import { Box } from '@mui/material'
 
 
 const Home = () => {
     return (
-        <div className='h-screen bg-cover bg-center sticky' style={{ backgroundImage: "url('src/assets/rafiBG.png')" }}>
-            <NavBar2 />
+        <Box sx={{backgroundPosition: 'center', position: 'sticky' }} style={{ backgroundImage: "url('src/assets/rafiBG.png')", backgroundSize: "cover" }}>
+            <NavbarMUI />
             <AuthenticatedTemplate>
                 {/* <p>You are signed-in. Select profile to call Microsoft Graph.</p> */}
                 <HomePage />
@@ -18,7 +20,7 @@ const Home = () => {
             <UnauthenticatedTemplate>
                 <LoginPage />
             </UnauthenticatedTemplate>
-        </div>
+        </Box>
 
 
     )

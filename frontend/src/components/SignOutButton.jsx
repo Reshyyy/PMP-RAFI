@@ -1,5 +1,6 @@
 import React from 'react'
 import { useMsal } from '@azure/msal-react'
+import { Button } from '@mui/material';
 
 
 const SignOutButton = () => {
@@ -10,9 +11,9 @@ const SignOutButton = () => {
     
     return (
         <div>
-            <button className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded' onClick={handleLogout}>
+            <Button variant="contained" size="small" onClick={handleLogout}>
                 Sign out
-            </button>
+            </Button>
         </div>
     )
 }
