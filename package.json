@@ -1,0 +1,18 @@
+{
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "scripts": {
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "npm run dev -w backend",
+    "dev:frontend": "npm run dev -w frontend",
+    "start": "concurrently \"npm run start:backend\" \"npm run start:frontend\"",
+    "start:backend": "npm run start -w backend",
+    "start:frontend": "npm run start -w frontend"
+  },
+  "workspaces": [
+    "frontend",
+    "backend"
+  ]
+  
+}

@@ -1,0 +1,21 @@
+/* Add this CSS to your stylesheet */
+.table-container {
+    position: relative;
+    overflow-x: scroll;
+}
+
+/* Fix the first column */
+.fixed-column {
+    position: sticky;
+    left: 0;
+    z-index: 99;
+    background-color: white; /* Adjust as needed */
+}
+
+/* Fix the first cell in each row */
+.fixed-cell {
+    position: sticky;
+    left: 0;
+    background-color: white; /* Adjust as needed */
+    z-index: 1;
+}
