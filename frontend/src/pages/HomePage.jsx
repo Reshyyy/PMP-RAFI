@@ -158,6 +158,13 @@ const HomePage = () => {
     p: 4,
   };
 
+  // Modal Type Dropdown
+  const [type, setType] = React.useState('');
+
+  const handleTypeChangeDropdown = (event) => {
+    setAge(event.target.value);
+  };
+
 
   return (
     <Grid container spacing={1}>
@@ -221,18 +228,51 @@ const HomePage = () => {
                   <Typography id="modal-modal-title" variant="h6" component="h2">
                     Title
                   </Typography>
-                  <TextField
-                    sx={{ mt: 3, width: 'auto' }}
-                    id="outlined-required"
-                    label="Description"
-                    defaultValue="Hello World"
-                  />
-                  <TextField
-                    sx={{ mt: 3 }}
-                    id="outlined-required"
-                    label="Specs"
-                    defaultValue="Hello World"
-                  />
+
+                  <Box sx={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center' }}>
+                    {/* Description */}
+                    <TextField
+                      sx={{ mt: 3 }}
+                      fullWidth
+                      id="outlined-required"
+                      label="Description"
+                      defaultValue=""
+                    />
+
+                    {/* Specs */}
+                    <TextField
+                      sx={{ mt: 3, ml: 3 }}
+                      fullWidth
+                      id="outlined-required"
+                      label="Specs"
+                      defaultValue=""
+                    />
+
+
+                  </Box>
+
+                  {/* Type */}
+                  <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+                    <InputLabel id="demo-simple-select-standard-label">Type</InputLabel>
+                    <Select
+                      labelId="demo-simple-select-standard-label"
+                      id="demo-simple-select-standard"
+                      value={type}
+                      onChange={handleTypeChangeDropdown}
+                      label="Age"
+                    >
+                      <MenuItem value="">
+                        <em>None</em>
+                      </MenuItem>
+                      <MenuItem value={10}>Ten</MenuItem>
+                      <MenuItem value={20}>Twenty</MenuItem>
+                      <MenuItem value={30}>Thirty</MenuItem>
+                    </Select>
+                  </FormControl>
+
+                  {/* Quantity */}
+                  
+
                 </Box>
               </Modal>
               {/* <AddModal /> */}
