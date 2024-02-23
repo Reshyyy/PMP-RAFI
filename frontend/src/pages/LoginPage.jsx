@@ -1,11 +1,52 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import SignInButton from '../components/SignInButton';
 import { useIsAuthenticated } from "@azure/msal-react";
 import SignOutButton from '../components/SignOutButton';
 import { Box, Typography } from '@mui/material';
+import axios from 'axios'
+import dotenv from 'dotenv'
 
 const LoginPage = () => {
     const isAuthenticated = useIsAuthenticated();
+    const [data, setData] = useState();
+
+    useEffect(() => {
+        const fetchToken = async () => {
+            const form = {
+                client_id: import.meta.env.VITE_RAFI_CLIENT_ID,
+                grant_type: import.meta.env.VITE_RAFI_GRANT_TYPE,
+                client_secret: import.meta.env.VITE_RAFI_CLIENT_SECRET,
+                resource: import.meta.env.VITE_RAFI_RESOURCE
+            }
+            axios.post('/rafi.ph/oauth2/token', new URLSearchParams(form), {
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+            })
+                .then(res => {
+                    const data = res.data
+                    console.log(data)
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+        }
+
+
+        const urlWithProxy = "/api/v1";
+        const getData = async () => {
+            axios
+                .get(urlWithProxy)
+                .then((res) => setData(res.data))
+                .catch((err) => {
+                    console.error(err);
+                });
+        }
+
+        fetchToken();
+        getData();
+    }, [])
+
 
     return (
         <Box sx={{ position: 'relative', height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>

@@ -3,7 +3,10 @@ const PORT = process.env.PORT || 8080;
 const app = express();
 const cors = require('cors');
 app.use(express.json());
-const { createProxyMiddleware } = require('http-proxy-middleware');
+
+//cors
+app.use(require('cors')())
+app.use(express.static('dist'))
 
 const sql = require('mssql');
 require('dotenv').config()
@@ -21,17 +24,8 @@ app.use(cors({
   credentials: true
 }));
 
-app.use(
-  '/rafi.ph/oauth2/token',
-  createProxyMiddleware({
-    target: 'http://20.188.123.92:3000/',
-    changeOrigin: true,
-    onError: (err, req, res) => {
-      console.error('Proxy Error:', err);
-      res.status(500).send('Proxy Error');
-    }
-  })
-);
+
+
 
 sql.connect(config).then(() => {
   console.log("Connected to the database");
@@ -46,4 +40,13 @@ app.listen(PORT, () => {
 });
 
 
-// CRUD
+// TEST
+app.get("/api/v1", (req, res) => {
+  res.send("hello tae");
+})
+
+app.get("/test", (req, res) => {
+  res.send('hello');
+})
+
+

@@ -26,7 +26,7 @@ function NavbarMUI() {
                             </Typography>
                         </Box>
                     </Grid>
-                    <Grid item xs={2} sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                    <Grid item xs={2} sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'end', alignItems: 'center' }}>
                         {isAuthenticated ? <SignOutButton /> : null}
                     </Grid>
                 </Grid>

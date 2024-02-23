@@ -11,6 +11,10 @@ import { Box, Button, Grid, Input, } from '@mui/material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import AddIcon from '@mui/icons-material/Add';
 import { Dialog, DialogActions, DialogContent, DialogTitle, TextField, FormControl, InputLabel, Select, MenuItem, FormControlLabel, RadioGroup, Radio, Typography } from '@mui/material';
+import SearchBarMUI from '../components/SearchBarMUI';
+import AddModal from '../components/AddModal';
+import Modal from '@mui/material/Modal';
+
 const HomePage = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -137,19 +141,36 @@ const HomePage = () => {
 
   }
 
-  return (
-    <Grid container spacing={1} sx={{ backgroundSize: 'cover', backgroundPosition: 'center' }}>
+  // Add Button
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
+  const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 800,
+    bgcolor: 'background.paper',
+    border: '1px solid #000',
+    boxShadow: 24,
+    p: 4,
+  };
+
+
+  return (
+    <Grid container spacing={1}>
       {/* Test */}
       {/* Grid Sidebar */}
-      <Grid item xs={3} sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'start', alignItems: 'center' }}>
+      <Grid item xs={2}>
         <Sidebar />
       </Grid>
-      <Grid item xs={8} sx={{  }}>
-        <Box sx={{ mt: 12 }}>
+      <Grid item xs={9.7}>
+        <Box sx={{ mt: 5 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
             <Box>
-              <Button
+              {/* <Button
                 onClick={openDialog}
                 sx={{
                   backgroundColor: '#f6e05e', // Yellow-300
@@ -168,7 +189,53 @@ const HomePage = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 4.5v15m7.5-7.5h-15" />
                 </svg>
                 Add
+              </Button> */}
+
+              <Button
+                sx={{
+                  backgroundColor: '#f6e05e', // Yellow-300
+                  '&:hover': {
+                    backgroundColor: '#90cdf4', // Blue-400
+                  },
+                  color: '#1a202c', // Gray-800
+                  fontWeight: 'bold',
+                  padding: '8px 16px', // py-2 px-4 in Tailwind CSS
+                  borderRadius: '9999px', // rounded-full in Tailwind CSS
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                }}
+                onClick={handleOpen}>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24" style={{ marginRight: '8px' }}>
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 4.5v15m7.5-7.5h-15" />
+                </svg>
+                Add
               </Button>
+
+              <Modal
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+              >
+                <Box sx={style}>
+                  <Typography id="modal-modal-title" variant="h6" component="h2">
+                    Title
+                  </Typography>
+                  <TextField
+                    sx={{ mt: 3, width: 'auto' }}
+                    id="outlined-required"
+                    label="Description"
+                    defaultValue="Hello World"
+                  />
+                  <TextField
+                    sx={{ mt: 3 }}
+                    id="outlined-required"
+                    label="Specs"
+                    defaultValue="Hello World"
+                  />
+                </Box>
+              </Modal>
+              {/* <AddModal /> */}
 
               {/* Upload */}
               <Input
@@ -202,6 +269,7 @@ const HomePage = () => {
               <Button
                 className="ml-2"
                 sx={{
+                  marginLeft: '8px',
                   backgroundColor: '#f6e05e', // Yellow-300
                   '&:hover': {
                     backgroundColor: '#90cdf4', // Blue-400
@@ -222,46 +290,15 @@ const HomePage = () => {
             </Box>
 
             <Box>
-              <SearchBar />
+              <SearchBarMUI />
             </Box>
           </Box>
         </Box>
       </Grid>
-      <Grid item xs={1} sx={{  }}>
-      
+      <Grid xs={0.7}>
+
       </Grid>
 
-
-
-
-      {/* Grid Content */}
-      <div className='col-span-10 mx-5'>
-
-        {/* <Table /> */}
-        <div className='mt-12'>
-
-          <div className='flex justify-between'>
-            {/* Action Buttons */}
-
-
-
-            
-          </div>
-
-          {/* Table */}
-          {/* <TableFinal /> */}
-          <TableMaterialTailwind />
-          <div className='flex-wrap'>
-            Test
-          </div>
-
-        </div>
-
-
-      </div>
-
-      {/* Grid End */}
-      <div className='col-span-1'></div>
 
       {/* Dialog */}
       {isDialogOpen && (
