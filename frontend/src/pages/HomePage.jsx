@@ -7,13 +7,18 @@ import CustomDatePicker from '../components/CustomDatePicker';
 import SearchBar from '../components/SearchBar';
 import TableFinal from '../components/TableFinal';
 import { TableMaterialTailwind } from '../components/TableMaterialTailwind';
-import { Box, Button, Grid, Input, } from '@mui/material';
+import { Box, Button, FormLabel, Grid, Input, } from '@mui/material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import AddIcon from '@mui/icons-material/Add';
-import { Dialog, DialogActions, DialogContent, DialogTitle, TextField, FormControl, InputLabel, Select, MenuItem, FormControlLabel, RadioGroup, Radio, Typography } from '@mui/material';
+import { Dialog, DialogActions, DialogContent, DialogTitle, TextField, InputLabel, Select, MenuItem, Typography } from '@mui/material';
 import SearchBarMUI from '../components/SearchBarMUI';
 import AddModal from '../components/AddModal';
 import Modal from '@mui/material/Modal';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormControl from '@mui/material/FormControl';
+import BasicDatePicker from '../components/BasicDatePicker';
 
 const HomePage = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -252,7 +257,7 @@ const HomePage = () => {
                   </Box>
 
                   {/* Type */}
-                  <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+                  <FormControl variant="standard" sx={{ mt: 1, minWidth: 120 }}>
                     <InputLabel id="demo-simple-select-standard-label">Type</InputLabel>
                     <Select
                       labelId="demo-simple-select-standard-label"
@@ -271,7 +276,52 @@ const HomePage = () => {
                   </FormControl>
 
                   {/* Quantity */}
-                  
+                  <TextField
+                    sx={{ mt: 1, minWidth: 120 }}
+                    id="outlined-number"
+                    label="Quantity"
+                    type="number"
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                  />
+
+                  {/* Total Estimated Amount */}
+                  <TextField
+                    sx={{ mt: 1, minWidth: 120 }}
+                    id="outlined-number"
+                    label="Total Estimated Amount"
+                    type="number"
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                  />
+
+                  {/* Recurring */}
+                  <FormControl>
+                    <FormLabel id="demo-row-radio-buttons-group-label">Recurring</FormLabel>
+                    <RadioGroup
+                      row
+                      aria-labelledby="demo-row-radio-buttons-group-label"
+                      name="row-radio-buttons-group"
+                    >
+                      <FormControlLabel value="yes" control={<Radio />} label="Yes" />
+                      <FormControlLabel value="no" control={<Radio />} label="No" />
+
+                    </RadioGroup>
+                  </FormControl>
+
+                  {/* Financial Dimension */}
+                  <TextField
+                    sx={{ mt: 3 }}
+                    fullWidth
+                    id="outlined-required"
+                    label="Financial Dimension"
+                    defaultValue=""
+                  />
+
+                  {/* Target Date */}
+                  <BasicDatePicker />
 
                 </Box>
               </Modal>
