@@ -17,6 +17,7 @@ import Table from './components/Table';
 import TableTest from './components/TableTest';
 import { TableMaterialTailwind } from './components/TableMaterialTailwind';
 import Upload from './pages/Upload';
+import CssBaseline from "@mui/material/CssBaseline";
 
 
 function App({ msalInstance }) {

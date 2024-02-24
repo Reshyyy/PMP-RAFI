@@ -16,11 +16,11 @@ function NavbarMUI() {
                     <Grid item xs={10} sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'start', alignItems: 'center' }}>
                         <img src={rafiLogo} style={{ width: '100px', height: '50px' }} />
                         <Box>
-                            <Typography style={{ color: '#000', fontWeight: 'bold' }}>
+                            <Typography variant='subtitle1' style={{ color: '#000', fontWeight: 'bold' }}>
                                 PROCUREMENT MANAGEMENT PLAN
                             </Typography>
-                            <Typography component="div">
-                                <Box sx={{ fontWeight: 500, color: '#000', fontSize: 16 }}>
+                            <Typography component="div" variant='body2'>
+                                <Box sx={{ fontWeight: 'bold', color: '#000', fontSize: 16 }}>
                                     RAFI - RAMON ABOITIZ FOUNDATION INC.
                                 </Box>
                             </Typography>
