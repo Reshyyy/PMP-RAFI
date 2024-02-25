@@ -22,6 +22,8 @@ import {
     randomId,
     randomArrayItem,
 } from '@mui/x-data-grid-generator';
+import SearchBarMUI from './SearchBarMUI';
+import { Stack } from '@mui/material';
 
 const roles = ['Market', 'Finance', 'Development'];
 const randomRole = () => {
@@ -85,26 +87,52 @@ function EditToolbar(props) {
     };
 
     return (
-        <GridToolbarContainer>
-            <Button color="primary" startIcon={<AddIcon />} onClick={handleClick}>
-                Add record
-            </Button>
-            {/* <Button color="primary" startIcon={<SaveIcon />} onClick={handleExportClick}>
+        <Stack flexDirection='row' position="absolute" top='-53px'>
+            <GridToolbarContainer>
+                <Button variant='outlined' sx={{
+                    backgroundColor: '#f6e05e',
+                    '&:hover': {
+                        backgroundColor: '#90cdf4',
+                    },
+                    color: '#1a202c',
+                    fontWeight: 'bold',
+                    padding: '8px 16px',
+                    borderRadius: '9999px',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                }} color="primary" startIcon={<AddIcon />} onClick={handleClick}>
+                    Add record
+                </Button>
+                {/* <Button color="primary" startIcon={<SaveIcon />} onClick={handleExportClick}>
         Export
       </Button> */}
-            <GridToolbarExport
-                csvOptions={{
-                    fileName: 'PMP',
-                    delimiter: ';',
-                    utf8WithBom: true,
-                }}
-                printOptions={{
-                    hideFooter: true,
-                    hideToolbar: true,
-                }}
+                <GridToolbarExport
+                    variant='outlined'
+                    sx={{
+                        backgroundColor: '#f6e05e',
+                        '&:hover': {
+                            backgroundColor: '#90cdf4',
+                        },
+                        color: '#1a202c',
+                        fontWeight: 'bold',
+                        padding: '8px 16px',
+                        borderRadius: '9999px',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                    }}
+                    csvOptions={{
+                        fileName: 'PMP',
+                        delimiter: ';',
+                        utf8WithBom: true,
+                    }}
+                    printOptions={{
+                        hideFooter: true,
+                        hideToolbar: true,
+                    }}
 
-            />
-        </GridToolbarContainer>
+                />
+            </GridToolbarContainer >
+        </Stack>
     );
 }
 
@@ -238,6 +266,7 @@ export default function FullFeaturedCrudGrid() {
                 '& .textPrimary': {
                     color: 'text.primary',
                 },
+
             }}
         >
             <DataGrid
@@ -259,6 +288,7 @@ export default function FullFeaturedCrudGrid() {
                     '@media print': {
                         '.MuiDataGrid-main': { color: 'rgba(0, 0, 0, 0.87)' },
                     },
+                    bgcolor: 'white'
                 }}
             />
         </Box>

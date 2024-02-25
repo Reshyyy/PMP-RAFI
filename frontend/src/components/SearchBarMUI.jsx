@@ -10,7 +10,7 @@ export default function SearchBarMUI() {
   };
 
   return (
-    <Box>
+    <>
       <TextField
         id="search"
         type="search"
@@ -26,6 +26,6 @@ export default function SearchBarMUI() {
           ),
         }}
       />
-    </Box>
+    </>
   );
 }

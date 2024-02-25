@@ -8,6 +8,7 @@ import UploadButton from '../components/UploadButton';
 import DataGridTable from '../components/DataGridTable';
 import { DataGrid } from '@mui/x-data-grid';
 import UploadTest from './UploadTest';
+import FullFeaturedCrudGrid from '../components/FullFeatureCrudGrid';
 
 const HomePage = () => {
 
@@ -33,7 +34,7 @@ const HomePage = () => {
         <Stack flexDirection='row' justifyContent='space-between' alignItems='end' >
           <Stack flexDirection='row'>
             {/* ACTION BUTTONS */}
-            <AddButton />
+            {/* <AddButton /> */}
             {/* <UploadButton onFileSelect={handleFileSelect} /> */}
             {/* <ExportButton /> */}
 
@@ -49,6 +50,7 @@ const HomePage = () => {
           {isFileSelected && <Typography padding={2}>A file has been selected.</Typography>}
           {/* <DataGridTable /> */}
           {/* <UploadTest /> */}
+          <FullFeaturedCrudGrid />
           
         </Stack>
       </Grid>
