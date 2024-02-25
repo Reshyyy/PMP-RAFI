@@ -10,14 +10,14 @@ export default function SearchBarMUI() {
   };
 
   return (
-    <Box maxWidth=''>
+    <Box>
       <TextField
         id="search"
         type="search"
         label="Search"
         value={searchTerm}
         onChange={handleChange}
-        sx={{ width: 300, bgcolor: 'white' }}
+        sx={{ width: 300, bgcolor: 'white', borderRadius: 1 }}
         InputProps={{
           endAdornment: (
             <InputAdornment position="end">

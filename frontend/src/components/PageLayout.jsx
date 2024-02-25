@@ -1,5 +1,4 @@
 import React from 'react'
-import NavBar from './NavBar'
 import { useIsAuthenticated, useMsal } from "@azure/msal-react";
 import HomePage from '../pages/HomePage';
 import Home from '../pages/Home';
@@ -13,7 +12,7 @@ const PageLayout = () => {
       <div style={{ backgroundImage: "url('src/assets/rafiLogo.png')" }}>
 
       </div>
-      <NavBar />
+      {/* <NavBar /> */}
       {isAuthenticated ? <Home /> : null}
       <div className="h-screen bg-cover bg-center" >
 

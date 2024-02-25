@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useIsAuthenticated, useMsal } from "@azure/msal-react";
-import WelcomeName from './WelcomeName';
-import SignInButton from './SignInButton';
-import SignOutButton from './SignOutButton';
-import HomePage from '../pages/HomePage';
-import Profile from '../pages/Profile';
+import WelcomeName from '../WelcomeName';
+import SignInButton from '../SignInButton';
+import SignOutButton from '../SignOutButton';
+import HomePage from '../../pages/HomePage';
+import Profile from '../../pages/Profile';
 import rafiLogo from './../assets/rafiLogo.png'
 
 const NavBar2 = () => {

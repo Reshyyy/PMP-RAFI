@@ -2,7 +2,6 @@ import React from 'react'
 import { useState } from "react";
 import * as XLSX from 'xlsx';
 import { Card, Typography } from "@material-tailwind/react";
-import { TableMaterialTailwind } from '../components/TableMaterialTailwind';
 
 const Upload = () => {
     // onchange states
@@ -48,7 +47,7 @@ const Upload = () => {
             const worksheet = workbook.Sheets[worksheetName];
             const data = XLSX.utils.sheet_to_json(worksheet);
             console.log(data.slice(3, 999))
-            setExcelData(data.slice(3));
+            setExcelData(data.slice(0, 10));
         }
         
     }
@@ -100,7 +99,7 @@ const Upload = () => {
                         <table className="w-full min-w-max table-auto text-left">
                             <thead>
                                 <tr>
-                                    {Object.keys(excelData[3]).map((key) => ( 
+                                    {Object.keys(excelData[0]).map((key) => ( 
                                         <th key={key} className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
                                             {key}
                                         </th>
