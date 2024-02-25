@@ -13,8 +13,5 @@
   "workspaces": [
     "frontend",
     "backend"
-  ],
-  "dependencies": {
-    "@mui/x-data-grid": "^6.19.5"
-  }
+  ]
 }

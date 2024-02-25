@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import './Table.css'
-import CustomDatePicker from './CustomDatePicker';
+import CustomDatePicker from '../CustomDatePicker';
 
 
 const Table = () => {

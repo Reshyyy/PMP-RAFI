@@ -6,18 +6,13 @@ import './App.css'
 import { msalInstance } from './msalInstance';
 import { MsalProvider } from "@azure/msal-react";
 import PageLayout from './components/PageLayout';
-import Pages from './Pages';
-import NavBar from './components/NavBar';
-import Header from './components/Header';
 import Home from './pages/Home';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
-import Test2 from './components/Test2';
-import Table from './components/Table';
-import TableTest from './components/TableTest';
-import { TableMaterialTailwind } from './components/TableMaterialTailwind';
 import Upload from './pages/Upload';
 import CssBaseline from "@mui/material/CssBaseline";
+import UploadTest from './pages/UploadTest';
+import FullFeaturedCrudGrid from './components/FullFeatureCrudGrid';
 
 
 function App({ msalInstance }) {
@@ -33,11 +28,8 @@ function App({ msalInstance }) {
 
             {/* Tests */}
             <Route exact path="/test" element={<PageLayout />} />
-            <Route exact path="/test2" element={<Test2 />} />
-            <Route exact path="/table" element={<Table />} />
-            <Route exact path="/testTable" element={<TableTest />} />
-            <Route exact path="/testtest" element={<TableMaterialTailwind />} />
-            <Route exact path="/upload" element={<Upload />} />
+            <Route exact path="/uploadtest" element={<UploadTest />} />
+            <Route exact path="/crud" element={<FullFeaturedCrudGrid />} />
           </Routes>
         </BrowserRouter>
 
