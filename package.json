@@ -11,7 +11,7 @@
     "start:frontend": "npm run start -w frontend"
   },
   "workspaces": [
-    "frontend",
+    "PMP-RAFI/frontend",
     "backend"
   ]
 }

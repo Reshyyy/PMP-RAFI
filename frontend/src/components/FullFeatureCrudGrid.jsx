@@ -6,6 +6,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Close';
+import RemoveRedEyeSharpIcon from '@mui/icons-material/RemoveRedEyeSharp';
 import {
     GridRowModes,
     DataGrid,
@@ -22,7 +23,6 @@ import {
     randomId,
     randomArrayItem,
 } from '@mui/x-data-grid-generator';
-import SearchBarMUI from './SearchBarMUI';
 import { Stack } from '@mui/material';
 
 const roles = ['Market', 'Finance', 'Development'];
@@ -30,14 +30,14 @@ const randomRole = () => {
     return randomArrayItem(roles);
 };
 
-function EditToolbar(props) {
+const EditToolbar = (props) => {
     const { setRows, setRowModesModel } = props;
 
     const apiRef = useGridApiContext();
 
     const handleClick = () => {
         const id = randomId();
-        setRows((oldRows) => [...oldRows, { id, name: '', age: '', isNew: true }]);
+        setRows((oldRows) => [...oldRows, { id, name: '', age: '', role: '', isNew: true }]);
         setRowModesModel((oldModel) => ({
             ...oldModel,
             [id]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },
@@ -98,7 +98,7 @@ function EditToolbar(props) {
     );
 }
 
-export default function FullFeaturedCrudGrid() {
+const FullFeaturedCrudGrid = () => {
     const [rows, setRows] = React.useState([]);
     const [rowModesModel, setRowModesModel] = React.useState({});
     const apiRef = React.useRef(null);
@@ -115,6 +115,13 @@ export default function FullFeaturedCrudGrid() {
 
     const handleSaveClick = (id) => () => {
         setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
+    };
+
+    const handleViewClick = (id) => () => {
+        // Implement your logic here for handling the view action
+        const row = rows.find((row) => row.id === id);
+        console.log('Viewing row:', row);
+        // You can perform any additional actions here, such as displaying a modal with row details
     };
 
     const handleDeleteClick = (id) => () => {
@@ -173,7 +180,7 @@ export default function FullFeaturedCrudGrid() {
             field: 'actions',
             type: 'actions',
             headerName: 'Actions',
-            width: 100,
+            width: 150,
             cellClassName: 'actions',
             getActions: ({ id }) => {
                 const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
@@ -207,11 +214,17 @@ export default function FullFeaturedCrudGrid() {
                         color="inherit"
                     />,
                     <GridActionsCellItem
+                        icon={<RemoveRedEyeSharpIcon />}
+                        label="View"
+                        onClick={handleViewClick(id)} // Define a function to handle the view action
+                        color="inherit"
+                    />,
+                    <GridActionsCellItem
                         icon={<DeleteIcon />}
                         label="Delete"
                         onClick={handleDeleteClick(id)}
                         color="inherit"
-                    />,
+                    />
                 ];
             },
         },
@@ -256,3 +269,5 @@ export default function FullFeaturedCrudGrid() {
         </Box>
     );
 }
+
+export default FullFeaturedCrudGrid
