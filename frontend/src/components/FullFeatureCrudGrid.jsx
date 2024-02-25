@@ -30,44 +30,6 @@ const randomRole = () => {
     return randomArrayItem(roles);
 };
 
-const initialRows = [
-    {
-        id: randomId(),
-        name: randomTraderName(),
-        age: 25,
-        joinDate: randomCreatedDate(),
-        role: randomRole(),
-    },
-    {
-        id: randomId(),
-        name: randomTraderName(),
-        age: 36,
-        joinDate: randomCreatedDate(),
-        role: randomRole(),
-    },
-    {
-        id: randomId(),
-        name: randomTraderName(),
-        age: 19,
-        joinDate: randomCreatedDate(),
-        role: randomRole(),
-    },
-    {
-        id: randomId(),
-        name: randomTraderName(),
-        age: 28,
-        joinDate: randomCreatedDate(),
-        role: randomRole(),
-    },
-    {
-        id: randomId(),
-        name: randomTraderName(),
-        age: 23,
-        joinDate: randomCreatedDate(),
-        role: randomRole(),
-    },
-];
-
 function EditToolbar(props) {
     const { setRows, setRowModesModel } = props;
 
@@ -137,7 +99,7 @@ function EditToolbar(props) {
 }
 
 export default function FullFeaturedCrudGrid() {
-    const [rows, setRows] = React.useState(initialRows);
+    const [rows, setRows] = React.useState([]);
     const [rowModesModel, setRowModesModel] = React.useState({});
     const apiRef = React.useRef(null);
 
