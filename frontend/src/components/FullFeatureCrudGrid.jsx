@@ -84,7 +84,6 @@ const EditToolbar = (props) => {
                     }}
                     csvOptions={{
                         fileName: 'PMP',
-                        delimiter: ';',
                         utf8WithBom: true,
                     }}
                     printOptions={{
