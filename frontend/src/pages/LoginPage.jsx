@@ -24,28 +24,50 @@ const LoginPage = () => {
                 },
             })
                 .then(res => {
-                    const data = res.data
-                    console.log(data)
+                    const data = res.data;
+                    console.log(data);
+
+                    // Set token to local storage or state
+                    localStorage.setItem('accessToken', data.access_token);
+                    localStorage.setItem('expiresOn', data.expires_on);
+                    localStorage.setItem('notBefore', data.not_before);
                 })
                 .catch(error => {
                     console.log(error);
                 });
         }
 
-
-        const urlWithProxy = "/api/v1";
-        const getData = async () => {
-            axios
-                .get(urlWithProxy)
-                .then((res) => setData(res.data))
-                .catch((err) => {
-                    console.error(err);
-                });
-        }
-
         fetchToken();
-        getData();
-    }, [])
+    }, []);
+
+    // Axios interceptor for token refreshing
+    useEffect(() => {
+        const axiosInstance = axios.create();
+
+        const requestInterceptor = axiosInstance.interceptors.request.use(
+            async (config) => {
+                const now = Math.floor(Date.now() / 1000);
+                const notBefore = localStorage.getItem('notBefore');
+
+                if (now >= notBefore) {
+                    // Token is expired or about to expire, refresh token
+                    await fetchToken();
+                }
+
+                const accessToken = localStorage.getItem('accessToken');
+                config.headers.Authorization = `Bearer ${accessToken}`;
+
+                return config;
+            },
+            (error) => {
+                return Promise.reject(error);
+            }
+        );
+
+        return () => {
+            axiosInstance.interceptors.request.eject(requestInterceptor);
+        };
+    }, []);
 
 
     return (
