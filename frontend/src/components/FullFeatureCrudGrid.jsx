@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
@@ -27,20 +28,20 @@ import { Stack } from '@mui/material';
 
 const roles = ['Market', 'Finance', 'Development'];
 const randomRole = () => {
-    return randomArrayItem(roles);
+    return randomArrayItem();
 };
 
 const EditToolbar = (props) => {
     const { setRows, setRowModesModel } = props;
 
-    const apiRef = useGridApiContext();
+    const apiRef = useGridApiContext(0);
 
     const handleClick = () => {
         const id = randomId();
-        setRows((oldRows) => [...oldRows, { id, name: '', age: '', role: '', isNew: true }]);
+        setRows((oldRows) => [...oldRows, { id, description: '', specs: '', type: '', qty: '', total: '', finDim: '', targetDate: '', recurring: '', isNew: true }]);
         setRowModesModel((oldModel) => ({
             ...oldModel,
-            [id]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },
+            [id]: { mode: GridRowModes.Edit, fieldToFocus: 'description' },
         }));
     };
 
@@ -65,9 +66,7 @@ const EditToolbar = (props) => {
                 }} color="primary" startIcon={<AddIcon />} onClick={handleClick}>
                     Add record
                 </Button>
-                {/* <Button color="primary" startIcon={<SaveIcon />} onClick={handleExportClick}>
-        Export
-      </Button> */}
+
                 <GridToolbarExport
                     variant='outlined'
                     sx={{
@@ -100,6 +99,7 @@ const EditToolbar = (props) => {
 const FullFeaturedCrudGrid = () => {
     const [rows, setRows] = React.useState([]);
     const [rowModesModel, setRowModesModel] = React.useState({});
+
     const apiRef = React.useRef(null);
 
     const handleRowEditStop = (params, event) => {

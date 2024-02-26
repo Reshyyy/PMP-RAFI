@@ -7,6 +7,8 @@ const SignOutButton = () => {
     const { instance } = useMsal();
     const handleLogout = () => {
         instance.logoutPopup();
+
+        localStorage.clear();
     }
     
     return (
