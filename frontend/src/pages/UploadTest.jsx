@@ -1,15 +1,13 @@
 import React, { useState } from "react";
 import * as XLSX from 'xlsx';
 import { Box, Button } from '@mui/material';
-import { DataGrid, GridActionsCellItem } from '@mui/x-data-grid';
+import { DataGrid } from '@mui/x-data-grid';
 
 const UploadTest = () => {
     const [excelFile, setExcelFile] = useState(null);
     const [typeError, setTypeError] = useState(null);
     const [excelData, setExcelData] = useState([]);
-    const [columns, setColumns] = useState([]); // State for dynamic columns
-    const [rows, setRows] = useState([]);
-    const [rowModesModel, setRowModesModel] = useState({});
+    const [selectedRowIds, setSelectedRowIds] = useState([]);
 
     const handleFile = (e) => {
         let fileTypes = ['application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'text/csv'];
@@ -41,42 +39,8 @@ const UploadTest = () => {
             const worksheet = workbook.Sheets[worksheetName];
             const data = XLSX.utils.sheet_to_json(worksheet);
             setExcelData(data.slice(0, 10).map((row, index) => ({ ...row, id: index + 1 })));
-
-            // Create columns dynamically based on keys in the first row of the Excel data
-            const firstRowKeys = Object.keys(data[0]);
-            const dynamicColumns = firstRowKeys.map(key => ({
-                field: key,
-                headerName: key,
-                width: 150,
-                editable: true,
-            }));
-
-            // Add the "Actions" column dynamically
-            dynamicColumns.push({
-                field: 'actions',
-                headerName: 'Actions',
-                width: 150,
-                cellClassName: 'actions',
-                getActions: ({ id }) => [
-                    <GridActionsCellItem
-                        icon={<EditIcon />}
-                        label="Edit"
-                        className="textPrimary"
-                        onClick={handleEditClick(id)}
-                        color="inherit"
-                    />,
-                    <GridActionsCellItem
-                        icon={<DeleteIcon />}
-                        label="Delete"
-                        onClick={handleDeleteClick(id)}
-                        color="inherit"
-                    />
-                ],
-            });
-
-            setColumns(dynamicColumns);
         }
-    };
+    }
 
     const generateRandom = () => {
         const length = 8;
@@ -137,7 +101,7 @@ const UploadTest = () => {
                         checkboxSelection
                         selectionModel={selectedRowIds}
                         onSelectionModelChange={handleRowSelectionChange}
-                        options={{ exportButton: true }}
+                        options={{exportButton:true}}
                     />
                 </Box>
                 <Button onClick={handleDeleteRows}>Delete Selected Rows</Button>

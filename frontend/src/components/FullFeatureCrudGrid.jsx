@@ -8,6 +8,7 @@ import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Close';
 import RemoveRedEyeSharpIcon from '@mui/icons-material/RemoveRedEyeSharp';
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import {
     GridRowModes,
     DataGrid,
@@ -48,6 +49,9 @@ const EditToolbar = (props) => {
     const handleExportClick = () => {
         apiRef.current.exportDataAsCsv();
     };
+    const handleUploadClick = () => {
+        console.log('Upload Button Clicked')
+    }
 
     return (
         <Stack flexDirection='row' position="absolute" top='-53px'>
@@ -65,6 +69,21 @@ const EditToolbar = (props) => {
                     alignItems: 'center',
                 }} color="primary" startIcon={<AddIcon />} onClick={handleClick}>
                     Add record
+                </Button>
+
+                <Button variant='outlined' sx={{
+                    backgroundColor: '#f6e05e',
+                    '&:hover': {
+                        backgroundColor: '#90cdf4',
+                    },
+                    color: '#1a202c',
+                    fontWeight: 'bold',
+                    padding: '8px 16px',
+                    borderRadius: '9999px',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                }} color="primary" startIcon={<ArrowUpwardIcon onClick={handleUploadClick}/>}>
+                    Upload
                 </Button>
 
                 <GridToolbarExport
