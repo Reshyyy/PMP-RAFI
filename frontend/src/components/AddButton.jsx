@@ -84,6 +84,7 @@ const AddButton = () => {
                             id="outlined-required"
                             label="Description"
                             defaultValue=""
+                            required
                         />
 
                         {/* Specs */}
@@ -93,6 +94,7 @@ const AddButton = () => {
                             id="outlined-required"
                             label="Specs"
                             defaultValue=""
+                            required
                         />
                     </Stack>
 
@@ -109,6 +111,7 @@ const AddButton = () => {
                                     label="Type"
                                     onChange={handleTypeChangeDropdown}
                                     fullWidth  // Add this to make the select field fullWidth
+                                    required
                                 >
                                     <MenuItem value={10}>Ten</MenuItem>
                                     <MenuItem value={20}>Twenty</MenuItem>
@@ -128,6 +131,7 @@ const AddButton = () => {
                                 }}
                                 fullWidth  // Add this to make the text field fullWidth
                                 placeholder='0'
+                                required
                             />
                         </Stack>
                         <Stack sx={{ width: '33%' }}>
@@ -142,6 +146,7 @@ const AddButton = () => {
                                 }}
                                 fullWidth  // Add this to make the text field fullWidth
                                 placeholder='0.00'
+                                required
                             />
                         </Stack>
                     </Stack>
@@ -159,12 +164,14 @@ const AddButton = () => {
                                 id="outlined-required"
                                 label="Financial Dimension"
                                 defaultValue=""
+                                required
                             />
                         </Stack>
 
                         <Stack sx={{ width: '30%' }}>
                             {/* Target Date */}
-                            <BasicDatePicker style={{ maxWidth: '100px' }} />
+                            <BasicDatePicker style={{ maxWidth: '100px' }} required />
+                            
                         </Stack>
 
                         <Stack sx={{ width: '30%' }}>
@@ -175,6 +182,7 @@ const AddButton = () => {
                                     row
                                     aria-labelledby="demo-row-radio-buttons-group-label"
                                     name="row-radio-buttons-group"
+                                    required
                                 >
                                     <FormControlLabel value="yes" control={<Radio />} label="Yes" />
                                     <FormControlLabel value="no" control={<Radio />} label="No" />
