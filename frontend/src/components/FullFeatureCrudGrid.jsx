@@ -60,7 +60,7 @@ const EditToolbar = (props) => {
                     Add record
                 </Button>
 
-                <Button variant='outlined' sx={{
+                {/* <Button variant='outlined' sx={{
                     position: 'absolute',
                     top: '-53px',
                     backgroundColor: '#f6e05e',
@@ -75,7 +75,7 @@ const EditToolbar = (props) => {
                     alignItems: 'center',
                 }} color="primary" startIcon={<ArrowUpwardIcon onClick={handleUploadClick}/>}>
                     Upload
-                </Button>
+                </Button> */}
 
                 <GridToolbarExport
                     csvOptions={{
@@ -213,41 +213,41 @@ const FullFeaturedCrudGrid = () => {
             width: 120,
             editable: true,
         },
-        {
-            field: 'dateOfRequest',
-            headerName: 'Date of Request',
-            type: 'date',
-            width: 120,
-            editable: true,
-        },
-        {
-            field: 'PR',
-            headerName: 'PR #',
-            type: 'text',
-            width: 100,
-            editable: true,
-        },
-        {
-            field: 'PO',
-            headerName: 'PO #',
-            type: 'text',
-            width: 100,
-            editable: true,
-        },
-        {
-            field: 'deliveryDate',
-            headerName: 'Delivery Date',
-            type: 'date',
-            width: 120,
-            editable: true,
-        },
-        {
-            field: 'status',
-            headerName: 'Status',
-            type: 'text',
-            width: 120,
-            editable: true,
-        },
+        // {
+        //     field: 'dateOfRequest',
+        //     headerName: 'Date of Request',
+        //     type: 'date',
+        //     width: 130,
+        //     editable: true,
+        // },
+        // {
+        //     field: 'PR',
+        //     headerName: 'PR #',
+        //     type: 'text',
+        //     width: 100,
+        //     editable: true,
+        // },
+        // {
+        //     field: 'PO',
+        //     headerName: 'PO #',
+        //     type: 'text',
+        //     width: 100,
+        //     editable: true,
+        // },
+        // {
+        //     field: 'deliveryDate',
+        //     headerName: 'Delivery Date',
+        //     type: 'date',
+        //     width: 120,
+        //     editable: true,
+        // },
+        // {
+        //     field: 'status',
+        //     headerName: 'Status',
+        //     type: 'text',
+        //     width: 80,
+        //     editable: true,
+        // },
         {
             field: 'actions',
             type: 'actions',
