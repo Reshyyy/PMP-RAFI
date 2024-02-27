@@ -41,32 +41,35 @@ const AddButton = () => {
         setType(event.target.value);
     };
 
-    const handleFinDimDropdown = (event) => {
-        setType(event.target.value);
+    // Modal Team Dropdown
+    const [team, setTeam] = React.useState('');
+
+    const handleTeamDropdown = (event) => {
+        setTeam(event.target.value);
     };
 
-    // Add functionality
+    // Modal FinDim Dropdown
+    const [finDim, setfinDim] = React.useState('');
+
+    const handleFinDimDropdown = (event) => {
+        setfinDim(event.target.value);
+    };
+
+
     const handleAdd = () => {
-        const description = document.getElementById("description").value;
-        const specs = document.getElementById("specs").value;
-        const quantity = document.getElementById("quantity").value;
-        const totalEstimatedAmount = document.getElementById("totalEstimatedAmount").value;
-        const financialDimension = document.getElementById("financialDimension").value;
-
-        // Check if any required field is empty
-        if (
-            !description ||
-            !specs ||
-            !quantity ||
-            !totalEstimatedAmount ||
-            !financialDimension
-        ) {
-            alert("Please fill in all required fields.");
-            return;
-        }
-
-        console.log('Add button clicked')
+        console.log('Add button clicked');
         // Here you can proceed with adding the data
+    };
+
+    const [description, setDescription] = useState('');
+    const [descriptionError, setDescriptionError] = useState(false);
+    const handleDescriptionChange = (e) => {
+        setDescription(e.target.value);
+        if (e.target.validity.valid){
+            setDescriptionError(false);
+        } else{
+            setDescriptionError(true);
+        }
     }
 
     return (
@@ -108,18 +111,21 @@ const AddButton = () => {
                         {/* Description */}
                         <TextField
                             sx={{ flexGrow: 1 }}
+                            onChange={handleDescriptionChange}
                             fullWidth
-                            id="outlined-required description"
+                            id="outlined-required"
                             label="Description"
                             defaultValue=""
                             required
+                            value={description}
+                            error={descriptionError}
                         />
 
                         {/* Specs */}
                         <TextField
                             sx={{ flexGrow: 1 }}
                             fullWidth
-                            id="outlined-required specs"
+                            id="outlined-required"
                             label="Specs"
                             defaultValue=""
                             required
@@ -147,10 +153,28 @@ const AddButton = () => {
                             </FormControl>
                         </Stack>
                         <Stack sx={{ width: '33%' }}>
+                            {/* Team */}
+                            <FormControl sx={{ mb: 2 }}>
+                                <InputLabel id="demo-simple-select-label" required>Team</InputLabel>
+                                <Select
+                                    labelId="demo-simple-select-label"
+                                    id="demo-simple-select"
+                                    value={team}
+                                    label="Team"
+                                    onChange={handleTeamDropdown}
+                                    fullWidth  // Add this to make the select field fullWidth
+                                >
+                                    <MenuItem value={10}>T1</MenuItem>
+                                    <MenuItem value={20}>GenG</MenuItem>
+                                    <MenuItem value={30}>DWG</MenuItem>
+                                </Select>
+                            </FormControl>
+                        </Stack>
+                        <Stack sx={{ width: '33%' }}>
                             {/* Quantity */}
                             <TextField
                                 sx={{ mb: 2 }}
-                                id="outlined-number quantity"
+                                id="outlined-number"
                                 label="Quantity"
                                 type="number"
                                 InputLabelProps={{
@@ -165,7 +189,7 @@ const AddButton = () => {
                             {/* Total Estimated Amount */}
                             <TextField
                                 sx={{ mb: 2 }}
-                                id="outlined-number totalEstimatedAmount"
+                                id="outlined-number"
                                 label="Total Estimated Amount"
                                 type="number"
                                 InputLabelProps={{
@@ -200,7 +224,7 @@ const AddButton = () => {
                                 <Select
                                     labelId="demo-simple-select-label"
                                     id="demo-simple-select"
-                                    value={type}
+                                    value={finDim}
                                     label="Financial Dimension"
                                     onChange={handleFinDimDropdown}
                                     fullWidth  // Add this to make the select field fullWidth
