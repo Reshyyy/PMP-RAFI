@@ -84,6 +84,7 @@ const AddButton = () => {
                             id="outlined-required"
                             label="Description"
                             defaultValue=""
+                            required
                         />
 
                         {/* Specs */}

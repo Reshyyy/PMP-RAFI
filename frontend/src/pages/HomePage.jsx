@@ -66,7 +66,7 @@ const HomePage = () => {
         <Stack flexDirection='row' justifyContent='space-between' alignItems='end' >
           <Stack flexDirection='row'>
             {/* ACTION BUTTONS */}
-            {/* <AddButton /> */}
+            <AddButton />
             {/* <UploadButton onFileSelect={handleFileSelect} /> */}
             {/* <ExportButton /> */}
 
