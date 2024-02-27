@@ -65,11 +65,40 @@ const AddButton = () => {
     const [descriptionError, setDescriptionError] = useState(false);
     const handleDescriptionChange = (e) => {
         setDescription(e.target.value);
-        if (e.target.validity.valid){
+        if (e.target.validity.valid) {
             setDescriptionError(false);
-        } else{
+        } else {
             setDescriptionError(true);
         }
+    }
+
+    const [specs, setSpecs] = useState('');
+    const [specsError, setSpecsError] = useState(false);
+    const handleSpecsChange = (e) => {
+        setSpecs(e.target.value);
+        if (e.target.validity.valid) {
+            setSpecsError(false);
+        } else {
+            setSpecsError(true);
+        }
+    }
+
+    const [total, setTotal] = useState('');
+    const [totalError, setTotalError] = useState(false);
+    const handleTotalChange = (e) => {
+        setTotal(e.target.value);
+        if (e.target.validity.valid) {
+            setTotalError(false);
+        } else {
+            setTotalError(true);
+        }
+    }
+
+
+
+    const [qty, setQty] = React.useState('');
+    const handleQtyDropdown = (e) => {
+        setQty(e.target.value);
     }
 
     return (
@@ -129,6 +158,9 @@ const AddButton = () => {
                             label="Specs"
                             defaultValue=""
                             required
+                            onChange={handleSpecsChange}
+                            value={specs}
+                            error={specsError}
                         />
                     </Stack>
 
@@ -172,7 +204,7 @@ const AddButton = () => {
                         </Stack>
                         <Stack sx={{ width: '33%' }}>
                             {/* Quantity */}
-                            <TextField
+                            {/* <TextField
                                 sx={{ mb: 2 }}
                                 id="outlined-number"
                                 label="Quantity"
@@ -183,7 +215,25 @@ const AddButton = () => {
                                 fullWidth  // Add this to make the text field fullWidth
                                 placeholder='0'
                                 required
-                            />
+                            /> */}
+
+                            {/* Quantity */}
+                            <FormControl sx={{ mb: 2 }}>
+                                <InputLabel id="demo-simple-select-label" required>QTY</InputLabel>
+                                <Select
+                                    labelId="demo-simple-select-label"
+                                    id="demo-simple-select"
+                                    value={qty}
+                                    label="Quantity"
+                                    onChange={handleQtyDropdown}
+                                    fullWidth  // Add this to make the select field fullWidth
+                                >
+                                    <MenuItem value={1}>1</MenuItem>
+                                    <MenuItem value={2}>2</MenuItem>
+                                    <MenuItem value={3}>3</MenuItem>
+                                    <MenuItem value={4}>4</MenuItem>
+                                </Select>
+                            </FormControl>
                         </Stack>
                         <Stack sx={{ width: '33%' }}>
                             {/* Total Estimated Amount */}
@@ -198,6 +248,9 @@ const AddButton = () => {
                                 fullWidth  // Add this to make the text field fullWidth
                                 placeholder='0.00'
                                 required
+                                onChange={handleTotalChange}
+                                error={totalError}
+                                value={total}
                             />
                         </Stack>
                     </Stack>
