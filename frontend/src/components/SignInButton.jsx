@@ -11,6 +11,7 @@ const SignInButton = () => {
             await instance.loginPopup({
                 scopes: ["user.read"],
             });
+
             fetchToken();
         } catch (error) {
             console.log(error);

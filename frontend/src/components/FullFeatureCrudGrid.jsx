@@ -276,6 +276,7 @@ const FullFeaturedCrudGrid = () => {
             <DataGrid
                 rows={rows}
                 columns={columns}
+                checkboxSelection
                 editMode="row"
                 rowModesModel={rowModesModel}
                 onRowModesModelChange={handleRowModesModelChange}

@@ -48,27 +48,6 @@ const EditToolbar = (props) => {
         }));
     };
 
-    const handleExportClick = () => {
-        apiRef.current.exportDataAsCsv();
-    };
-    const handleUploadClick = () => {
-        console.log('Upload Button Clicked')
-    }
-
-    const VisuallyHiddenInput = styled('input')({
-        clip: 'rect(0 0 0 0)',
-        clipPath: 'inset(50%)',
-        height: 1,
-        overflow: 'hidden',
-        position: 'absolute',
-        bottom: 0,
-        left: 0,
-        whiteSpace: 'nowrap',
-        width: 1,
-    });
-
-
-
 
 
     return (
@@ -147,6 +126,7 @@ const FullFeaturedCrudGrid = () => {
     };
 
     const columns = [
+        { field: 'id', headerName: 'ID', width: 69 },
         { field: 'Description', headerName: 'Description', width: 200, editable: true },
         {
             field: 'Specs',
@@ -253,7 +233,7 @@ const FullFeaturedCrudGrid = () => {
                     <GridActionsCellItem
                         icon={<RemoveRedEyeSharpIcon />}
                         label="View"
-                        onClick={handleViewClick(id)} // Define a function to handle the view action
+                        onClick={handleViewClick(id)}
                         color="inherit"
                     />,
                     <GridActionsCellItem

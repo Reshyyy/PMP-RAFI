@@ -7,6 +7,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/rafi.ph': 'http://20.188.123.92:3000/',
+      '/api' : 'https://rafi-sat.sandbox.operations.dynamics.com'
     }
   },
   plugins: [react()],

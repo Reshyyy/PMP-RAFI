@@ -25,9 +25,34 @@ const HomePage = () => {
   };
 
   const apiTest = () => {
-    axios
-      .post('api/services/RAFIPAYIntegration/RAFIPAYJournalAPI/GetFinancialDimensionList')
+    axios.post('api/services/RAFIPAYIntegration/RAFIPAYJournalAPI/GetFinancialDimensionList', {
+      "RAFIPayIntegration":
+      {
+        "TargetFinDim": "Department",
+        "LegalEntity": "RAFI",
+        "CurBusinessUnit": "FAU",
+        "EmployeeID": "ID000005606"
+      }
+
+    }, {
+      headers: {
+        Authorize: localStorage.getItem('accessToken'),
+        // add other headers as needed
+      }
+    })
+      .then(response => {
+        // handle success
+        console.log(response);
+      })
+      .catch(error => {
+        // handle error
+        console.error('There was an error!', error);
+      });
   }
+
+  useEffect(() => {
+    apiTest();
+  }, []);
 
   return (
     <Grid container spacing={2}>

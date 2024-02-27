@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
@@ -7,6 +8,9 @@ import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Close';
 import RemoveRedEyeSharpIcon from '@mui/icons-material/RemoveRedEyeSharp';
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
+import { styled } from '@mui/material/styles';
+import * as XLSX from 'xlsx';
 import {
     GridRowModes,
     DataGrid,
@@ -27,61 +31,30 @@ import { Stack } from '@mui/material';
 
 const roles = ['Market', 'Finance', 'Development'];
 const randomRole = () => {
-    return randomArrayItem(roles);
+    return randomArrayItem();
 };
 
 const EditToolbar = (props) => {
     const { setRows, setRowModesModel } = props;
 
-    const apiRef = useGridApiContext();
+    const apiRef = useGridApiContext(0);
 
     const handleClick = () => {
         const id = randomId();
-        setRows((oldRows) => [...oldRows, { id, name: '', age: '', role: '', isNew: true }]);
+        setRows((oldRows) => [...oldRows, { id, description: '', specs: '', type: '', qty: '', total: '', finDim: '', targetDate: '', recurring: '', isNew: true }]);
         setRowModesModel((oldModel) => ({
             ...oldModel,
-            [id]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },
+            [id]: { mode: GridRowModes.Edit, fieldToFocus: 'description' },
         }));
     };
 
-    const handleExportClick = () => {
-        apiRef.current.exportDataAsCsv();
-    };
-
     return (
-        <Stack flexDirection='row' position="absolute" top='-53px'>
+        <Stack flexDirection='row'>
             <GridToolbarContainer>
-                <Button variant='outlined' sx={{
-                    backgroundColor: '#f6e05e',
-                    '&:hover': {
-                        backgroundColor: '#90cdf4',
-                    },
-                    color: '#1a202c',
-                    fontWeight: 'bold',
-                    padding: '8px 16px',
-                    borderRadius: '9999px',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                }} color="primary" startIcon={<AddIcon />} onClick={handleClick}>
-                    Add record
+                <Button color="primary" startIcon={<AddIcon />} onClick={handleClick}>
+                    Add records
                 </Button>
-                {/* <Button color="primary" startIcon={<SaveIcon />} onClick={handleExportClick}>
-        Export
-      </Button> */}
                 <GridToolbarExport
-                    variant='outlined'
-                    sx={{
-                        backgroundColor: '#f6e05e',
-                        '&:hover': {
-                            backgroundColor: '#90cdf4',
-                        },
-                        color: '#1a202c',
-                        fontWeight: 'bold',
-                        padding: '8px 16px',
-                        borderRadius: '9999px',
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                    }}
                     csvOptions={{
                         fileName: 'PMP',
                         utf8WithBom: true,
@@ -100,6 +73,7 @@ const EditToolbar = (props) => {
 const FullFeaturedCrudGrid = () => {
     const [rows, setRows] = React.useState([]);
     const [rowModesModel, setRowModesModel] = React.useState({});
+
     const apiRef = React.useRef(null);
 
     const handleRowEditStop = (params, event) => {
@@ -150,9 +124,9 @@ const FullFeaturedCrudGrid = () => {
     };
 
     const columns = [
-        { field: 'description', headerName: 'Description', width: 200, editable: true },
+        { field: 'Description', headerName: 'Description', width: 200, editable: true },
         {
-            field: 'specs',
+            field: 'Specs',
             headerName: 'Specs',
             width: 150,
             align: 'left',
@@ -160,7 +134,7 @@ const FullFeaturedCrudGrid = () => {
             editable: true,
         },
         {
-            field: 'type',
+            field: 'Type',
             headerName: 'Type',
             type: 'singleSelect',
             valueOptions: ['Market', 'Finance', 'Development'],
@@ -168,7 +142,15 @@ const FullFeaturedCrudGrid = () => {
             editable: true,
         },
         {
-            field: 'qty',
+            field: 'Team',
+            headerName: 'Team',
+            type: 'singleSelect',
+            valueOptions: ['ASD', 'QWE', 'ZXC'],
+            width: 120,
+            editable: true,
+        },
+        {
+            field: 'QTY',
             headerName: 'Quantity',
             type: 'number',
             width: 100,
@@ -177,7 +159,7 @@ const FullFeaturedCrudGrid = () => {
             editable: true,
         },
         {
-            field: 'total',
+            field: 'Total Estimated Amount',
             headerName: 'Total Estimated Amount',
             type: 'number',
             width: 150,
@@ -186,7 +168,7 @@ const FullFeaturedCrudGrid = () => {
             editable: true,
         },
         {
-            field: 'finDim',
+            field: 'Financial Dimension',
             headerName: 'Financial Dimension',
             width: 150,
             align: 'left',
@@ -194,7 +176,7 @@ const FullFeaturedCrudGrid = () => {
             editable: true,
         },
         {
-            field: 'targetDate',
+            field: 'Target Date',
             headerName: 'Target Date',
             type: 'date',
             width: 120,
@@ -262,7 +244,54 @@ const FullFeaturedCrudGrid = () => {
         },
     ];
 
+    // upload file
+    const [typeError, setTypeError] = useState(null);
+    const [excelFile, setExcelFile] = useState(null);
+    const [excelData, setExcelData] = useState([]);
+
+    const handleFileSubmit = (e) => {
+        e.preventDefault();
+        if (excelFile !== null) {
+            const workbook = XLSX.read(excelFile, { type: 'buffer' });
+            const worksheetName = workbook.SheetNames[0];
+            const worksheet = workbook.Sheets[worksheetName];
+            const data = XLSX.utils.sheet_to_json(worksheet);
+            console.log(worksheet)
+            // Generate unique IDs for each row
+            const processedData = data.map((row, index) => ({ ...row, id: index + 1 }));
+
+            setExcelData(processedData.slice(0, 10));
+        }
+    }
+
+
+    const handleFile = (e) => {
+
+        let fileTypes = ['application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'text/csv'];
+        let selectedFile = e.target.files[0];
+        console.log('File selected:', selectedFile);
+        if (selectedFile) {
+            if (selectedFile && fileTypes.includes(selectedFile.type)) {
+                setTypeError(null);
+                let reader = new FileReader();
+                reader.readAsArrayBuffer(selectedFile);
+                reader.onload = (e) => {
+                    setExcelFile(e.target.result);
+                }
+            }
+            else {
+                setTypeError('Please select only excel file types');
+                setExcelFile(null);
+            }
+        }
+        else {
+            console.log('Please select your file');
+        }
+    }
+
+
     return (
+
         <Box
             sx={{
                 height: 500,
@@ -276,28 +305,36 @@ const FullFeaturedCrudGrid = () => {
 
             }}
         >
-            <DataGrid
-                rows={rows}
-                columns={columns}
-                editMode="row"
-                rowModesModel={rowModesModel}
-                onRowModesModelChange={handleRowModesModelChange}
-                onRowEditStop={handleRowEditStop}
-                processRowUpdate={processRowUpdate}
-                slots={{
-                    toolbar: EditToolbar, GridToolbar
-                }}
-                slotProps={{
-                    toolbar: { setRows, setRowModesModel, apiRef },
-                }}
-                apiRef={apiRef}
-                sx={{
-                    '@media print': {
-                        '.MuiDataGrid-main': { color: 'rgba(0, 0, 0, 0.87)' },
-                    },
-                    bgcolor: 'white'
-                }}
-            />
+            <form onSubmit={handleFileSubmit}>
+                <input type="file" onChange={handleFile} />
+                <button type="submit">UPLOAD</button>
+            </form>
+            {excelData && (
+                <DataGrid
+                    rows={excelData}
+                    columns={columns}
+                    editMode="row"
+                    checkboxSelection
+                    getRowId={(row) => row.id}
+                    rowModesModel={rowModesModel}
+                    onRowModesModelChange={handleRowModesModelChange}
+                    onRowEditStop={handleRowEditStop}
+                    processRowUpdate={processRowUpdate}
+                    slots={{
+                        toolbar: EditToolbar, GridToolbar
+                    }}
+                    slotProps={{
+                        toolbar: { setRows, setRowModesModel, apiRef },
+                    }}
+                    apiRef={apiRef}
+                    sx={{
+                        '@media print': {
+                            '.MuiDataGrid-main': { color: 'rgba(0, 0, 0, 0.87)' },
+                        },
+                        bgcolor: 'white'
+                    }}
+                />
+            )}
         </Box>
     );
 }
