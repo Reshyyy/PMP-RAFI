@@ -24,6 +24,11 @@ const HomePage = () => {
     setExcelData(excelData);
   };
 
+  const apiTest = () => {
+    axios
+      .post('api/services/RAFIPAYIntegration/RAFIPAYJournalAPI/GetFinancialDimensionList')
+  }
+
   return (
     <Grid container spacing={2}>
       {/* Grid Sidebar */}
