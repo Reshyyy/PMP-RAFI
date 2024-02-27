@@ -54,24 +54,15 @@ const EditToolbar = (props) => {
     }
 
     return (
-        <Stack flexDirection='row' position="absolute" top='-53px'>
+        <Stack flexDirection='row'>
             <GridToolbarContainer>
-                <Button variant='outlined' sx={{
-                    backgroundColor: '#f6e05e',
-                    '&:hover': {
-                        backgroundColor: '#90cdf4',
-                    },
-                    color: '#1a202c',
-                    fontWeight: 'bold',
-                    padding: '8px 16px',
-                    borderRadius: '9999px',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                }} color="primary" startIcon={<AddIcon />} onClick={handleClick}>
+                <Button color="primary" startIcon={<AddIcon />} onClick={handleClick}>
                     Add record
                 </Button>
 
                 <Button variant='outlined' sx={{
+                    position: 'absolute',
+                    top: '-53px',
                     backgroundColor: '#f6e05e',
                     '&:hover': {
                         backgroundColor: '#90cdf4',
@@ -87,19 +78,6 @@ const EditToolbar = (props) => {
                 </Button>
 
                 <GridToolbarExport
-                    variant='outlined'
-                    sx={{
-                        backgroundColor: '#f6e05e',
-                        '&:hover': {
-                            backgroundColor: '#90cdf4',
-                        },
-                        color: '#1a202c',
-                        fontWeight: 'bold',
-                        padding: '8px 16px',
-                        borderRadius: '9999px',
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                    }}
                     csvOptions={{
                         fileName: 'PMP',
                         utf8WithBom: true,
