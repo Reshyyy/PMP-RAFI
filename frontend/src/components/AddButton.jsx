@@ -41,6 +41,34 @@ const AddButton = () => {
         setType(event.target.value);
     };
 
+    const handleFinDimDropdown = (event) => {
+        setType(event.target.value);
+    };
+
+    // Add functionality
+    const handleAdd = () => {
+        const description = document.getElementById("description").value;
+        const specs = document.getElementById("specs").value;
+        const quantity = document.getElementById("quantity").value;
+        const totalEstimatedAmount = document.getElementById("totalEstimatedAmount").value;
+        const financialDimension = document.getElementById("financialDimension").value;
+
+        // Check if any required field is empty
+        if (
+            !description ||
+            !specs ||
+            !quantity ||
+            !totalEstimatedAmount ||
+            !financialDimension
+        ) {
+            alert("Please fill in all required fields.");
+            return;
+        }
+
+        console.log('Add button clicked')
+        // Here you can proceed with adding the data
+    }
+
     return (
         <>
             {/* ADD BUTTON */}
@@ -81,7 +109,7 @@ const AddButton = () => {
                         <TextField
                             sx={{ flexGrow: 1 }}
                             fullWidth
-                            id="outlined-required"
+                            id="outlined-required description"
                             label="Description"
                             defaultValue=""
                             required
@@ -91,7 +119,7 @@ const AddButton = () => {
                         <TextField
                             sx={{ flexGrow: 1 }}
                             fullWidth
-                            id="outlined-required"
+                            id="outlined-required specs"
                             label="Specs"
                             defaultValue=""
                             required
@@ -103,7 +131,7 @@ const AddButton = () => {
                         <Stack sx={{ width: '33%' }}>
                             {/* Type */}
                             <FormControl sx={{ mb: 2 }}>
-                                <InputLabel id="demo-simple-select-label">Type</InputLabel>
+                                <InputLabel id="demo-simple-select-label" required>Type</InputLabel>
                                 <Select
                                     labelId="demo-simple-select-label"
                                     id="demo-simple-select"
@@ -111,7 +139,6 @@ const AddButton = () => {
                                     label="Type"
                                     onChange={handleTypeChangeDropdown}
                                     fullWidth  // Add this to make the select field fullWidth
-                                    required
                                 >
                                     <MenuItem value={10}>Ten</MenuItem>
                                     <MenuItem value={20}>Twenty</MenuItem>
@@ -123,7 +150,7 @@ const AddButton = () => {
                             {/* Quantity */}
                             <TextField
                                 sx={{ mb: 2 }}
-                                id="outlined-number"
+                                id="outlined-number quantity"
                                 label="Quantity"
                                 type="number"
                                 InputLabelProps={{
@@ -138,7 +165,7 @@ const AddButton = () => {
                             {/* Total Estimated Amount */}
                             <TextField
                                 sx={{ mb: 2 }}
-                                id="outlined-number"
+                                id="outlined-number totalEstimatedAmount"
                                 label="Total Estimated Amount"
                                 type="number"
                                 InputLabelProps={{
@@ -158,31 +185,47 @@ const AddButton = () => {
                     <Stack sx={{ width: '100%' }} flexDirection='row' justifyContent='space-between' gap='30px'>
                         <Stack sx={{ width: '60%' }}>
                             {/* Financial Dimension */}
-                            <TextField
+                            {/* <TextField
                                 sx={{ mb: 2 }}
                                 fullWidth
-                                id="outlined-required"
+                                id="outlined-required financialDimension"
                                 label="Financial Dimension"
                                 defaultValue=""
                                 required
-                            />
+                            /> */}
+
+                            {/* Financial Dimension */}
+                            <FormControl sx={{ mb: 2 }}>
+                                <InputLabel id="demo-simple-select-label" required>Financial Dimension</InputLabel>
+                                <Select
+                                    labelId="demo-simple-select-label"
+                                    id="demo-simple-select"
+                                    value={type}
+                                    label="Financial Dimension"
+                                    onChange={handleFinDimDropdown}
+                                    fullWidth  // Add this to make the select field fullWidth
+                                >
+                                    <MenuItem value={10}>ASDASD</MenuItem>
+                                    <MenuItem value={20}>QWEQWE</MenuItem>
+                                    <MenuItem value={30}>ZXCZXC</MenuItem>
+                                </Select>
+                            </FormControl>
                         </Stack>
 
                         <Stack sx={{ width: '30%' }}>
                             {/* Target Date */}
                             <BasicDatePicker style={{ maxWidth: '100px' }} required />
-                            
+
                         </Stack>
 
                         <Stack sx={{ width: '30%' }}>
                             {/* Recurring */}
                             <FormControl>
-                                <FormLabel id="demo-row-radio-buttons-group-label">Recurring</FormLabel>
+                                <FormLabel id="demo-row-radio-buttons-group-label" required>Recurring</FormLabel>
                                 <RadioGroup
                                     row
                                     aria-labelledby="demo-row-radio-buttons-group-label"
                                     name="row-radio-buttons-group"
-                                    required
                                 >
                                     <FormControlLabel value="yes" control={<Radio />} label="Yes" />
                                     <FormControlLabel value="no" control={<Radio />} label="No" />
@@ -196,7 +239,7 @@ const AddButton = () => {
 
                     <Stack direction='row' justifyContent='flex-end' marginTop={2} spacing={2}>
                         <Button onClick={handleClose} variant="outlined" sx={{ width: '80px' }}>Cancel</Button>
-                        <Button variant="contained" sx={{ width: '80px', bgcolor: '#FFD23F', '&:hover': { backgroundColor: '#FFA732' } }}>Add</Button>
+                        <Button onClick={handleAdd} variant="contained" sx={{ width: '80px', bgcolor: '#FFD23F', '&:hover': { backgroundColor: '#FFA732' } }}>Add</Button>
                     </Stack>
 
 
