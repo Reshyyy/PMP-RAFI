@@ -15,8 +15,11 @@ export default function BasicDatePicker({ onDateChange }) {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <DatePicker
+        label="Target Date"
+        inputFormat="yyyy-MM-dd"
         value={selectedDate}
         onChange={handleDateChange}
+        renderInput={(params) => <TextField {...params} />}
       />
     </LocalizationProvider>
   );

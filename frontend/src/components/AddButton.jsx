@@ -11,7 +11,7 @@ import MenuItem from '@mui/material/MenuItem';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Radio from '@mui/material/Radio';
-import BasicDatePicker from './BasicDatePicker'; // You may need to adjust this import based on your file structure
+import BasicDatePicker from './BasicDatePicker';
 import { createTheme } from '@mui/material/styles'
 import { Divider, FormHelperText, FormLabel, Stack } from '@mui/material';
 import axios from 'axios';
@@ -35,6 +35,13 @@ const Team = {
     ITU_ETI: 'ITU/ETI'
 };
 
+// Define
+const FinDim = {
+    ASD: 'ASD',
+    ZXC: 'ZXC',
+    QWE: 'QWE',
+};
+
 const AddButton = () => {
 
     const style = {
@@ -55,11 +62,11 @@ const AddButton = () => {
     const handleClose = () => setOpen(false);
 
     // Modal Type Dropdown
-    const [type, setType] = useState('');
+    const [type, setType] = React.useState('');
     const [typeError, setTypeError] = useState(false);
     const handleTypeChangeDropdown = (event) => {
         setType(event.target.value);
-        // if (e.target.validity.valid) {
+        // if (event.target.validity.valid) {
         //     setTypeError(false);
         // } else {
         //     setTypeError(true);
@@ -67,9 +74,15 @@ const AddButton = () => {
     };
 
     // Modal Team Dropdown
-    const [team, setTeam] = React.useState('');
-    const handleTeamDropdown = (event) => {
-        setTeam(event.target.value);
+    const [businessUnit, setBusinessUnit] = React.useState('');
+    const [businessUnitError, setbusinessUnitError] = useState(false);
+    const handleBusinessUnitDropdown = (event) => {
+        setBusinessUnit(event.target.value);
+        // if (event.target.validity.valid) {
+        //     setbusinessUnitError(false);
+        // } else {
+        //     setbusinessUnitError(true);
+        // }
     };
 
     // Modal FinDim Dropdown
@@ -91,28 +104,16 @@ const AddButton = () => {
     }
 
     const [specs, setSpecs] = useState('');
-    const [specsError, setSpecsError] = useState(false);
     const handleSpecsChange = (e) => {
         setSpecs(e.target.value);
-        if (e.target.validity.valid) {
-            setSpecsError(false);
-        } else {
-            setSpecsError(true);
-        }
     }
 
-    const [total, setTotal] = useState('');
-    const [totalError, setTotalError] = useState(false);
+    const [totalEstAmt, setTotalEstAmt] = useState(0);
     const handleTotalChange = (e) => {
-        setTotal(e.target.value);
-        if (e.target.validity.valid) {
-            setTotalError(false);
-        } else {
-            setTotalError(true);
-        }
+        setTotalEstAmt(e.target.value);
     }
 
-    const [qty, setQty] = React.useState('');
+    const [qty, setQty] = React.useState(0);
     const [qtyError, setQtyError] = useState(false);
     const handleQtyChange = (e) => {
         setQty(e.target.value);
@@ -123,39 +124,20 @@ const AddButton = () => {
         }
     }
 
-    // if dropdown
-    // const handleQtyDropdown = (e) => {
-    //     setQty(e.target.value);
-    //     if (e.target.validity.valid) {
-    //         setQtyError(false);
-    //     } else {
-    //         setQtyError(true);
-    //     }
-    // }
-
-    const handleAdd = () => {
-        // Check if any required field is empty
-        if (!description || !specs || !total || !qty || !type || !team) {
-            setDescriptionError(!description);
-            setSpecsError(!specs);
-            setTotalError(!total);
-            setQtyError(!qty);
-            setType(!type);
-            setTeam(!team);
-            return;
-        }
-
-        console.log('Add button clicked');
-        // Here you can proceed with adding the data
-    };
-
     const handleDateChange = (date) => {
         console.log('Selected date:', date);
     };
 
+    const [recurring, setRecurring] = useState(null);
+    const [recurringError, setRecurringError] = useState(false);
+
+    const handleRecurringChange = (event) => {
+        setRecurring(event.target.value);
+        setRecurringError(false);
+    }
+
     // State for storing fetched types
     const [types, setTypes] = useState([]);
-
     useEffect(() => {
         // Fetch data from the API
         axios.get('http://20.188.123.92:82/ProcurementManagement/Planning/Type')
@@ -179,6 +161,40 @@ const AddButton = () => {
     const handleStatusDropdown = (e) => {
         setStatus(e.target.value);
     }
+
+    const AddPlanning = () => {
+        // Check if any required field is empty
+        if (!description || !type || !businessUnit || !recurring) {
+            setDescriptionError(!description);
+            setType(!type);
+            setBusinessUnit(!businessUnit);
+            setRecurring(!recurring);
+            return;
+        }
+
+        const formData = {
+            planningId: '',
+            description: description,
+            specifcation: specs,
+            type: type,
+            businessUnit: businessUnit,
+            recurring: Boolean(recurring),
+            quantity: parseInt(qty),
+            totalEstAmt: parseFloat(totalEstAmt),
+            finDim: finDim,
+            targetDateNeed: new Date().toISOString().substring(0, 10) // Format: YYYY-MM-DD
+        };
+
+        axios.post('http://20.188.123.92:82/ProcurementManagement/Planning/Save', formData)
+            .then(response => {
+                console.log('POST request successful:', response.data);
+                handleClose(); // Close the modal after successful submission
+            })
+            .catch(error => {
+                console.error('Error adding planning:', error);
+                // Handle errors here, such as displaying an error message to the user
+            });
+    };
 
     return (
         <>
@@ -214,7 +230,7 @@ const AddButton = () => {
                     <TabContext value={tabVal} >
                         <TabList onChange={handleTabChange} aria-label="lab API tabs example">
                             <Tab label="Planning" value="1" />
-                            <Tab label="Execution" value="2" />
+                            <Tab label="Execution" value="2" disabled />
                         </TabList>
                         <TabPanel value="1">
                             <Stack sx={{ mb: 2 }} spacing={2}>
@@ -239,11 +255,8 @@ const AddButton = () => {
                                     id="outlined-required"
                                     label="Specs"
                                     defaultValue=""
-                                    required
                                     onChange={handleSpecsChange}
                                     value={specs}
-                                    error={specsError}
-                                    helperText={specsError ? 'Specifications is required.' : ''}
                                 />
                             </Stack>
 
@@ -264,26 +277,29 @@ const AddButton = () => {
                                         >
                                             {types.map((type) => (
                                                 <MenuItem
-                                                    key={type.sId}
-                                                    value={type.sName}
+                                                    key={type.ID}
+                                                    value={type.Name}
                                                 >
-                                                    {type.sName}
+                                                    {type?.Name}
                                                 </MenuItem>
                                             ))}
                                         </Select>
+                                       
                                     </FormControl>
                                 </Stack>
 
                                 <Stack sx={{ width: '33%' }}>
-                                    {/* Team */}
+                                    {/* Business Unit */}
                                     <FormControl sx={{ mb: 2 }}>
-                                        <InputLabel id="demo-simple-select-label" required>Team</InputLabel>
+                                        <InputLabel id="demo-simple-select-label" required>Business Unit</InputLabel>
                                         <Select
                                             labelId="demo-simple-select-label"
                                             id="demo-simple-select"
-                                            value={team}
-                                            label="Team"
-                                            onChange={handleTeamDropdown}
+                                            value={businessUnit}
+                                            error={businessUnitError}
+                                            helperText={businessUnitError ? 'Required field.' : ''}
+                                            label="Business Unit"
+                                            onChange={handleBusinessUnitDropdown}
                                             fullWidth  // Add this to make the select field fullWidth
                                         >
                                             <MenuItem value={Team.ITU_OPS}>ITU-OPS</MenuItem>
@@ -306,7 +322,6 @@ const AddButton = () => {
                                         }}
                                         fullWidth  // Add this to make the text field fullWidth
                                         placeholder='0'
-                                        required
                                         onChange={handleQtyChange}
                                         error={qtyError}
                                         value={qty}
@@ -330,9 +345,7 @@ const AddButton = () => {
                                         placeholder='0.00'
                                         required
                                         onChange={handleTotalChange}
-                                        error={totalError}
-                                        value={total}
-                                        helperText={totalError ? 'Total Est. Amount is required' : ''}
+                                        value={totalEstAmt}
                                     />
                                 </Stack>
                             </Stack>
@@ -342,7 +355,7 @@ const AddButton = () => {
 
                                     {/* Financial Dimension */}
                                     <FormControl sx={{ mb: 2 }}>
-                                        <InputLabel id="demo-simple-select-label" required>Financial Dimension</InputLabel>
+                                        <InputLabel id="demo-simple-select-label">Financial Dimension</InputLabel>
                                         <Select
                                             labelId="demo-simple-select-label"
                                             id="demo-simple-select"
@@ -351,30 +364,32 @@ const AddButton = () => {
                                             onChange={handleFinDimDropdown}
                                             fullWidth  // Add this to make the select field fullWidth
                                         >
-                                            <MenuItem value={10}>ASDASD</MenuItem>
-                                            <MenuItem value={20}>QWEQWE</MenuItem>
-                                            <MenuItem value={30}>ZXCZXC</MenuItem>
+                                            <MenuItem value={FinDim.ASD}>ASDASD</MenuItem>
+                                            <MenuItem value={FinDim.QWE}>QWEQWE</MenuItem>
+                                            <MenuItem value={FinDim.ZXC}>ZXCZXC</MenuItem>
                                         </Select>
                                     </FormControl>
                                 </Stack>
 
                                 <Stack sx={{ width: '30%' }}>
                                     {/* Target Date */}
-                                    <BasicDatePicker onDateChange={handleDateChange} style={{ maxWidth: '100px' }} required />
+                                    <BasicDatePicker onDateChange={handleDateChange} style={{ maxWidth: '100px' }} />
 
                                 </Stack>
 
                                 <Stack sx={{ width: '30%' }}>
                                     {/* Recurring */}
-                                    <FormControl>
+                                    <FormControl error={recurringError}>
                                         <FormLabel id="demo-row-radio-buttons-group-label" required>Recurring</FormLabel>
                                         <RadioGroup
                                             row
                                             aria-labelledby="demo-row-radio-buttons-group-label"
                                             name="row-radio-buttons-group"
+                                            value={recurring}
+                                            onChange={handleRecurringChange}
                                         >
-                                            <FormControlLabel value="yes" control={<Radio />} label="Yes" />
-                                            <FormControlLabel value="no" control={<Radio />} label="No" />
+                                            <FormControlLabel value={1} control={<Radio />} label="Yes" />
+                                            <FormControlLabel value={0} control={<Radio />} label="No" />
 
                                         </RadioGroup>
                                     </FormControl>
@@ -385,10 +400,9 @@ const AddButton = () => {
 
                             <Stack direction='row' justifyContent='flex-end' marginTop={2} spacing={2}>
                                 <Button onClick={handleClose} variant="outlined" sx={{ width: '80px' }}>Cancel</Button>
-                                <Button onClick={handleAdd} variant="contained" sx={{ width: '80px', bgcolor: '#FFD23F', '&:hover': { backgroundColor: '#FFA732' } }}>Add</Button>
+                                <Button onClick={AddPlanning} variant="contained" sx={{ width: '80px', bgcolor: '#FFD23F', '&:hover': { backgroundColor: '#FFA732' } }}>Add</Button>
                             </Stack>
                         </TabPanel>
-                        {/* End of Planning Tab */}
 
                         {/* Execution Tab */}
                         <TabPanel value="2">
@@ -421,10 +435,6 @@ const AddButton = () => {
                                     label="PO #"
                                     defaultValue=""
                                     required
-                                    onChange={handleSpecsChange}
-                                    value={specs}
-                                    error={specsError}
-                                    helperText={specsError ? 'Specifications is required.' : ''}
                                 />
                             </Stack>
 
@@ -456,7 +466,7 @@ const AddButton = () => {
 
                             <Stack direction='row' justifyContent='flex-end' marginTop={2} spacing={2}>
                                 <Button onClick={handleClose} variant="outlined" sx={{ width: '80px' }}>Cancel</Button>
-                                <Button onClick={handleAdd} variant="contained" sx={{ width: '80px', bgcolor: '#FFD23F', '&:hover': { backgroundColor: '#FFA732' } }}>Update</Button>
+                                <Button variant="contained" sx={{ width: '80px', bgcolor: '#FFD23F', '&:hover': { backgroundColor: '#FFA732' } }}>Update</Button>
                             </Stack>
 
                         </TabPanel>

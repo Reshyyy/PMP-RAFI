@@ -27,27 +27,27 @@ const HomePage = () => {
     setExcelData(excelData);
   };
 
-  // const apiTest = () => {
-  //   const jsonData = {
-  //     'RAFIFixedAssetIntegration': {
-  //       'EmailAddress': "ian.lavadia@rafi.ph"
-  //     }
-  //   };
-  //   axios.post('/api/services/RAFIFixedAsset/RAFIFAUserAPI/Authorize', jsonData, {
-  //     headers: {
-  //       Authorization: `Bearer ${localStorage.getItem('accessToken')}`
-  //       // add other headers as needed
-  //     }
-  //   })
-  //     .then(response => {
-  //       // handle success
-  //       console.log(response);
-  //     })
-  //     .catch(error => {
-  //       // handle error
-  //       console.error('There was an error!', error);
-  //     });
-  // }
+  const apiTest = () => {
+    const jsonData = {
+      'RAFIFixedAssetIntegration': {
+        'EmailAddress': "ian.lavadia@rafi.ph"
+      }
+    };
+    axios.post('/api/services/RAFIFixedAsset/RAFIFAUserAPI/Authorize', jsonData, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('accessToken')}`
+        // add other headers as needed
+      }
+    })
+      .then(response => {
+        // handle success
+        console.log(response);
+      })
+      .catch(error => {
+        // handle error
+        console.error('There was an error!', error);
+      });
+  }
 
   // useEffect(() => {
   //   apiTest();
