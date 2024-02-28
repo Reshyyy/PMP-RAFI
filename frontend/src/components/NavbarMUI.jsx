@@ -8,6 +8,8 @@ import SignOutButton from './SignOutButton';
 
 function NavbarMUI() {
     const isAuthenticated = useIsAuthenticated(); // Get the authentication status
+    const theme = useTheme();
+    const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
     return (
         <Box sx={{ backgroundColor: '#fff' }}>
@@ -16,7 +18,7 @@ function NavbarMUI() {
                     <Grid item xs={10} sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'start', alignItems: 'center' }}>
                         <img src={rafiLogo} style={{ width: '100px', height: '50px' }} />
                         <Box>
-                            <Typography variant='subtitle1' style={{ color: '#000', fontWeight: 'bold' }}>
+                            <Typography variant={isSmallScreen ? 'subtitle2' : 'subtitle1'} style={{ color: '#000', fontWeight: 'bold' }}>
                                 PROCUREMENT MANAGEMENT PLAN
                             </Typography>
                             <Typography component="div" variant='body2'>

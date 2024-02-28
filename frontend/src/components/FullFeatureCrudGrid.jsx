@@ -26,6 +26,7 @@ import {
     randomArrayItem,
 } from '@mui/x-data-grid-generator';
 import { Stack } from '@mui/material';
+import axios from 'axios';
 
 const roles = ['Market', 'Finance', 'Development'];
 const randomRole = () => {
@@ -56,9 +57,9 @@ const EditToolbar = (props) => {
     return (
         <Stack flexDirection='row'>
             <GridToolbarContainer>
-                <Button color="primary" startIcon={<AddIcon />} onClick={handleClick}>
+                {/* <Button color="primary" startIcon={<AddIcon />} onClick={handleClick}>
                     Add record
-                </Button>
+                </Button> */}
 
                 {/* <Button variant='outlined' sx={{
                     position: 'absolute',
@@ -98,6 +99,23 @@ const FullFeaturedCrudGrid = () => {
     const [rowModesModel, setRowModesModel] = React.useState({});
 
     const apiRef = React.useRef(null);
+
+    useEffect(() => {
+        // Fetch data from the API
+        axios.get('http://20.188.123.92:82/ProcurementManagement/Planning/Filter?page=1')
+            .then(response => {
+                // Transform the values in the 'targetDateNeed' field into Date objects
+                const transformedRows = response.data.map(row => ({
+                    ...row,
+                    targetDateNeed: new Date(row.targetDateNeed),
+                }));
+                // Update state with transformed data
+                setRows(transformedRows);
+            })
+            .catch(error => {
+                setError(error); // Handle any errors
+            });
+    }, []);
 
     const handleRowEditStop = (params, event) => {
         if (params.reason === GridRowEditStopReasons.rowFocusOut) {
@@ -149,7 +167,7 @@ const FullFeaturedCrudGrid = () => {
     const columns = [
         { field: 'description', headerName: 'Description', width: 200, editable: true },
         {
-            field: 'specs',
+            field: 'specifcation',
             headerName: 'Specs',
             width: 150,
             align: 'left',
@@ -165,8 +183,8 @@ const FullFeaturedCrudGrid = () => {
             editable: true,
         },
         {
-            field: 'team',
-            headerName: 'Team',
+            field: 'businessUnit',
+            headerName: 'Business Unit',
             type: 'singleSelect',
             valueOptions: ['ASD', 'QWE', 'ZXC'],
             width: 120,
@@ -181,7 +199,7 @@ const FullFeaturedCrudGrid = () => {
             editable: true,
         },
         {
-            field: 'qty',
+            field: 'quantity',
             headerName: 'Quantity',
             type: 'number',
             width: 100,
@@ -190,7 +208,7 @@ const FullFeaturedCrudGrid = () => {
             editable: true,
         },
         {
-            field: 'total',
+            field: 'totalEstAmt',
             headerName: 'Total Estimated Amount',
             type: 'number',
             width: 150,
@@ -207,7 +225,7 @@ const FullFeaturedCrudGrid = () => {
             editable: true,
         },
         {
-            field: 'targetDate',
+            field: 'targetDateNeed',
             headerName: 'Target Date',
             type: 'date',
             width: 120,
@@ -291,12 +309,12 @@ const FullFeaturedCrudGrid = () => {
                         onClick={handleViewClick(id)} // Define a function to handle the view action
                         color="inherit"
                     />,
-                    <GridActionsCellItem
-                        icon={<DeleteIcon />}
-                        label="Delete"
-                        onClick={handleDeleteClick(id)}
-                        color="inherit"
-                    />
+                    // <GridActionsCellItem
+                    //     icon={<DeleteIcon />}
+                    //     label="Delete"
+                    //     onClick={handleDeleteClick(id)}
+                    //     color="inherit"
+                    // />
                 ];
             },
         },
@@ -321,6 +339,7 @@ const FullFeaturedCrudGrid = () => {
                 columns={columns}
                 checkboxSelection
                 editMode="row"
+                getRowId={(row) => row.description}
                 rowModesModel={rowModesModel}
                 onRowModesModelChange={handleRowModesModelChange}
                 onRowEditStop={handleRowEditStop}
