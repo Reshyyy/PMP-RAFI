@@ -13,7 +13,23 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Radio from '@mui/material/Radio';
 import BasicDatePicker from './BasicDatePicker'; // You may need to adjust this import based on your file structure
 import { createTheme } from '@mui/material/styles'
-import { Divider, FormLabel, Stack } from '@mui/material';
+import { Divider, FormHelperText, FormLabel, Stack } from '@mui/material';
+
+
+// Define enum for type
+const Type = {
+    Goods: 'Goods',
+    Services: 'Services',
+    Others: 'Others'
+};
+
+// Define enum for team
+const Team = {
+    ITU_OPS: 'ITU-OPS',
+    ITU_INF: 'ITU-INF',
+    ITU_SEC: 'ITU-SEC',
+    ITU_ETI: 'ITU/ETI'
+  };
 
 const AddButton = () => {
 
@@ -29,37 +45,35 @@ const AddButton = () => {
         p: 4,
     };
 
-
+    // Modal
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
     // Modal Type Dropdown
-    const [type, setType] = React.useState('');
-
+    const [type, setType] = useState('');
+    const [typeError, setTypeError] = useState(false);
     const handleTypeChangeDropdown = (event) => {
         setType(event.target.value);
+        if (e.target.validity.valid) {
+            setTypeError(false);
+        } else {
+            setTypeError(true);
+        }
     };
 
     // Modal Team Dropdown
     const [team, setTeam] = React.useState('');
-
     const handleTeamDropdown = (event) => {
         setTeam(event.target.value);
     };
 
     // Modal FinDim Dropdown
     const [finDim, setfinDim] = React.useState('');
-
     const handleFinDimDropdown = (event) => {
         setfinDim(event.target.value);
     };
 
-
-    const handleAdd = () => {
-        console.log('Add button clicked');
-        // Here you can proceed with adding the data
-    };
 
     const [description, setDescription] = useState('');
     const [descriptionError, setDescriptionError] = useState(false);
@@ -94,12 +108,42 @@ const AddButton = () => {
         }
     }
 
-
-
     const [qty, setQty] = React.useState('');
-    const handleQtyDropdown = (e) => {
+    const [qtyError, setQtyError] = useState(false);
+    const handleQtyChange = (e) => {
         setQty(e.target.value);
+        if (e.target.validity.valid) {
+            setQtyError(false);
+        } else {
+            setQtyError(true);
+        }
     }
+
+    // if dropdown
+    // const handleQtyDropdown = (e) => {
+    //     setQty(e.target.value);
+    //     if (e.target.validity.valid) {
+    //         setQtyError(false);
+    //     } else {
+    //         setQtyError(true);
+    //     }
+    // }
+
+    const handleAdd = () => {
+        // Check if any required field is empty
+        if (!description || !specs || !total || !qty || !type || !team) {
+            setDescriptionError(!description);
+            setSpecsError(!specs);
+            setTotalError(!total);
+            setQtyError(!qty);
+            setType(!type);
+            setTeam(!team);
+            return;
+        }
+
+        console.log('Add button clicked');
+        // Here you can proceed with adding the data
+    };
 
     return (
         <>
@@ -148,6 +192,7 @@ const AddButton = () => {
                             required
                             value={description}
                             error={descriptionError}
+                            helperText={descriptionError ? 'Description is required.' : ''}
                         />
 
                         {/* Specs */}
@@ -161,6 +206,7 @@ const AddButton = () => {
                             onChange={handleSpecsChange}
                             value={specs}
                             error={specsError}
+                            helperText={specsError ? 'Specifications is required.' : ''}
                         />
                     </Stack>
 
@@ -175,12 +221,14 @@ const AddButton = () => {
                                     id="demo-simple-select"
                                     value={type}
                                     label="Type"
+                                    error={typeError}
                                     onChange={handleTypeChangeDropdown}
+                                    helperText={typeError ? 'Type is required.' : ''}
                                     fullWidth  // Add this to make the select field fullWidth
                                 >
-                                    <MenuItem value={10}>Ten</MenuItem>
-                                    <MenuItem value={20}>Twenty</MenuItem>
-                                    <MenuItem value={30}>Thirty</MenuItem>
+                                    <MenuItem value={Type.Goods}>Goods</MenuItem>
+                                    <MenuItem value={Type.Services}>Services</MenuItem>
+                                    <MenuItem value={Type.Others}>Others...</MenuItem>
                                 </Select>
                             </FormControl>
                         </Stack>
@@ -196,15 +244,16 @@ const AddButton = () => {
                                     onChange={handleTeamDropdown}
                                     fullWidth  // Add this to make the select field fullWidth
                                 >
-                                    <MenuItem value={10}>T1</MenuItem>
-                                    <MenuItem value={20}>GenG</MenuItem>
-                                    <MenuItem value={30}>DWG</MenuItem>
+                                    <MenuItem value={Team.ITU_OPS}>ITU-OPS</MenuItem>
+                                    <MenuItem value={Team.ITU_INF}>ITU-INF</MenuItem>
+                                    <MenuItem value={Team.ITU_SEC}>ITU-SEC</MenuItem>
+                                    <MenuItem value={Team.ITU_ETI}>ITU/ETI</MenuItem>
                                 </Select>
                             </FormControl>
                         </Stack>
                         <Stack sx={{ width: '33%' }}>
                             {/* Quantity */}
-                            {/* <TextField
+                            <TextField
                                 sx={{ mb: 2 }}
                                 id="outlined-number"
                                 label="Quantity"
@@ -215,10 +264,16 @@ const AddButton = () => {
                                 fullWidth  // Add this to make the text field fullWidth
                                 placeholder='0'
                                 required
-                            /> */}
+                                onChange={handleQtyChange}
+                                error={qtyError}
+                                value={qty}
+                                helperText={qtyError ? 'Quantity is required' : ''}
+
+
+                            />
 
                             {/* Quantity */}
-                            <FormControl sx={{ mb: 2 }}>
+                            {/* <FormControl sx={{ mb: 2 }}>
                                 <InputLabel id="demo-simple-select-label" required>QTY</InputLabel>
                                 <Select
                                     labelId="demo-simple-select-label"
@@ -233,7 +288,7 @@ const AddButton = () => {
                                     <MenuItem value={3}>3</MenuItem>
                                     <MenuItem value={4}>4</MenuItem>
                                 </Select>
-                            </FormControl>
+                            </FormControl> */}
                         </Stack>
                         <Stack sx={{ width: '33%' }}>
                             {/* Total Estimated Amount */}
@@ -251,6 +306,7 @@ const AddButton = () => {
                                 onChange={handleTotalChange}
                                 error={totalError}
                                 value={total}
+                                helperText={totalError ? 'Total Est. Amount is required' : ''}
                             />
                         </Stack>
                     </Stack>

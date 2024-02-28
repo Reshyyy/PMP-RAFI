@@ -19,13 +19,9 @@ const Sidebar = () => {
                     Sidebar
                 </Typography>
                 <nav>
-                    <Link href="#" underline="none" sx={{ display: 'block', py: 2.5, px: 4, borderRadius: 1, transition: 'background-color 200ms', color: 'white', fontSize: '1.2rem', '&:hover': { backgroundColor: '#4b5563' } }}>Home</Link>
+                    <Link href="#" underline="none" sx={{ display: 'block', py: 2.5, px: 4, borderRadius: 1, transition: 'background-color 200ms', color: 'white', fontSize: '1.2rem', '&:hover': { backgroundColor: '#4b5563' } }}>Dashboard</Link>
                     <Divider sx={{ backgroundColor: 'rgba(255, 255, 255, 0.5)' }} />
-                    <Link href="#" underline="none" sx={{ display: 'block', py: 2.5, px: 4, borderRadius: 1, transition: 'background-color 200ms', color: 'white', fontSize: '1.2rem', '&:hover': { backgroundColor: '#4b5563' } }}>About</Link>
-                    <Divider sx={{ backgroundColor: 'rgba(255, 255, 255, 0.5)' }} />
-                    <Link href="#" underline="none" sx={{ display: 'block', py: 2.5, px: 4, borderRadius: 1, transition: 'background-color 200ms', color: 'white', fontSize: '1.2rem', '&:hover': { backgroundColor: '#4b5563' } }}>Services</Link>
-                    <Divider sx={{ backgroundColor: 'rgba(255, 255, 255, 0.5)' }} />
-                    <Link href="#" underline="none" sx={{ display: 'block', py: 2.5, px: 4, borderRadius: 1, transition: 'background-color 200ms', color: 'white', fontSize: '1.2rem', '&:hover': { backgroundColor: '#4b5563' } }}>Contact</Link>
+                    <Link href="#" underline="none" sx={{ display: 'block', py: 2.5, px: 4, borderRadius: 1, transition: 'background-color 200ms', color: 'white', fontSize: '1.2rem', '&:hover': { backgroundColor: '#4b5563' } }}>Application</Link>
                 </nav>
             </Box>
         </Box>

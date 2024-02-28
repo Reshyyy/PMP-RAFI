@@ -25,13 +25,9 @@ const HomePage = () => {
   };
 
   const apiTest = () => {
-    axios.post('api/services/RAFIPAYIntegration/RAFIPAYJournalAPI/GetFinancialDimensionList', {
-      "RAFIPayIntegration":
-      {
-        "TargetFinDim": "Department",
-        "LegalEntity": "RAFI",
-        "CurBusinessUnit": "FAU",
-        "EmployeeID": "ID000005606"
+    axios.post('/api/services/RAFIFixedAsset/RAFIFAUserAPI/Authorize', {
+      "RAFIFixedAssetIntegration": {
+        "EmailAddress": "ian.lavadia@rafi.ph"
       }
 
     }, {
