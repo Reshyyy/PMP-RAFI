@@ -29,7 +29,7 @@ const Team = {
     ITU_INF: 'ITU-INF',
     ITU_SEC: 'ITU-SEC',
     ITU_ETI: 'ITU/ETI'
-  };
+};
 
 const AddButton = () => {
 
@@ -143,6 +143,10 @@ const AddButton = () => {
 
         console.log('Add button clicked');
         // Here you can proceed with adding the data
+    };
+
+    const handleDateChange = (date) => {
+        console.log('Selected date:', date);
     };
 
     return (
@@ -347,7 +351,7 @@ const AddButton = () => {
 
                         <Stack sx={{ width: '30%' }}>
                             {/* Target Date */}
-                            <BasicDatePicker style={{ maxWidth: '100px' }} required />
+                            <BasicDatePicker onDateChange={handleDateChange}  style={{ maxWidth: '100px' }} required />
 
                         </Stack>
 
