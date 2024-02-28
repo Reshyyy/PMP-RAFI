@@ -22,10 +22,9 @@ import TabPanel from '@mui/lab/TabPanel';
 
 
 // Define enum for type
-const Type = {
-    Goods: 'Goods',
-    Services: 'Services',
-    Others: 'Others'
+const Status = {
+    delivered: 'DELIVERED',
+    notDelivered: 'NOT DELIVERED'
 };
 
 // Define enum for team
@@ -60,11 +59,11 @@ const AddButton = () => {
     const [typeError, setTypeError] = useState(false);
     const handleTypeChangeDropdown = (event) => {
         setType(event.target.value);
-        if (e.target.validity.valid) {
-            setTypeError(false);
-        } else {
-            setTypeError(true);
-        }
+        // if (e.target.validity.valid) {
+        //     setTypeError(false);
+        // } else {
+        //     setTypeError(true);
+        // }
     };
 
     // Modal Team Dropdown
@@ -176,6 +175,11 @@ const AddButton = () => {
         setTabVal(newValue);
     };
 
+    const [status, setStatus] = useState('')
+    const handleStatusDropdown = (e) => {
+        setStatus(e.target.value);
+    }
+
     return (
         <>
             {/* ADD BUTTON */}
@@ -263,7 +267,7 @@ const AddButton = () => {
                                                     key={type.sId}
                                                     value={type.sName}
                                                 >
-                                                    {type}
+                                                    {type.sName}
                                                 </MenuItem>
                                             ))}
                                         </Select>
@@ -430,20 +434,22 @@ const AddButton = () => {
 
                             </Stack>
 
-                            <Stack>
+                            <Stack sx={{ width: '33%' }}>
                                 {/* Status */}
-                                <TextField
-                                    sx={{ flexGrow: 1 }}
-                                    fullWidth
-                                    id="outlined-required"
-                                    label="Status"
-                                    defaultValue=""
-                                    required
-                                    onChange={handleSpecsChange}
-                                    value={specs}
-                                    error={specsError}
-                                    helperText={specsError ? 'Specifications is required.' : ''}
-                                />
+                                <FormControl sx={{ mb: 2 }}>
+                                    <InputLabel id="demo-simple-select-label" required>Status</InputLabel>
+                                    <Select
+                                        labelId="demo-simple-select-label"
+                                        id="demo-simple-select"
+                                        value={status}
+                                        label="Team"
+                                        onChange={handleStatusDropdown}
+                                        fullWidth  // Add this to make the select field fullWidth
+                                    >
+                                        <MenuItem value={Status.delivered}>DELIVERED</MenuItem>
+                                        <MenuItem value={Status.notDelivered}>NOT DELIVERED</MenuItem>
+                                    </Select>
+                                </FormControl>
                             </Stack>
 
                             <Divider />
