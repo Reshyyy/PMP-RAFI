@@ -25,17 +25,17 @@ const HomePage = () => {
   };
 
   const apiTest = () => {
-    axios.post('/api/services/RAFIFixedAsset/RAFIFAUserAPI/Authorize', {
-      "RAFIFixedAssetIntegration": {
-        "EmailAddress": "ian.lavadia@rafi.ph"
+    const jsonData = {
+      'RAFIFixedAssetIntegration': {
+        'EmailAddress': "ian.lavadia@rafi.ph"
       }
-
-    }, {
-      headers: {
-        Authorize: localStorage.getItem('accessToken'),
-        // add other headers as needed
-      }
-    })
+    };
+    axios.post('/api/services/RAFIFixedAsset/RAFIFAUserAPI/Authorize', jsonData, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('accessToken')}`
+          // add other headers as needed
+        }
+      })
       .then(response => {
         // handle success
         console.log(response);
