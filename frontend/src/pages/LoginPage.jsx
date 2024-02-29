@@ -9,8 +9,6 @@ import dotenv from 'dotenv'
 const LoginPage = () => {
     const isAuthenticated = useIsAuthenticated();
 
-
-
     return (
         <Box sx={{ position: 'relative', height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
             <img src='src/assets/rafiLogo.png' style={{ width: '450px', height: '300px', position: 'absolute', top: 0, left: 0 }} alt="RAFI Logo" />

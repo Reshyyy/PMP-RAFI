@@ -355,7 +355,7 @@ const AddButton = () => {
 
                                     {/* Financial Dimension */}
                                     <FormControl sx={{ mb: 2 }}>
-                                        <InputLabel id="demo-simple-select-label">Financial Dimension</InputLabel>
+                                        <InputLabel id="demo-simple-select-label">Main Account</InputLabel>
                                         <Select
                                             labelId="demo-simple-select-label"
                                             id="demo-simple-select"

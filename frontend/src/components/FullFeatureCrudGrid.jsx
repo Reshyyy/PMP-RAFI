@@ -100,6 +100,9 @@ const FullFeaturedCrudGrid = () => {
 
     const apiRef = React.useRef(null);
 
+
+    // State for storing fetched types
+    const [types, setTypes] = useState([]);
     useEffect(() => {
         // Fetch data from the API
         axios.get('http://20.188.123.92:82/ProcurementManagement/Planning/Filter?page=1')
@@ -107,6 +110,7 @@ const FullFeaturedCrudGrid = () => {
                 // Transform the values in the 'targetDateNeed' field into Date objects
                 const transformedRows = response.data.map(row => ({
                     ...row,
+                    recurring: row.recurring ? 'Yes' : 'No',
                     targetDateNeed: new Date(row.targetDateNeed),
                 }));
                 // Update state with transformed data
@@ -115,7 +119,20 @@ const FullFeaturedCrudGrid = () => {
             .catch(error => {
                 setError(error); // Handle any errors
             });
+
+        axios.get('http://20.188.123.92:82/ProcurementManagement/Planning/Type')
+            .then(response => {
+                // If the request is successful, extract type data from the response
+                const fetchedTypes = response.data;
+                // Set the fetched types to the state
+                setTypes(fetchedTypes);
+            })
+            .catch(error => {
+                console.error(error); // Handle any errors
+            });
     }, []);
+
+
 
     const handleRowEditStop = (params, event) => {
         if (params.reason === GridRowEditStopReasons.rowFocusOut) {
@@ -123,12 +140,57 @@ const FullFeaturedCrudGrid = () => {
         }
     };
 
+
     const handleEditClick = (id) => () => {
+        let row = apiRef.current.getRowWithUpdatedValues(id)
+        console.log(row);
+
+        console.log('Selected ID', id)
+        axios.get('http://20.188.123.92:82/ProcurementManagement/Planning/Type')
+            .then(response => {
+                // If the request is successful, extract type data from the response
+                const fetchedTypes = response.data;
+                // Set the fetched types to the state
+                setTypes(fetchedTypes);
+                console.log(fetchedTypes)
+            })
+            .catch(error => {
+                console.error(error); // Handle any errors
+            });
+
+        // Update the row mode to Edit mode
         setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
     };
 
     const handleSaveClick = (id) => () => {
-        setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
+        console.log('selected ID', id)
+
+        let row = apiRef.current.getRowWithUpdatedValues(id)
+        console.log(row)
+        const formData = {
+            planningId: id,
+            description: row.description,
+            specifcation: row.specifcation,
+            type: row.type,
+            businessUnit: row.businessUnit,
+            recurring: Boolean(row.recurring),
+            quantity: parseInt(row.quantity),
+            totalEstAmt: parseFloat(row.totalEstAmt),
+            finDim: row.finDim,
+            targetDateNeed: new Date(row.targetDateNeed).toISOString().substring(0, 10) // Format: YYYY-MM-DD
+        };
+
+        axios.put('http://20.188.123.92:82/ProcurementManagement/Planning/Update', formData)
+            .then(response => {
+                console.log('Update Successful:', response.data);
+                // If the update is successful, change the row mode to View mode
+                // setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
+            })
+            .catch(error => {
+                console.error('Error update:', error);
+                // Handle errors here, such as displaying an error message to the user
+            });
+        // setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
     };
 
     const handleViewClick = (id) => () => {
@@ -139,7 +201,15 @@ const FullFeaturedCrudGrid = () => {
     };
 
     const handleDeleteClick = (id) => () => {
-        setRows(rows.filter((row) => row.id !== id));
+        console.log('Deleted Data with ID', id)
+        axios.delete(`http://20.188.123.92:82/ProcurementManagement/Planning/Cancel/${id}`)
+            .then(res => {
+                setRows(rows.filter((row) => row.id !== id));
+            })
+            .catch(error => {
+                console.error(error);
+            })
+
     };
 
     const handleCancelClick = (id) => () => {
@@ -178,7 +248,9 @@ const FullFeaturedCrudGrid = () => {
             field: 'type',
             headerName: 'Type',
             type: 'singleSelect',
-            valueOptions: ['Market', 'Finance', 'Development'],
+            valueOptions: types.map((type) => {
+                return type.Name
+            }),
             width: 120,
             editable: true,
         },
@@ -197,6 +269,7 @@ const FullFeaturedCrudGrid = () => {
             valueOptions: ['No', 'Yes'],
             width: 120,
             editable: true,
+            valueGetter: (params) => params.value === 'Yes'
         },
         {
             field: 'quantity',
@@ -218,7 +291,7 @@ const FullFeaturedCrudGrid = () => {
         },
         {
             field: 'finDim',
-            headerName: 'Financial Dimension',
+            headerName: 'Main Account',
             width: 150,
             align: 'left',
             headerAlign: 'left',
@@ -309,12 +382,12 @@ const FullFeaturedCrudGrid = () => {
                         onClick={handleViewClick(id)} // Define a function to handle the view action
                         color="inherit"
                     />,
-                    // <GridActionsCellItem
-                    //     icon={<DeleteIcon />}
-                    //     label="Delete"
-                    //     onClick={handleDeleteClick(id)}
-                    //     color="inherit"
-                    // />
+                    <GridActionsCellItem
+                        icon={<DeleteIcon />}
+                        label="Delete"
+                        onClick={handleDeleteClick(id)}
+                        color="inherit"
+                    />
                 ];
             },
         },
@@ -339,7 +412,7 @@ const FullFeaturedCrudGrid = () => {
                 columns={columns}
                 checkboxSelection
                 editMode="row"
-                getRowId={(row) => row.description}
+                getRowId={(row) => row.planningId}
                 rowModesModel={rowModesModel}
                 onRowModesModelChange={handleRowModesModelChange}
                 onRowEditStop={handleRowEditStop}
