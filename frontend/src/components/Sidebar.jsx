@@ -7,7 +7,7 @@ const Sidebar = () => {
         <Box
             sx={{
                 height: '100vh',
-                width: { xs: '100%', md: '256px' }, // Set full width on mobile and fixed width on medium and above
+                width: { xs: '100%', md: '100%', lg: '95%' }, // Set full width on mobile and fixed width on medium and above
                 backgroundColor: '#2c3e50',
                 color: '#fff',
                 left: 0,

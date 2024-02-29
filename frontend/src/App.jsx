@@ -14,6 +14,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 import UploadTest from './pages/UploadTest';
 import FullFeaturedCrudGrid from './components/FullFeatureCrudGrid';
 import FullFeaturedCrudGridTest from './components/FullFeatureCrudGridTest';
+import ModalAddCOmponent from './components/ModalAddComponent';
 
 
 function App({ msalInstance }) {
@@ -31,6 +32,7 @@ function App({ msalInstance }) {
             <Route exact path="/test" element={<PageLayout />} />
             <Route exact path="/uploadtest" element={<UploadTest />} />
             <Route exact path="/crudtest" element={<FullFeaturedCrudGridTest />} />
+            <Route exact path="/modal" element={<ModalAddCOmponent />} />
             
           </Routes>
         </BrowserRouter>

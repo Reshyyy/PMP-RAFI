@@ -25,8 +25,12 @@ import {
     randomId,
     randomArrayItem,
 } from '@mui/x-data-grid-generator';
-import { Stack } from '@mui/material';
+import { FormControl, InputLabel, MenuItem, Modal, Select, Stack, Tab, TextField } from '@mui/material';
 import axios from 'axios';
+import TabContext from '@mui/lab/TabContext';
+import TabList from '@mui/lab/TabList';
+import TabPanel from '@mui/lab/TabPanel';
+import ModalAddCOmponent from './ModalAddComponent';
 
 const roles = ['Market', 'Finance', 'Development'];
 const randomRole = () => {
@@ -96,13 +100,32 @@ const EditToolbar = (props) => {
 
 const FullFeaturedCrudGrid = () => {
     const [rows, setRows] = React.useState([]);
-    const [rowModesModel, setRowModesModel] = React.useState({});
+    const [rowModesModel, setRowModesModel] = useState({});
 
     const apiRef = React.useRef(null);
 
+    const style = {
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: 800,
+        bgcolor: 'background.paper',
+        border: '1px solid #000',
+        boxShadow: 24,
+        p: 4,
+    };
+
+    // Modal
+    const [open, setOpen] = React.useState(false);
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
 
     // State for storing fetched types
     const [types, setTypes] = useState([]);
+    const mapBooleanToYesNo = (boolValue) => {
+        return boolValue ? "Yes" : "No";
+    }
     useEffect(() => {
         // Fetch data from the API
         axios.get('http://20.188.123.92:82/ProcurementManagement/Planning/Filter?page=1')
@@ -110,7 +133,6 @@ const FullFeaturedCrudGrid = () => {
                 // Transform the values in the 'targetDateNeed' field into Date objects
                 const transformedRows = response.data.map(row => ({
                     ...row,
-                    recurring: row.recurring ? 'Yes' : 'No',
                     targetDateNeed: new Date(row.targetDateNeed),
                 }));
                 // Update state with transformed data
@@ -132,14 +154,11 @@ const FullFeaturedCrudGrid = () => {
             });
     }, []);
 
-
-
     const handleRowEditStop = (params, event) => {
         if (params.reason === GridRowEditStopReasons.rowFocusOut) {
             event.defaultMuiPrevented = true;
         }
     };
-
 
     const handleEditClick = (id) => () => {
         let row = apiRef.current.getRowWithUpdatedValues(id)
@@ -163,10 +182,12 @@ const FullFeaturedCrudGrid = () => {
     };
 
     const handleSaveClick = (id) => () => {
+
         console.log('selected ID', id)
 
         let row = apiRef.current.getRowWithUpdatedValues(id)
         console.log(row)
+
         const formData = {
             planningId: id,
             description: row.description,
@@ -185,17 +206,40 @@ const FullFeaturedCrudGrid = () => {
                 console.log('Update Successful:', response.data);
                 // If the update is successful, change the row mode to View mode
                 // setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
+                // apiRef.current.stopRowEditMode()
+
+                setRowModesModel( { mode: GridRowModes.View } );
             })
             .catch(error => {
                 console.error('Error update:', error);
                 // Handle errors here, such as displaying an error message to the user
-            });
+            })
         // setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
     };
 
+    const [tabVal, setTabVal] = React.useState('1');
+
+    const handleTabChange = (event, newValue) => {
+        setTabVal(newValue);
+    };
+    const [isModalOpen, setIsModalOpen] = React.useState(null);
+
+    const handleModalOpen = () => {
+        console.log('clicked')
+        setIsModalOpen(true);
+    };
+
+    const handleModalClose = () => {
+        setIsModalOpen(false);
+    };
+
+    const handleViewHistory = (id) => {
+        handleModalOpen();
+    }
+
+
+
     const handleViewClick = (id) => () => {
-        // Implement your logic here for handling the view action
-        const row = rows.find((row) => row.id === id);
         console.log('Viewing row:', row);
         // You can perform any additional actions here, such as displaying a modal with row details
     };
@@ -269,7 +313,7 @@ const FullFeaturedCrudGrid = () => {
             valueOptions: ['No', 'Yes'],
             width: 120,
             editable: true,
-            valueGetter: (params) => params.value === 'Yes'
+            valueGetter: (params) => params.value ? 'Yes' : 'No'
         },
         {
             field: 'quantity',
@@ -379,7 +423,7 @@ const FullFeaturedCrudGrid = () => {
                     <GridActionsCellItem
                         icon={<RemoveRedEyeSharpIcon />}
                         label="View"
-                        onClick={handleViewClick(id)} // Define a function to handle the view action
+                        onClick={handleModalOpen} // Define a function to handle the view action
                         color="inherit"
                     />,
                     <GridActionsCellItem
@@ -418,10 +462,10 @@ const FullFeaturedCrudGrid = () => {
                 onRowEditStop={handleRowEditStop}
                 processRowUpdate={processRowUpdate}
                 slots={{
-                    toolbar: EditToolbar, GridToolbar
+                    toolbar: EditToolbar
                 }}
                 slotProps={{
-                    toolbar: { setRows, setRowModesModel, apiRef },
+                    toolbar: { setRows, setRowModesModel },
                 }}
                 apiRef={apiRef}
                 sx={{
@@ -431,7 +475,35 @@ const FullFeaturedCrudGrid = () => {
                     bgcolor: 'white'
                 }}
             />
+
+            <Modal
+                open={isModalOpen}
+                onClose={handleModalClose}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+            >
+                <Box sx={style}>
+                    <TabContext value={tabVal} >
+                        <TabList onChange={handleTabChange} aria-label="lab API tabs example">
+                            <Tab label="Planning" value="1" />
+                            <Tab label="Execution" value="2" />
+                        </TabList>
+                        <TabPanel value="1">
+
+                        </TabPanel>
+
+                        {/* Execution Tab */}
+                        <TabPanel value="2">
+
+                        </TabPanel>
+                    </TabContext>
+
+                </Box>
+
+            </Modal>
         </Box>
+
+
     );
 }
 
