@@ -245,7 +245,7 @@ const AddButton = () => {
                                     label="Description"
                                     defaultValue=""
                                     required
-                                    value={description}
+                                    // value={description}
                                     error={descriptionError}
                                     helperText={descriptionError ? 'Description is required.' : ''}
                                 />
@@ -258,7 +258,7 @@ const AddButton = () => {
                                     label="Specs"
                                     defaultValue=""
                                     onChange={handleSpecsChange}
-                                    value={specs}
+                                    // value={specs}
                                 />
                             </Stack>
 
@@ -270,7 +270,7 @@ const AddButton = () => {
                                         <Select
                                             labelId="demo-simple-select-label"
                                             id="demo-simple-select"
-                                            value={type}
+                                            // value={type}
                                             label="Type"
                                             error={typeError}
                                             onChange={handleTypeChangeDropdown}
@@ -297,7 +297,7 @@ const AddButton = () => {
                                         <Select
                                             labelId="demo-simple-select-label"
                                             id="demo-simple-select"
-                                            value={businessUnit}
+                                            // value={businessUnit}
                                             error={businessUnitError}
                                             helperText={businessUnitError ? 'Required field.' : ''}
                                             label="Business Unit"
@@ -326,7 +326,7 @@ const AddButton = () => {
                                         placeholder='0'
                                         onChange={handleQtyChange}
                                         error={qtyError}
-                                        value={qty}
+                                        // value={qty}
                                         helperText={qtyError ? 'Quantity is required' : ''}
 
 
@@ -347,7 +347,7 @@ const AddButton = () => {
                                         placeholder='0.00'
                                         required
                                         onChange={handleTotalChange}
-                                        value={totalEstAmt}
+                                        // value={totalEstAmt}
                                     />
                                 </Stack>
                             </Stack>
@@ -361,7 +361,7 @@ const AddButton = () => {
                                         <Select
                                             labelId="demo-simple-select-label"
                                             id="demo-simple-select"
-                                            value={finDim}
+                                            // value={finDim}
                                             label="Financial Dimension"
                                             onChange={handleFinDimDropdown}
                                             fullWidth  // Add this to make the select field fullWidth
@@ -387,7 +387,7 @@ const AddButton = () => {
                                             row
                                             aria-labelledby="demo-row-radio-buttons-group-label"
                                             name="row-radio-buttons-group"
-                                            value={recurring}
+                                            // value={recurring}
                                             onChange={handleRecurringChange}
                                         >
                                             <FormControlLabel value={1} control={<Radio />} label="Yes" />

@@ -31,6 +31,7 @@ import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 import ModalAddCOmponent from './ModalAddComponent';
+import RefreshIcon from '@mui/icons-material/Refresh';
 
 const roles = ['Market', 'Finance', 'Development'];
 const randomRole = () => {
@@ -51,11 +52,25 @@ const EditToolbar = (props) => {
         }));
     };
 
-    const handleExportClick = () => {
-        apiRef.current.exportDataAsCsv();
-    };
-    const handleUploadClick = () => {
-        console.log('Upload Button Clicked')
+    const [records, setRecords] = useState([]);
+
+    const fetchUpdatedData = () => {
+        axios.get('http://20.188.123.92:82/ProcurementManagement/Planning/Filter?page=1')
+            .then(response => {
+                // Transform the values in the 'targetDateNeed' field into Date objects
+                const transformedRows = response.data.map(row => ({
+                    ...row,
+                    targetDateNeed: new Date(row.targetDateNeed),
+                }));
+                // Update state with transformed data
+                setRows(transformedRows);
+            })
+            .catch(error => {
+                setError(error); // Handle any errors
+            });
+    }
+    const handleRefreshButton = () => {
+        fetchUpdatedData();
     }
 
     return (
@@ -81,6 +96,10 @@ const EditToolbar = (props) => {
                 }} color="primary" startIcon={<ArrowUpwardIcon onClick={handleUploadClick}/>}>
                     Upload
                 </Button> */}
+
+                <Button color="primary" startIcon={<RefreshIcon />} onClick={handleRefreshButton}>
+                    Refresh
+                </Button>
 
                 <GridToolbarExport
                     csvOptions={{
@@ -126,6 +145,7 @@ const FullFeaturedCrudGrid = () => {
     const mapBooleanToYesNo = (boolValue) => {
         return boolValue ? "Yes" : "No";
     }
+
     useEffect(() => {
         // Fetch data from the API
         axios.get('http://20.188.123.92:82/ProcurementManagement/Planning/Filter?page=1')
@@ -152,6 +172,7 @@ const FullFeaturedCrudGrid = () => {
             .catch(error => {
                 console.error(error); // Handle any errors
             });
+
     }, []);
 
     const handleRowEditStop = (params, event) => {
@@ -208,7 +229,8 @@ const FullFeaturedCrudGrid = () => {
                 // setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
                 // apiRef.current.stopRowEditMode()
 
-                setRowModesModel( { mode: GridRowModes.View } );
+                setRowModesModel({ ...rowModesModel, [id]: {mode: GridRowModes.View} });
+                handleRefreshButton();
             })
             .catch(error => {
                 console.error('Error update:', error);
