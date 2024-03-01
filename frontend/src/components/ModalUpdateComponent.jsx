@@ -1,7 +1,7 @@
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
-import { Box, FormControl, InputLabel, MenuItem, Modal, Select, Stack, Tab, TextField } from '@mui/material';
+import { Box, Button, Divider, FormControl, FormControlLabel, FormLabel, InputLabel, MenuItem, Modal, Radio, RadioGroup, Select, Stack, Tab, TextField } from '@mui/material';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import BasicDatePicker from './BasicDatePicker';
@@ -14,7 +14,11 @@ const Team = [
     'ITU/ETI'
 ];
 
+// enum for FinDim
 const FinDim = ['ASD', 'ZXC', 'QWE'];
+
+// enum for Recurring
+const Recurring = [1, 0]
 const ModalUpdateComponent = (props) => {
     const [tabVal, setTabVal] = React.useState('1');
     const { open, setIsModalOpen, onClose, currentRow } = props;
@@ -29,6 +33,7 @@ const ModalUpdateComponent = (props) => {
     const [finDim, setFinDim] = useState(null);
     const [values, setValues] = useState({});
     const [date, setDate] = useState(null);
+    const [recurring, setRecurring] = useState(null);
 
 
     const handleTabChange = (event, newValue) => {
@@ -67,6 +72,37 @@ const ModalUpdateComponent = (props) => {
         console.log('Selected date:', date);
     };
 
+    const handleRecurringChange = (e) => {
+        setRecurring(e.target.value)
+    }
+
+
+
+    const handleUpdatePlanning = () => {
+        const formData = {
+            planningId: '',
+            description: description,
+            specifcation: specs,
+            type: type,
+            businessUnit: businessUnit,
+            recurring: Boolean(recurring),
+            quantity: parseInt(qty),
+            totalEstAmt: parseFloat(totalEstAmt),
+            finDim: finDim,
+            targetDateNeed: new Date().toISOString().substring(0, 10) // Format: YYYY-MM-DD
+        };
+
+        axios.post('http://20.188.123.92:82/ProcurementManagement/Planning/Update', formData)
+            .then(response => {
+                console.log('Update request successful:', response.data);
+                setIsModalOpen(false); // Close the modal after successful submission
+            })
+            .catch(error => {
+                console.error('Error adding planning:', error);
+                // Handle errors here, such as displaying an error message to the user
+            });
+    };
+
     const style = {
         position: 'absolute',
         top: '50%',
@@ -89,8 +125,8 @@ const ModalUpdateComponent = (props) => {
             setTotal(currentRow.totalEstAmt);
             setFinDim(currentRow.finDim);
             setDate(currentRow.targetDateNeed);
+            setRecurring(currentRow?.recurring);
         }
-
         fetchTypes();
     }, [currentRow]);
 
@@ -235,7 +271,7 @@ const ModalUpdateComponent = (props) => {
                                                 labelId="finDim-dropdown"
                                                 id="finDim-dropdown"
                                                 value={finDim || ''}
-                                                label="Financial Dimension"
+                                                label="Main Account"
                                                 onChange={handleFinDimDropdown}
                                                 fullWidth  // Add this to make the select field fullWidth
                                             >
@@ -252,10 +288,33 @@ const ModalUpdateComponent = (props) => {
                                     <Stack sx={{ width: '30%' }}>
                                         {/* Target Date */}
                                         <BasicDatePicker date={date} onDateChange={handleDateChange} style={{ maxWidth: '100px' }} />
-
                                     </Stack>
 
+                                    <Stack sx={{ width: '30%' }}>
+                                        {/* Recurring */}
+                                        <FormControl>
+                                            <FormLabel id="recurring-rb" required>Recurring</FormLabel>
+                                            <RadioGroup
+                                                row
+                                                aria-labelledby="demo-row-radio-buttons-group-label"
+                                                name="row-radio-buttons-group"
+                                                value={recurring || ''}
+                                                onChange={handleRecurringChange}
+                                            >
+                                                {/* {Recurring.map((recur) => {
+                                                    <FormControlLabel key={recur} value={recur} control={<Radio />} label="Yes" />
+                                                })} */}
+                                                <FormControlLabel control={<Radio checked={recurring === true} value="Yes" onChange={handleRecurringChange} />} label="Yes" />
+                                                <FormControlLabel control={<Radio checked={recurring === false} value="No" onChange={handleRecurringChange}/>} label="No" />
 
+                                            </RadioGroup>
+                                        </FormControl>
+                                    </Stack>
+                                </Stack>
+                                <Divider />
+                                <Stack direction='row' justifyContent='flex-end' marginTop={2} spacing={2}>
+                                    <Button onClick={() => setIsModalOpen(false)} variant="outlined" sx={{ width: '80px' }}>Cancel</Button>
+                                    <Button onClick={handleUpdatePlanning} variant="contained" sx={{ width: '80px', bgcolor: '#FFD23F', '&:hover': { backgroundColor: '#FFA732' } }}>Update</Button>
                                 </Stack>
 
                             </TabPanel>
