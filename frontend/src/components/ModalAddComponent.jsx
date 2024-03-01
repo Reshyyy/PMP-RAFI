@@ -19,6 +19,8 @@ import Tab from '@mui/material/Tab';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
+import BasicDatePickerExecution from './BasicDatePickerExecution';
+import ExecutionDeliveryDate from './ExecutionDeliveryDate';
 
 // Define enum for type
 const Status = {
@@ -35,12 +37,11 @@ const Team = {
 };
 
 // Define
-const FinDim = {
-    ASD: 'ASD',
-    ZXC: 'ZXC',
-    QWE: 'QWE',
-};
-const ModalAddCOmponent = () => {
+const FinDim = ['ASD', 'ZXC', 'QWE'];
+const ModalAddCOmponent = (props) => {
+    const [selectedOption, setSelectedOption] = useState([]);
+    const [types, setTypes] = useState([]);
+
     const style = {
         position: 'absolute',
         top: '50%',
@@ -54,9 +55,7 @@ const ModalAddCOmponent = () => {
     };
 
     // Modal
-    const [open, setOpen] = React.useState(false);
-    const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
+    const { open, setIsModalOpen, onClose, currentRow } = props;
 
     // Modal Type Dropdown
     const [type, setType] = React.useState('');
@@ -88,6 +87,13 @@ const ModalAddCOmponent = () => {
         setfinDim(event.target.value);
     };
 
+    // update dropdown fields - kani
+    useEffect(() => {
+        setType(currentRow?.type);
+        setBusinessUnit(currentRow?.businessUnit);
+        setfinDim(currentRow?.finDim);
+        // console.log(finDim)
+    }, [currentRow])
 
     const [description, setDescription] = useState('');
     const [descriptionError, setDescriptionError] = useState(false);
@@ -133,10 +139,18 @@ const ModalAddCOmponent = () => {
         setRecurringError(false);
     }
 
-    // State for storing fetched types
-    const [types, setTypes] = useState([]);
-    useEffect(() => {
-        // Fetch data from the API
+    const [dataToUpdate, setdataToUpdate] = useState(null)
+    const fetchData = () => {
+        axios.get('http://20.188.123.92:82/ProcurementManagement/Planning/Filter')
+            .then((res) => {
+                setdataToUpdate(res.data)
+            })
+            .catch((err) => {
+                console.error(err)
+            })
+    }
+
+    const fetchType = () => {
         axios.get('http://20.188.123.92:82/ProcurementManagement/Planning/Type')
             .then(response => {
                 // If the request is successful, extract type data from the response
@@ -147,6 +161,13 @@ const ModalAddCOmponent = () => {
             .catch(error => {
                 console.error(error); // Handle any errors
             });
+    }
+
+    // State for storing fetched types
+
+    useEffect(() => {
+        fetchData();
+        fetchType();
     }, []);
 
     const [tabVal, setTabVal] = React.useState('1');
@@ -159,16 +180,7 @@ const ModalAddCOmponent = () => {
         setStatus(e.target.value);
     }
 
-    const AddPlanning = () => {
-        // Check if any required field is empty
-        if (!description || !type || !businessUnit || !recurring) {
-            setDescriptionError(!description);
-            setType(!type);
-            setBusinessUnit(!businessUnit);
-            setRecurring(!recurring);
-            return;
-        }
-
+    const handleUpdatePlanning = () => {
         const formData = {
             planningId: '',
             description: description,
@@ -182,10 +194,10 @@ const ModalAddCOmponent = () => {
             targetDateNeed: new Date().toISOString().substring(0, 10) // Format: YYYY-MM-DD
         };
 
-        axios.post('http://20.188.123.92:82/ProcurementManagement/Planning/Save', formData)
+        axios.post('http://20.188.123.92:82/ProcurementManagement/Planning/Update', formData)
             .then(response => {
-                console.log('POST request successful:', response.data);
-                handleClose(); // Close the modal after successful submission
+                console.log('Update request successful:', response.data);
+                setIsModalOpen(false); // Close the modal after successful submission
             })
             .catch(error => {
                 console.error('Error adding planning:', error);
@@ -193,92 +205,274 @@ const ModalAddCOmponent = () => {
             });
     };
 
+    useEffect(() => {
+        if (currentRow) {
+            setDescription(currentRow.description);
+            setSpecs(currentRow.specifcation);
+        }
+    }, [currentRow]);
 
     return (
-        <Modal
-            open={isModalOpen}
-            onClose={handleModalClose}
-            aria-labelledby="modal-modal-title"
-            aria-describedby="modal-modal-description">
-            <Box sx={{ style }}>
-                <TabContext value={tabVal} >
-                    <TabList onChange={handleTabChange} aria-label="lab API tabs example">
-                        <Tab label="Planning" value="1" disabled/>
-                        <Tab label="Execution" value="2" />
-                    </TabList>
-                    <TabPanel value="1">
-                        
-                    </TabPanel>
+        <div>
+            {currentRow && (
+                <Modal
+                    open={open}
+                    onClose={onClose}
+                    aria-labelledby="modal-modal-title"
+                    aria-describedby="modal-modal-description">
+                    <Box sx={style}>
+                        <TabContext value={tabVal} >
+                            <TabList onChange={handleTabChange} aria-label="lab API tabs example">
+                                <Tab label="Planning" value="1" />
+                                <Tab label="Execution" value="2" />
+                            </TabList>
+                            <TabPanel value="1">
+                                <Stack sx={{ mb: 2 }} spacing={2}>
+                                    {/* Description */}
+                                    <TextField
+                                        sx={{ flexGrow: 1 }}
+                                        onChange={handleDescriptionChange}
+                                        fullWidth
+                                        id="outlined-required"
+                                        label="Description"
+                                        defaultValue=""
+                                        required
+                                        value={currentRow?.description}
+                                        error={descriptionError}
+                                        helperText={descriptionError ? 'Description is required.' : ''}
+                                    />
 
-                    {/* Execution Tab */}
-                    <TabPanel value="2">
-                        <Stack sx={{ width: '30%' }}>
-                            {/* Target Date */}
-                            <BasicDatePicker onDateChange={handleDateChange} style={{ maxWidth: '100px' }} required />
+                                    {/* Specs */}
+                                    <TextField
+                                        sx={{ flexGrow: 1 }}
+                                        fullWidth
+                                        id="outlined-required"
+                                        label="Specs"
+                                        defaultValue={currentRow?.specifcation}
+                                        onChange={handleSpecsChange}
+                                        value={specs}
+                                    ></TextField>
+                                </Stack>
 
-                        </Stack>
+                                <Stack sx={{ width: '100%' }} flexDirection='row' justifyContent='space-between' gap='16px'>
+                                    <Stack sx={{ width: '33%' }}>
+                                        {/* Type */}
+                                        <FormControl sx={{ mb: 2 }}>
+                                            <InputLabel id="type-dropdown" required>Type</InputLabel>
+                                            <Select
+                                                labelId="type-dropdown"
+                                                id="type-dropdown"
+                                                value={type}
+                                                label="Type"
+                                                error={typeError}
+                                                onChange={handleTypeChangeDropdown}
+                                                helperText={typeError ? 'Type is required.' : ''}
+                                                fullWidth  // Add this to make the select field fullWidth
+                                            >
+                                                {types.map((type) => (
+                                                    <MenuItem
+                                                        key={type.ID}
+                                                        value={type.Name}
+                                                    >
+                                                        {type?.Name}
+                                                    </MenuItem>
+                                                ))}
+                                            </Select>
 
-                        <Stack sx={{ mb: 2 }} spacing={2}>
-                            {/* PR # */}
-                            <TextField
-                                sx={{ flexGrow: 1 }}
-                                onChange={handleDescriptionChange}
-                                fullWidth
-                                id="outlined-required"
-                                label="PR #"
-                                defaultValue=""
-                                required
-                                value={description}
-                                error={descriptionError}
-                                helperText={descriptionError ? 'Description is required.' : ''}
-                            />
+                                        </FormControl>
+                                    </Stack>
 
-                            {/* PO # */}
-                            <TextField
-                                sx={{ flexGrow: 1 }}
-                                fullWidth
-                                id="outlined-required"
-                                label="PO #"
-                                defaultValue=""
-                                required
-                            />
-                        </Stack>
+                                    <Stack sx={{ width: '33%' }}>
+                                        {/* Business Unit */}
+                                        <FormControl sx={{ mb: 2 }}>
+                                            <InputLabel id="demo-simple-select-label" required>Business Unit</InputLabel>
+                                            <Select
+                                                labelId="demo-simple-select-label"
+                                                id="demo-simple-select"
+                                                value={businessUnit}
+                                                error={businessUnitError}
+                                                helperText={businessUnitError ? 'Required field.' : ''}
+                                                label="Business Unit"
+                                                onChange={handleBusinessUnitDropdown}
+                                                fullWidth  // Add this to make the select field fullWidth
+                                            >
+                                                <MenuItem value={Team.ITU_OPS}>ITU-OPS</MenuItem>
+                                                <MenuItem value={Team.ITU_INF}>ITU-INF</MenuItem>
+                                                <MenuItem value={Team.ITU_SEC}>ITU-SEC</MenuItem>
+                                                <MenuItem value={Team.ITU_ETI}>ITU/ETI</MenuItem>
+                                            </Select>
+                                        </FormControl>
+                                    </Stack>
 
-                        <Stack sx={{ width: '30%' }}>
-                            {/* Target Date */}
-                            <BasicDatePicker onDateChange={handleDateChange} style={{ maxWidth: '100px' }} required />
+                                    <Stack sx={{ width: '33%' }}>
+                                        {/* Quantity */}
+                                        <TextField
+                                            sx={{ mb: 2 }}
+                                            id="outlined-number"
+                                            label="Quantity"
+                                            type="number"
+                                            InputLabelProps={{
+                                                shrink: true,
+                                            }}
+                                            fullWidth  // Add this to make the text field fullWidth
+                                            placeholder='0'
+                                            onChange={handleQtyChange}
+                                            error={qtyError}
+                                            value={currentRow?.quantity}
+                                            helperText={qtyError ? 'Quantity is required' : ''}
+                                        />
+                                    </Stack>
 
-                        </Stack>
+                                    <Stack sx={{ width: '33%' }}>
+                                        {/* Total Estimated Amount */}
+                                        <TextField
+                                            sx={{ mb: 2 }}
+                                            id="outlined-number"
+                                            label="Total Estimated Amount"
+                                            type="number"
+                                            InputLabelProps={{
+                                                shrink: true,
+                                            }}
+                                            fullWidth  // Add this to make the text field fullWidth
+                                            placeholder='0.00'
+                                            required
+                                            onChange={handleTotalChange}
+                                            value={currentRow?.totalEstAmt}
+                                        />
+                                    </Stack>
+                                </Stack>
 
-                        <Stack sx={{ width: '33%' }}>
-                            {/* Status */}
-                            <FormControl sx={{ mb: 2 }}>
-                                <InputLabel id="demo-simple-select-label" required>Status</InputLabel>
-                                <Select
-                                    labelId="demo-simple-select-label"
-                                    id="demo-simple-select"
-                                    value={status}
-                                    label="Team"
-                                    onChange={handleStatusDropdown}
-                                    fullWidth  // Add this to make the select field fullWidth
-                                >
-                                    <MenuItem value={Status.delivered}>DELIVERED</MenuItem>
-                                    <MenuItem value={Status.notDelivered}>NOT DELIVERED</MenuItem>
-                                </Select>
-                            </FormControl>
-                        </Stack>
+                                <Stack sx={{ width: '100%' }} flexDirection='row' justifyContent='space-between' gap='30px'>
+                                    <Stack sx={{ width: '60%' }}>
 
-                        <Divider />
+                                        {/* Financial Dimension */}
+                                        <FormControl sx={{ mb: 2 }}>
+                                            <InputLabel id="finDim-dropdown">Main Account</InputLabel>
+                                            <Select
+                                                labelId="finDim-dropdown"
+                                                id="finDim-dropdown"
+                                                value={finDim}
+                                                label="Financial Dimension"
+                                                onChange={handleFinDimDropdown}
+                                                fullWidth  // Add this to make the select field fullWidth
+                                            >
+                                                {
+                                                    FinDim.map((option) => <MenuItem value={option}>{option}</MenuItem>)
+                                                }
+                                                {/* <MenuItem value={FinDim.ASD}>ASDASD</MenuItem>
+                                        <MenuItem value={FinDim.QWE}>QWEQWE</MenuItem>
+                                        <MenuItem value={FinDim.ZXC}>ZXCZXC</MenuItem> */}
+                                            </Select>
+                                        </FormControl>
+                                    </Stack>
 
-                        <Stack direction='row' justifyContent='flex-end' marginTop={2} spacing={2}>
-                            <Button onClick={handleClose} variant="outlined" sx={{ width: '80px' }}>Cancel</Button>
-                            <Button variant="contained" sx={{ width: '80px', bgcolor: '#FFD23F', '&:hover': { backgroundColor: '#FFA732' } }}>Update</Button>
-                        </Stack>
+                                    <Stack sx={{ width: '30%' }}>
+                                        {/* Target Date */}
+                                        <BasicDatePicker onDateChange={handleDateChange} style={{ maxWidth: '100px' }} />
 
-                    </TabPanel>
-                </TabContext>
-            </Box>
-        </Modal>
+                                    </Stack>
+
+                                    <Stack sx={{ width: '30%' }}>
+                                        {/* Recurring */}
+                                        <FormControl error={recurringError}>
+                                            <FormLabel id="demo-row-radio-buttons-group-label" required>Recurring</FormLabel>
+                                            <RadioGroup
+                                                row
+                                                aria-labelledby="demo-row-radio-buttons-group-label"
+                                                name="row-radio-buttons-group"
+                                                value={currentRow?.recurring}
+                                                onChange={handleRecurringChange}
+                                            >
+                                                <FormControlLabel value={1} control={<Radio />} label="Yes" />
+                                                <FormControlLabel value={0} control={<Radio />} label="No" />
+
+                                            </RadioGroup>
+                                        </FormControl>
+                                    </Stack>
+                                </Stack>
+
+                                <Divider />
+
+                                <Stack direction='row' justifyContent='flex-end' marginTop={2} spacing={2}>
+                                    <Button onClick={() => setIsModalOpen(false)} variant="outlined" sx={{ width: '80px' }}>Cancel</Button>
+                                    <Button onClick={handleUpdatePlanning} variant="contained" sx={{ width: '80px', bgcolor: '#FFD23F', '&:hover': { backgroundColor: '#FFA732' } }}>Update</Button>
+                                </Stack>
+                            </TabPanel>
+
+                            {/* Execution Tab */}
+                            <TabPanel value="2">
+                                <Stack justifyContent='center' alignItems='center'>
+                                    <Stack sx={{ width: '50%' }}>
+                                        {/* Target Date */}
+                                        <BasicDatePickerExecution onDateChange={handleDateChange} style={{ maxWidth: '100px' }} />
+                                    </Stack>
+
+                                    <Stack sx={{ mt: 2, width: '50%' }}>
+                                        {/* PR # */}
+                                        <TextField
+                                            sx={{ flexGrow: 1 }}
+                                            onChange={handleDescriptionChange}
+                                            fullWidth
+                                            id="outlined-required"
+                                            label="PR #"
+                                            defaultValue=""
+                                            required
+                                            value={description}
+                                            error={descriptionError}
+                                            helperText={descriptionError ? 'Description is required.' : ''}
+                                        />
+                                    </Stack>
+
+                                    <Stack sx={{ mt: 2, width: '50%' }}>
+                                        {/* PO # */}
+                                        <TextField
+                                            sx={{ flexGrow: 1 }}
+                                            fullWidth
+                                            id="outlined-required"
+                                            label="PO #"
+                                            defaultValue=""
+                                            required
+                                        />
+                                    </Stack>
+
+                                    <Stack sx={{ width: '50%', mt: 2 }}>
+                                        {/* Target Date */}
+                                        <ExecutionDeliveryDate onDateChange={handleDateChange} style={{ maxWidth: '100px' }} required />
+
+                                    </Stack>
+
+                                    <Stack width="50%" sx={{ mt: 2 }}>
+                                        {/* Status */}
+                                        <FormControl sx={{ mb: 2 }}>
+                                            <InputLabel id="demo-simple-select-label" required>Status</InputLabel>
+                                            <Select
+                                                labelId="demo-simple-select-label"
+                                                id="demo-simple-select"
+                                                value={status}
+                                                label="Team"
+                                                onChange={handleStatusDropdown}
+                                                fullWidth  // Add this to make the select field fullWidth
+                                            >
+                                                <MenuItem value={Status.delivered}>DELIVERED</MenuItem>
+                                                <MenuItem value={Status.notDelivered}>NOT DELIVERED</MenuItem>
+                                            </Select>
+                                        </FormControl>
+                                    </Stack>
+                                </Stack>
+
+                                <Divider />
+
+                                <Stack direction='row' justifyContent='flex-end' marginTop={2} spacing={2}>
+                                    <Button onClick={() => setIsModalOpen(false)} variant="outlined" sx={{ width: '80px' }}>Cancel</Button>
+                                    <Button variant="contained" sx={{ width: '80px', bgcolor: '#FFD23F', '&:hover': { backgroundColor: '#FFA732' } }}>Update</Button>
+                                </Stack>
+
+                            </TabPanel>
+                        </TabContext>
+                    </Box>
+                </Modal>
+            )}
+        </div>
 
     )
 }

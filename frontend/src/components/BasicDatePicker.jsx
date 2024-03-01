@@ -3,8 +3,9 @@ import { useState } from 'react'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import dayjs from 'dayjs';
 
-export default function BasicDatePicker({ onDateChange }) {
+export default function BasicDatePicker({ onDateChange, date }) {
   const [selectedDate, setSelectedDate] = useState(null);
 
   const handleDateChange = (date) => {
@@ -17,7 +18,7 @@ export default function BasicDatePicker({ onDateChange }) {
       <DatePicker
         label="Target Date"
         inputFormat="yyyy-MM-dd"
-        value={selectedDate}
+        value={dayjs(date || selectedDate)}
         onChange={handleDateChange}
         renderInput={(params) => <TextField {...params} />}
       />

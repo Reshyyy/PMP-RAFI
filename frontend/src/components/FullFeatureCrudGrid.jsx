@@ -32,6 +32,7 @@ import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 import ModalAddCOmponent from './ModalAddComponent';
 import RefreshIcon from '@mui/icons-material/Refresh';
+import ModalUpdateComponent from './ModalUpdateComponent';
 
 const roles = ['Market', 'Finance', 'Development'];
 const randomRole = () => {
@@ -135,32 +136,32 @@ const FullFeaturedCrudGrid = () => {
         p: 4,
     };
 
-    // Modal
-    const [open, setOpen] = React.useState(false);
-    const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
-
     // State for storing fetched types
     const [types, setTypes] = useState([]);
     const mapBooleanToYesNo = (boolValue) => {
         return boolValue ? "Yes" : "No";
     }
+    const [currentRow, setCurrentRow] = useState(null);
 
+
+    const [records, setRecords] = useState([])
     useEffect(() => {
-        // Fetch data from the API
-        axios.get('http://20.188.123.92:82/ProcurementManagement/Planning/Filter?page=1')
-            .then(response => {
-                // Transform the values in the 'targetDateNeed' field into Date objects
-                const transformedRows = response.data.map(row => ({
-                    ...row,
-                    targetDateNeed: new Date(row.targetDateNeed),
-                }));
-                // Update state with transformed data
-                setRows(transformedRows);
-            })
-            .catch(error => {
-                setError(error); // Handle any errors
-            });
+        const fetchRecords = () => {
+            axios.get('http://20.188.123.92:82/ProcurementManagement/Planning/Filter?page=1')
+                .then(response => {
+                    // Transform the values in the 'targetDateNeed' field into Date objects
+                    const transformedRows = response.data.map(row => ({
+                        ...row,
+                        targetDateNeed: new Date(row.targetDateNeed),
+                    }));
+                    // Update state with transformed data
+                    setRows(transformedRows);
+                })
+                .catch(error => {
+                    setError(error); // Handle any errors
+                });
+        }
+        fetchRecords();
 
         axios.get('http://20.188.123.92:82/ProcurementManagement/Planning/Type')
             .then(response => {
@@ -181,9 +182,30 @@ const FullFeaturedCrudGrid = () => {
         }
     };
 
+    const [dataToUpdate, setDataToUpdate] = useState(null)
+    const fetchData = () => {
+        axios.get('http://20.188.123.92:82/ProcurementManagement/Planning/Filter')
+            .then((res) => {
+                setDataToUpdate(res.data)
+                console.log('fetched data', dataToUpdate)
+            })
+            .catch((err) => {
+                console.error(err)
+            })
+    }
+
+    useEffect(() => {
+        fetchData()
+    }, [])
+
     const handleEditClick = (id) => () => {
+
+        setIsModalOpen(true);
+        fetchData();
+
+
         let row = apiRef.current.getRowWithUpdatedValues(id)
-        console.log(row);
+        setCurrentRow(row);
 
         console.log('Selected ID', id)
         axios.get('http://20.188.123.92:82/ProcurementManagement/Planning/Type')
@@ -192,14 +214,14 @@ const FullFeaturedCrudGrid = () => {
                 const fetchedTypes = response.data;
                 // Set the fetched types to the state
                 setTypes(fetchedTypes);
-                console.log(fetchedTypes)
+                console.log('fetched types', fetchedTypes)
             })
             .catch(error => {
                 console.error(error); // Handle any errors
             });
 
         // Update the row mode to Edit mode
-        setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
+        // setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
     };
 
     const handleSaveClick = (id) => () => {
@@ -225,12 +247,8 @@ const FullFeaturedCrudGrid = () => {
         axios.put('http://20.188.123.92:82/ProcurementManagement/Planning/Update', formData)
             .then(response => {
                 console.log('Update Successful:', response.data);
-                // If the update is successful, change the row mode to View mode
-                // setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
-                // apiRef.current.stopRowEditMode()
-
-                setRowModesModel({ ...rowModesModel, [id]: {mode: GridRowModes.View} });
-                handleRefreshButton();
+                // Set the row mode to View mode for the edited row
+                setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
             })
             .catch(error => {
                 console.error('Error update:', error);
@@ -239,12 +257,13 @@ const FullFeaturedCrudGrid = () => {
         // setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
     };
 
-    const [tabVal, setTabVal] = React.useState('1');
+    const [tabVal, setTabVal] = React.useState('2');
 
     const handleTabChange = (event, newValue) => {
         setTabVal(newValue);
     };
-    const [isModalOpen, setIsModalOpen] = React.useState(null);
+
+    const [isModalOpen, setIsModalOpen] = React.useState(false);
 
     const handleModalOpen = () => {
         console.log('clicked')
@@ -256,7 +275,7 @@ const FullFeaturedCrudGrid = () => {
     };
 
     const handleViewHistory = (id) => {
-        handleModalOpen();
+        isModalOpen(true)
     }
 
 
@@ -301,14 +320,14 @@ const FullFeaturedCrudGrid = () => {
     };
 
     const columns = [
-        { field: 'description', headerName: 'Description', width: 200, editable: true },
+        { field: 'description', headerName: 'Description', width: 200, editable: false },
         {
             field: 'specifcation',
             headerName: 'Specs',
             width: 150,
             align: 'left',
             headerAlign: 'left',
-            editable: true,
+            editable: false,
         },
         {
             field: 'type',
@@ -318,7 +337,7 @@ const FullFeaturedCrudGrid = () => {
                 return type.Name
             }),
             width: 120,
-            editable: true,
+            editable: false,
         },
         {
             field: 'businessUnit',
@@ -326,7 +345,7 @@ const FullFeaturedCrudGrid = () => {
             type: 'singleSelect',
             valueOptions: ['ASD', 'QWE', 'ZXC'],
             width: 120,
-            editable: true,
+            editable: false,
         },
         {
             field: 'recurring',
@@ -334,7 +353,7 @@ const FullFeaturedCrudGrid = () => {
             type: 'singleSelect',
             valueOptions: ['No', 'Yes'],
             width: 120,
-            editable: true,
+            editable: false,
             valueGetter: (params) => params.value ? 'Yes' : 'No'
         },
         {
@@ -344,7 +363,7 @@ const FullFeaturedCrudGrid = () => {
             width: 100,
             align: 'left',
             headerAlign: 'left',
-            editable: true,
+            editable: false,
         },
         {
             field: 'totalEstAmt',
@@ -353,7 +372,7 @@ const FullFeaturedCrudGrid = () => {
             width: 150,
             align: 'left',
             headerAlign: 'left',
-            editable: true,
+            editable: false,
         },
         {
             field: 'finDim',
@@ -361,50 +380,15 @@ const FullFeaturedCrudGrid = () => {
             width: 150,
             align: 'left',
             headerAlign: 'left',
-            editable: true,
+            editable: false,
         },
         {
             field: 'targetDateNeed',
             headerName: 'Target Date',
             type: 'date',
             width: 120,
-            editable: true,
+            editable: false,
         },
-        // {
-        //     field: 'dateOfRequest',
-        //     headerName: 'Date of Request',
-        //     type: 'date',
-        //     width: 130,
-        //     editable: true,
-        // },
-        // {
-        //     field: 'PR',
-        //     headerName: 'PR #',
-        //     type: 'text',
-        //     width: 100,
-        //     editable: true,
-        // },
-        // {
-        //     field: 'PO',
-        //     headerName: 'PO #',
-        //     type: 'text',
-        //     width: 100,
-        //     editable: true,
-        // },
-        // {
-        //     field: 'deliveryDate',
-        //     headerName: 'Delivery Date',
-        //     type: 'date',
-        //     width: 120,
-        //     editable: true,
-        // },
-        // {
-        //     field: 'status',
-        //     headerName: 'Status',
-        //     type: 'text',
-        //     width: 80,
-        //     editable: true,
-        // },
         {
             field: 'actions',
             type: 'actions',
@@ -445,7 +429,7 @@ const FullFeaturedCrudGrid = () => {
                     <GridActionsCellItem
                         icon={<RemoveRedEyeSharpIcon />}
                         label="View"
-                        onClick={handleModalOpen} // Define a function to handle the view action
+                        onClick={handleViewClick(id)} // Define a function to handle the view action
                         color="inherit"
                     />,
                     <GridActionsCellItem
@@ -498,31 +482,9 @@ const FullFeaturedCrudGrid = () => {
                 }}
             />
 
-            <Modal
-                open={isModalOpen}
-                onClose={handleModalClose}
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
-            >
-                <Box sx={style}>
-                    <TabContext value={tabVal} >
-                        <TabList onChange={handleTabChange} aria-label="lab API tabs example">
-                            <Tab label="Planning" value="1" />
-                            <Tab label="Execution" value="2" />
-                        </TabList>
-                        <TabPanel value="1">
 
-                        </TabPanel>
-
-                        {/* Execution Tab */}
-                        <TabPanel value="2">
-
-                        </TabPanel>
-                    </TabContext>
-
-                </Box>
-
-            </Modal>
+            {/* <ModalAddCOmponent open={isModalOpen} setIsModalOpen={setIsModalOpen} onClose={handleModalClose} currentRow={currentRow} /> */}
+            <ModalUpdateComponent open={isModalOpen} setIsModalOpen={setIsModalOpen} onClose={handleModalClose} currentRow={currentRow} />
         </Box>
 
 
