@@ -45,6 +45,26 @@ const FinDim = {
 };
 
 const AddButton = () => {
+    const [open, setOpen] = React.useState(false);
+    const [type, setType] = React.useState('');
+    const [typeError, setTypeError] = useState(false);
+    const [businessUnit, setBusinessUnit] = React.useState('');
+    const [businessUnitError, setbusinessUnitError] = useState(false);
+    const [finDim, setfinDim] = React.useState('');
+    const [specs, setSpecs] = useState('');
+    const [description, setDescription] = useState('');
+    const [descriptionError, setDescriptionError] = useState(false);
+    const [totalEstAmt, setTotalEstAmt] = useState(0);
+    const [qty, setQty] = React.useState(0);
+    const [qtyError, setQtyError] = useState(false);
+    const [recurring, setRecurring] = useState(null);
+    const [recurringError, setRecurringError] = useState(false);
+    const [types, setTypes] = useState([]);
+    const [tabVal, setTabVal] = React.useState('1');
+    const [status, setStatus] = useState('')
+    const [targetDateNeed, setTargetDateNeed] = useState('')
+    const [pr, setPR] = useState(null);
+    
 
     const style = {
         position: 'absolute',
@@ -59,13 +79,10 @@ const AddButton = () => {
     };
 
     // Modal
-    const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
     // Modal Type Dropdown
-    const [type, setType] = React.useState('');
-    const [typeError, setTypeError] = useState(false);
     const handleTypeChangeDropdown = (event) => {
         setType(event.target.value);
         // if (event.target.validity.valid) {
@@ -76,8 +93,6 @@ const AddButton = () => {
     };
 
     // Modal Team Dropdown
-    const [businessUnit, setBusinessUnit] = React.useState('');
-    const [businessUnitError, setbusinessUnitError] = useState(false);
     const handleBusinessUnitDropdown = (event) => {
         setBusinessUnit(event.target.value);
         // if (event.target.validity.valid) {
@@ -88,14 +103,11 @@ const AddButton = () => {
     };
 
     // Modal FinDim Dropdown
-    const [finDim, setfinDim] = React.useState('');
     const handleFinDimDropdown = (event) => {
         setfinDim(event.target.value);
     };
 
 
-    const [description, setDescription] = useState('');
-    const [descriptionError, setDescriptionError] = useState(false);
     const handleDescriptionChange = (e) => {
         setDescription(e.target.value);
         if (e.target.validity.valid) {
@@ -104,19 +116,19 @@ const AddButton = () => {
             setDescriptionError(true);
         }
     }
-
-    const [specs, setSpecs] = useState('');
+    
     const handleSpecsChange = (e) => {
         setSpecs(e.target.value);
     }
-
-    const [totalEstAmt, setTotalEstAmt] = useState(0);
+    
+    const handlePRChange = (e) => {
+        setPR(e.target.value)
+    }
+    
     const handleTotalChange = (e) => {
         setTotalEstAmt(e.target.value);
     }
 
-    const [qty, setQty] = React.useState(0);
-    const [qtyError, setQtyError] = useState(false);
     const handleQtyChange = (e) => {
         setQty(e.target.value);
         if (e.target.validity.valid) {
@@ -128,10 +140,9 @@ const AddButton = () => {
 
     const handleDateChange = (date) => {
         console.log('Selected date:', date);
+        setTargetDateNeed(date)
     };
 
-    const [recurring, setRecurring] = useState(null);
-    const [recurringError, setRecurringError] = useState(false);
 
     const handleRecurringChange = (event) => {
         setRecurring(event.target.value);
@@ -139,7 +150,6 @@ const AddButton = () => {
     }
 
     // State for storing fetched types
-    const [types, setTypes] = useState([]);
     useEffect(() => {
         // Fetch data from the API
         axios.get('http://20.188.123.92:82/ProcurementManagement/Planning/Type')
@@ -154,19 +164,17 @@ const AddButton = () => {
             });
     }, []);
 
-    const [tabVal, setTabVal] = React.useState('1');
     const handleTabChange = (event, newValue) => {
         setTabVal(newValue);
     };
 
-    const [status, setStatus] = useState('')
     const handleStatusDropdown = (e) => {
         setStatus(e.target.value);
     }
 
     const AddPlanning = () => {
         // Check if any required field is empty
-        if (!description || !type || !businessUnit || !recurring) {
+        if (!description || !type || !businessUnit || !recurring === null) {
             setDescriptionError(!description);
             setType(!type);
             setBusinessUnit(!businessUnit);
@@ -180,11 +188,11 @@ const AddButton = () => {
             specifcation: specs,
             type: type,
             businessUnit: businessUnit,
-            recurring: Boolean(recurring),
+            recurring: recurring === 1,
             quantity: parseInt(qty),
             totalEstAmt: parseFloat(totalEstAmt),
             finDim: finDim,
-            targetDateNeed: new Date().toISOString().substring(0, 10) // Format: YYYY-MM-DD
+            targetDateNeed: targetDateNeed.toISOString().substring(0, 10) // Format: YYYY-MM-DD
         };
 
         axios.post('http://20.188.123.92:82/ProcurementManagement/Planning/Save', formData)
@@ -197,6 +205,10 @@ const AddButton = () => {
                 // Handle errors here, such as displaying an error message to the user
             });
     };
+
+    useEffect(() => {
+        console.log(recurring)
+    }, [recurring])
 
     return (
         <>
@@ -258,7 +270,7 @@ const AddButton = () => {
                                     label="Specs"
                                     defaultValue=""
                                     onChange={handleSpecsChange}
-                                    // value={specs}
+                                // value={specs}
                                 />
                             </Stack>
 
@@ -347,7 +359,7 @@ const AddButton = () => {
                                         placeholder='0.00'
                                         required
                                         onChange={handleTotalChange}
-                                        // value={totalEstAmt}
+                                    // value={totalEstAmt}
                                     />
                                 </Stack>
                             </Stack>
@@ -387,7 +399,7 @@ const AddButton = () => {
                                             row
                                             aria-labelledby="demo-row-radio-buttons-group-label"
                                             name="row-radio-buttons-group"
-                                            // value={recurring}
+                                            // value={recurring ? "10" : "20"}
                                             onChange={handleRecurringChange}
                                         >
                                             <FormControlLabel value={1} control={<Radio />} label="Yes" />
@@ -409,28 +421,25 @@ const AddButton = () => {
                         {/* Execution Tab */}
                         <TabPanel value="2">
                             <Stack justifyContent='center' alignItems='center'>
-                                <Stack sx={{width: '50%'}}>
+                                <Stack sx={{ width: '50%' }}>
                                     {/* Target Date */}
                                     <BasicDatePickerExecution onDateChange={handleDateChange} style={{ maxWidth: '100px' }} />
                                 </Stack>
 
-                                <Stack sx={{mt: 2, width: '50%'}}>
+                                <Stack sx={{ mt: 2, width: '50%' }}>
                                     {/* PR # */}
                                     <TextField
                                         sx={{ flexGrow: 1 }}
-                                        onChange={handleDescriptionChange}
+                                        onChange={handlePRChange}
                                         fullWidth
                                         id="outlined-required"
                                         label="PR #"
                                         defaultValue=""
                                         required
-                                        value={description}
-                                        error={descriptionError}
-                                        helperText={descriptionError ? 'Description is required.' : ''}
                                     />
                                 </Stack>
 
-                                <Stack sx={{mt: 2, width: '50%'}}>
+                                <Stack sx={{ mt: 2, width: '50%' }}>
                                     {/* PO # */}
                                     <TextField
                                         sx={{ flexGrow: 1 }}

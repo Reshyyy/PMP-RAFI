@@ -5,6 +5,7 @@ import { Box, Button, Divider, FormControl, FormControlLabel, FormLabel, InputLa
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import BasicDatePicker from './BasicDatePicker';
+import BasicDatePickerUpdate from './BasicDatePickerUpdate';
 
 // Define enum for team
 const Team = [
@@ -29,9 +30,8 @@ const ModalUpdateComponent = (props) => {
     const [businessUnit, setBusinessUnit] = useState(null);
     const [bUnit, setBUnit] = useState([]);
     const [qty, setQty] = useState(0);
-    const [total, setTotal] = useState(0.00);
+    const [totalEstAmt, setTotalEstAmt] = useState(0.00);
     const [finDim, setFinDim] = useState(null);
-    const [values, setValues] = useState({});
     const [date, setDate] = useState(null);
     const [recurring, setRecurring] = useState(null);
 
@@ -61,7 +61,7 @@ const ModalUpdateComponent = (props) => {
     }
 
     const handleTotalChange = (e) => {
-        setTotal(e.target.value);
+        setTotalEstAmt(e.target.value);
     }
 
     const handleFinDimDropdown = (e) => {
@@ -77,10 +77,49 @@ const ModalUpdateComponent = (props) => {
     }
 
 
+    const style = {
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: 800,
+        bgcolor: 'background.paper',
+        border: '1px solid #000',
+        boxShadow: 24,
+        p: 4,
+    };
+
+    useEffect(() => {
+        if (currentRow) {
+            setDescription(currentRow.description);
+            setSpecs(currentRow.specifcation);
+            setType(currentRow.type);
+            setBusinessUnit(currentRow.businessUnit);
+            setQty(currentRow.quantity);
+            setTotalEstAmt(currentRow.totalEstAmt);
+            setFinDim(currentRow.finDim);
+            setDate(currentRow.targetDateNeed);
+            setRecurring(currentRow?.recurring);
+        }
+        fetchTypes();
+    }, [currentRow]);
+
+    const fetchTypes = () => {
+        axios.get('http://20.188.123.92:82/ProcurementManagement/Planning/Type')
+            .then(response => {
+                // If the request is successful, extract type data from the response
+                const fetchedTypes = response.data;
+                // Set the fetched types to the state
+                setTypes(fetchedTypes);
+            })
+            .catch(error => {
+                console.error(error); // Handle any errors
+            });
+    }
 
     const handleUpdatePlanning = () => {
         const formData = {
-            planningId: '',
+            planningId: id,
             description: description,
             specifcation: specs,
             type: type,
@@ -102,46 +141,6 @@ const ModalUpdateComponent = (props) => {
                 // Handle errors here, such as displaying an error message to the user
             });
     };
-
-    const style = {
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        width: 800,
-        bgcolor: 'background.paper',
-        border: '1px solid #000',
-        boxShadow: 24,
-        p: 4,
-    };
-
-    useEffect(() => {
-        if (currentRow) {
-            setDescription(currentRow.description);
-            setSpecs(currentRow.specifcation);
-            setType(currentRow.type);
-            setBusinessUnit(currentRow.businessUnit);
-            setQty(currentRow.quantity);
-            setTotal(currentRow.totalEstAmt);
-            setFinDim(currentRow.finDim);
-            setDate(currentRow.targetDateNeed);
-            setRecurring(currentRow?.recurring);
-        }
-        fetchTypes();
-    }, [currentRow]);
-
-    const fetchTypes = () => {
-        axios.get('http://20.188.123.92:82/ProcurementManagement/Planning/Type')
-            .then(response => {
-                // If the request is successful, extract type data from the response
-                const fetchedTypes = response.data;
-                // Set the fetched types to the state
-                setTypes(fetchedTypes);
-            })
-            .catch(error => {
-                console.error(error); // Handle any errors
-            });
-    }
 
 
     return (
@@ -256,7 +255,7 @@ const ModalUpdateComponent = (props) => {
                                             placeholder='0.00'
                                             required
                                             onChange={handleTotalChange}
-                                            value={total || ''}
+                                            value={totalEstAmt || ''}
                                         />
                                     </Stack>
                                 </Stack>
@@ -287,7 +286,7 @@ const ModalUpdateComponent = (props) => {
 
                                     <Stack sx={{ width: '30%' }}>
                                         {/* Target Date */}
-                                        <BasicDatePicker date={date} onDateChange={handleDateChange} style={{ maxWidth: '100px' }} />
+                                        <BasicDatePickerUpdate date={date} onDateChange={handleDateChange} style={{ maxWidth: '100px' }} />
                                     </Stack>
 
                                     <Stack sx={{ width: '30%' }}>
@@ -304,8 +303,10 @@ const ModalUpdateComponent = (props) => {
                                                 {/* {Recurring.map((recur) => {
                                                     <FormControlLabel key={recur} value={recur} control={<Radio />} label="Yes" />
                                                 })} */}
-                                                <FormControlLabel control={<Radio checked={recurring === true} value="Yes" onChange={handleRecurringChange} />} label="Yes" />
-                                                <FormControlLabel control={<Radio checked={recurring === false} value="No" onChange={handleRecurringChange}/>} label="No" />
+                                                <FormControlLabel control={<Radio value={true} />} label="Yes" />
+                                                <FormControlLabel control={<Radio value={false} />} label="No" />
+                                                {/* <FormControlLabel control={<Radio checked={recurring === true} value={recurring} onChange={handleRecurringChange} />} label="Yes" />
+                                                <FormControlLabel control={<Radio checked={recurring === false} value={recurring} onChange={handleRecurringChange} />} label="No" /> */}
 
                                             </RadioGroup>
                                         </FormControl>
