@@ -33,6 +33,7 @@ const ModalUpdateComponent = (props) => {
     const [totalEstAmt, setTotalEstAmt] = useState(0.00);
     const [finDim, setFinDim] = useState(null);
     const [date, setDate] = useState(null);
+    const [targetDateUpdate, setTargetDateUpdate] = useState(null);
     const [recurring, setRecurring] = useState(null);
 
 
@@ -91,6 +92,7 @@ const ModalUpdateComponent = (props) => {
 
     useEffect(() => {
         if (currentRow) {
+            console.log('selected ID', currentRow.planningId)
             setDescription(currentRow.description);
             setSpecs(currentRow.specifcation);
             setType(currentRow.type);
@@ -118,8 +120,9 @@ const ModalUpdateComponent = (props) => {
     }
 
     const handleUpdatePlanning = () => {
+
         const formData = {
-            planningId: id,
+            planningId: currentRow.planningId,
             description: description,
             specifcation: specs,
             type: type,
@@ -128,7 +131,7 @@ const ModalUpdateComponent = (props) => {
             quantity: parseInt(qty),
             totalEstAmt: parseFloat(totalEstAmt),
             finDim: finDim,
-            targetDateNeed: new Date().toISOString().substring(0, 10) // Format: YYYY-MM-DD
+            targetDateNeed: targetDateUpdate.toISOString().substring(0, 10) // Format: YYYY-MM-DD
         };
 
         axios.post('http://20.188.123.92:82/ProcurementManagement/Planning/Update', formData)
@@ -141,6 +144,7 @@ const ModalUpdateComponent = (props) => {
                 // Handle errors here, such as displaying an error message to the user
             });
     };
+
 
 
     return (
@@ -305,8 +309,6 @@ const ModalUpdateComponent = (props) => {
                                                 })} */}
                                                 <FormControlLabel control={<Radio value={true} />} label="Yes" />
                                                 <FormControlLabel control={<Radio value={false} />} label="No" />
-                                                {/* <FormControlLabel control={<Radio checked={recurring === true} value={recurring} onChange={handleRecurringChange} />} label="Yes" />
-                                                <FormControlLabel control={<Radio checked={recurring === false} value={recurring} onChange={handleRecurringChange} />} label="No" /> */}
 
                                             </RadioGroup>
                                         </FormControl>
