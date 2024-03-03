@@ -123,6 +123,10 @@ const EditToolbar = (props) => {
 const FullFeaturedCrudGrid = () => {
     const [rows, setRows] = React.useState([]);
     const [rowModesModel, setRowModesModel] = useState({});
+    const [page, setPage] = useState(1);
+    const [pageSize, setPageSize] = useState(10);
+
+
 
     const apiRef = React.useRef(null);
 
@@ -147,24 +151,8 @@ const FullFeaturedCrudGrid = () => {
 
 
     const [records, setRecords] = useState([])
-    useEffect(() => {
-        const fetchRecords = () => {
-            axios.get('http://20.188.123.92:82/ProcurementManagement/Planning/Filter?page=1')
-                .then(response => {
-                    // Transform the values in the 'targetDateNeed' field into Date objects
-                    const transformedRows = response.data.map(row => ({
-                        ...row,
-                        targetDateNeed: new Date(row.targetDateNeed),
-                    }));
-                    // Update state with transformed data
-                    setRows(transformedRows);
-                })
-                .catch(error => {
-                    setError(error); // Handle any errors
-                });
-        }
-        fetchRecords();
 
+    const fetchTypes = () => {
         axios.get('http://20.188.123.92:82/ProcurementManagement/Planning/Type')
             .then(response => {
                 // If the request is successful, extract type data from the response
@@ -175,8 +163,28 @@ const FullFeaturedCrudGrid = () => {
             .catch(error => {
                 console.error(error); // Handle any errors
             });
+    }
 
-    }, []);
+    const fetchRecords = () => {
+        axios.get('http://20.188.123.92:82/ProcurementManagement/Planning/Filter?page=1')
+            .then(response => {
+                // Transform the values in the 'targetDateNeed' field into Date objects
+                const transformedRows = response.data.map(row => ({
+                    ...row,
+                    targetDateNeed: new Date(row.targetDateNeed),
+                }));
+                // Update state with transformed data
+                setRows(transformedRows);
+            })
+            .catch(error => {
+                console.error(error); // Handle any errors
+            });
+    }
+
+    useEffect(() => {
+        fetchRecords();
+        fetchTypes();
+    }, [page, pageSize]);
 
     const handleRowEditStop = (params, event) => {
         if (params.reason === GridRowEditStopReasons.rowFocusOut) {
@@ -185,6 +193,7 @@ const FullFeaturedCrudGrid = () => {
     };
 
     const [dataToUpdate, setDataToUpdate] = useState(null)
+    const [totalRows, setTotalRows] = useState(0);
     const fetchData = () => {
         axios.get('http://20.188.123.92:82/ProcurementManagement/Planning/Filter')
             .then((res) => {
@@ -198,9 +207,9 @@ const FullFeaturedCrudGrid = () => {
 
     useEffect(() => {
         fetchData()
-    }, [])
+    }, [page, pageSize])
 
-    
+
 
     const handleEditClick = (id) => () => {
         setIsModalOpen(true);
@@ -292,6 +301,14 @@ const FullFeaturedCrudGrid = () => {
         // You can perform any additional actions here, such as displaying a modal with row details
     };
 
+    const handlePageChange = (newPage) => {
+        setPage(newPage);
+    };
+
+    const handlePageSizeChange = (newPageSize) => {
+        setPageSize(newPageSize);
+    };
+
     const handleDeleteClick = (id) => () => {
         console.log('Deleted Data with ID', id)
         axios.delete(`http://20.188.123.92:82/ProcurementManagement/Planning/Cancel/${id}`)
@@ -325,6 +342,8 @@ const FullFeaturedCrudGrid = () => {
     const handleRowModesModelChange = (newRowModesModel) => {
         setRowModesModel(newRowModesModel);
     };
+
+
 
     const columns = [
         { field: 'description', headerName: 'Description', width: 200, editable: false },
@@ -453,7 +472,7 @@ const FullFeaturedCrudGrid = () => {
     return (
         <Box
             sx={{
-                height: 500,
+                height: 435,
                 width: '100%',
                 '& .actions': {
                     color: 'text.secondary',
@@ -487,7 +506,10 @@ const FullFeaturedCrudGrid = () => {
                     },
                     bgcolor: 'white'
                 }}
+                pagination
+                paginationMode="client"
                 autoPageSize
+                keepNonExistentRowsSelected
             />
 
 
