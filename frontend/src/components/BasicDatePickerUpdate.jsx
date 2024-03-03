@@ -10,7 +10,9 @@ export default function BasicDatePickerUpdate({ onDateChange, date }) {
 
   const handleDateChange = (date) => {
     setSelectedDate(date)
-    onDateChange(date);
+    if (onDateChange) {
+      onDateChange(date);
+    }
   }
 
   return (

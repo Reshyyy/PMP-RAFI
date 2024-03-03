@@ -34,7 +34,7 @@ const ModalUpdateComponent = (props) => {
     const [finDim, setFinDim] = useState(null);
     const [date, setDate] = useState(null);
     const [targetDateUpdate, setTargetDateUpdate] = useState(null);
-    const [recurring, setRecurring] = useState(null);
+    const [recurring, setRecurring] = useState(0);
 
 
     const handleTabChange = (event, newValue) => {
@@ -71,10 +71,13 @@ const ModalUpdateComponent = (props) => {
 
     const handleDateChange = (date) => {
         console.log('Selected date:', date);
+        setTargetDateUpdate(date)
     };
 
     const handleRecurringChange = (e) => {
-        setRecurring(e.target.value)
+        const value = e.target.value === "1" ? true : false;
+        setRecurring(value);
+        console.log(value)
     }
 
 
@@ -101,7 +104,7 @@ const ModalUpdateComponent = (props) => {
             setTotalEstAmt(currentRow.totalEstAmt);
             setFinDim(currentRow.finDim);
             setDate(currentRow.targetDateNeed);
-            setRecurring(currentRow?.recurring);
+            setRecurring(currentRow.recurring);
         }
         fetchTypes();
     }, [currentRow]);
@@ -134,13 +137,13 @@ const ModalUpdateComponent = (props) => {
             targetDateNeed: targetDateUpdate.toISOString().substring(0, 10) // Format: YYYY-MM-DD
         };
 
-        axios.post('http://20.188.123.92:82/ProcurementManagement/Planning/Update', formData)
+        axios.put('http://20.188.123.92:82/ProcurementManagement/Planning/Update', formData)
             .then(response => {
                 console.log('Update request successful:', response.data);
                 setIsModalOpen(false); // Close the modal after successful submission
             })
             .catch(error => {
-                console.error('Error adding planning:', error);
+                console.error('Error update planning:', error);
                 // Handle errors here, such as displaying an error message to the user
             });
     };
@@ -159,7 +162,7 @@ const ModalUpdateComponent = (props) => {
                         <TabContext value={tabVal} >
                             <TabList onChange={handleTabChange} aria-label="lab API tabs example">
                                 <Tab label="Planning" value="1" />
-                                <Tab label="Execution" value="2" />
+                                <Tab label="Execution" value="2" disabled/>
                             </TabList>
                             <TabPanel value="1">
                                 <Stack sx={{ mb: 2 }} spacing={2}>
@@ -301,15 +304,14 @@ const ModalUpdateComponent = (props) => {
                                                 row
                                                 aria-labelledby="demo-row-radio-buttons-group-label"
                                                 name="row-radio-buttons-group"
-                                                value={recurring || ''}
+                                                // value={recurring || ''}
                                                 onChange={handleRecurringChange}
                                             >
                                                 {/* {Recurring.map((recur) => {
                                                     <FormControlLabel key={recur} value={recur} control={<Radio />} label="Yes" />
                                                 })} */}
-                                                <FormControlLabel control={<Radio value={true} />} label="Yes" />
-                                                <FormControlLabel control={<Radio value={false} />} label="No" />
-
+                                                <FormControlLabel control={<Radio value={1} />} label="Yes" />
+                                                <FormControlLabel control={<Radio value={0} />} label="No" />
                                             </RadioGroup>
                                         </FormControl>
                                     </Stack>
@@ -319,6 +321,10 @@ const ModalUpdateComponent = (props) => {
                                     <Button onClick={() => setIsModalOpen(false)} variant="outlined" sx={{ width: '80px' }}>Cancel</Button>
                                     <Button onClick={handleUpdatePlanning} variant="contained" sx={{ width: '80px', bgcolor: '#FFD23F', '&:hover': { backgroundColor: '#FFA732' } }}>Update</Button>
                                 </Stack>
+
+                            </TabPanel>
+
+                            <TabPanel value="2">
 
                             </TabPanel>
                         </TabContext>

@@ -33,6 +33,7 @@ import TabPanel from '@mui/lab/TabPanel';
 import ModalAddCOmponent from './ModalAddComponent';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import ModalUpdateComponent from './ModalUpdateComponent';
+import ModalViewHistoryComponent from './ModalViewHistoryComponent';
 
 const roles = ['Market', 'Finance', 'Development'];
 const randomRole = () => {
@@ -198,11 +199,11 @@ const FullFeaturedCrudGrid = () => {
         fetchData()
     }, [])
 
-    const handleEditClick = (id) => () => {
+    
 
+    const handleEditClick = (id) => () => {
         setIsModalOpen(true);
         fetchData();
-
 
         let row = apiRef.current.getRowWithUpdatedValues(id)
         setCurrentRow(row);
@@ -264,6 +265,16 @@ const FullFeaturedCrudGrid = () => {
     };
 
     const [isModalOpen, setIsModalOpen] = React.useState(false);
+    const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+
+    const handleViewModalOpen = () => {
+        console.log('clicked')
+        setIsViewModalOpen(true);
+    };
+
+    const handleViewModalClose = () => {
+        setIsViewModalOpen(false);
+    }
 
     const handleModalOpen = () => {
         console.log('clicked')
@@ -274,14 +285,11 @@ const FullFeaturedCrudGrid = () => {
         setIsModalOpen(false);
     };
 
-    const handleViewHistory = (id) => {
-        isModalOpen(true)
-    }
-
-
+    
 
     const handleViewClick = (id) => () => {
-        console.log('Viewing row:', row);
+        console.log('Viewing row:');
+        setIsViewModalOpen(true);
         // You can perform any additional actions here, such as displaying a modal with row details
     };
 
@@ -429,7 +437,7 @@ const FullFeaturedCrudGrid = () => {
                     <GridActionsCellItem
                         icon={<RemoveRedEyeSharpIcon />}
                         label="View"
-                        onClick={handleViewClick(id)} // Define a function to handle the view action
+                        onClick={handleViewClick(id)}
                         color="inherit"
                     />,
                     <GridActionsCellItem
@@ -485,6 +493,7 @@ const FullFeaturedCrudGrid = () => {
 
             {/* <ModalAddCOmponent open={isModalOpen} setIsModalOpen={setIsModalOpen} onClose={handleModalClose} currentRow={currentRow} /> */}
             <ModalUpdateComponent open={isModalOpen} setIsModalOpen={setIsModalOpen} onClose={handleModalClose} currentRow={currentRow} />
+            <ModalViewHistoryComponent open={isViewModalOpen} setIsViewModalOpen={setIsViewModalOpen} onClose={handleViewModalClose} />
         </Box>
 
 
