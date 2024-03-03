@@ -75,6 +75,7 @@ const EditToolbar = (props) => {
         fetchUpdatedData();
     }
 
+
     return (
         <Stack flexDirection='row'>
             <GridToolbarContainer>
@@ -285,8 +286,6 @@ const FullFeaturedCrudGrid = () => {
         setIsModalOpen(false);
     };
 
-    
-
     const handleViewClick = (id) => () => {
         console.log('Viewing row:');
         setIsViewModalOpen(true);
@@ -488,6 +487,7 @@ const FullFeaturedCrudGrid = () => {
                     },
                     bgcolor: 'white'
                 }}
+                autoPageSize
             />
 
 

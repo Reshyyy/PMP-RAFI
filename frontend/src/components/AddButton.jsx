@@ -64,7 +64,7 @@ const AddButton = () => {
     const [status, setStatus] = useState('')
     const [targetDateNeed, setTargetDateNeed] = useState('')
     const [pr, setPR] = useState(null);
-    
+
 
     const style = {
         position: 'absolute',
@@ -116,15 +116,15 @@ const AddButton = () => {
             setDescriptionError(true);
         }
     }
-    
+
     const handleSpecsChange = (e) => {
         setSpecs(e.target.value);
     }
-    
+
     const handlePRChange = (e) => {
         setPR(e.target.value)
     }
-    
+
     const handleTotalChange = (e) => {
         setTotalEstAmt(e.target.value);
     }
@@ -172,7 +172,7 @@ const AddButton = () => {
         setStatus(e.target.value);
     }
 
-    const AddPlanning = () => {
+    const AddPlanning = ({ onRefresh }) => {
         // Check if any required field is empty
         if (!description || !type || !businessUnit || !recurring === null) {
             setDescriptionError(!description);
@@ -198,17 +198,18 @@ const AddButton = () => {
         axios.post('http://20.188.123.92:82/ProcurementManagement/Planning/Save', formData)
             .then(response => {
                 console.log('POST request successful:', response.data);
+                if (onRefresh) {
+                    onRefresh(); // Call the refresh function passed as a prop
+                }
                 handleClose(); // Close the modal after successful submission
             })
             .catch(error => {
                 console.error('Error adding planning:', error);
                 // Handle errors here, such as displaying an error message to the user
             });
-    };
 
-    useEffect(() => {
-        console.log(recurring)
-    }, [recurring])
+        // auto-refresh
+    };
 
     return (
         <>
