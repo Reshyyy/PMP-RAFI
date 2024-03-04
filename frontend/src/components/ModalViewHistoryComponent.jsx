@@ -31,7 +31,7 @@ const Recurring = [1, 0];
 
 const ModalViewHistoryComponent = (props, id) => {
     const [tabVal, setTabVal] = React.useState('2');
-    const { open, setIsViewModalOpen, onClose, currentRow } = props;
+    const { open, setIsViewModalOpen, onClose, currentRow, viewExecution } = props;
     const [description, setDescription] = useState(null);
     const [specs, setSpecs] = useState(null);
     const [type, setType] = useState(null);
@@ -128,6 +128,13 @@ const ModalViewHistoryComponent = (props, id) => {
             setRecurring(currentRow.recurring);
         }
     }, [currentRow]);
+
+    useEffect(() => {
+        if(viewExecution) {
+            console.log('view execution ID', viewExecution.Execution?.executionId)
+            // setPR(viewExecution.Execution?.prno)
+        }
+    }, [viewExecution])
 
     
 

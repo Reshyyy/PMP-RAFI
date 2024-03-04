@@ -212,20 +212,24 @@ const FullFeaturedCrudGrid = () => {
 
     // Execution
     const [executionDetails, setExecutionDetails] = useState();
-    const fetchExecutionDetails = async (id) => {
-        try {
-            const res = await axios.get(`http://20.188.123.92:82/ProcurementManagement/Execution/GetExecution/${id}`)
-            setExecutionDetails(res.data);
-            console.log(executionDetails)
-        } catch (err) {
-            console.error('Error fetching execution details', err);
-        }
-    }
+    const [viewExecution, setViewExecution] = useState(null);
 
     const handleViewClick = (id) => () => {
         console.log('Viewing row:', id);
         setIsViewModalOpen(true);
-        fetchExecutionDetails(id);
+
+        axios.get(`http://20.188.123.92:82/ProcurementManagement/Execution/GetExecution/${id}`)
+            .then(response => {
+                // If the request is successful, extract type data from the response
+                const viewExecution = response.data;
+                // Set the fetched types to the state
+                setViewExecution(viewExecution);
+                console.log('View Execution Details:', viewExecution)
+            })
+            .catch(error => {
+                console.error(error); // Handle any errors
+            });
+
     };
 
     const handleEditClick = (id) => () => {
@@ -540,7 +544,7 @@ const FullFeaturedCrudGrid = () => {
 
             {/* <ModalAddCOmponent open={isModalOpen} setIsModalOpen={setIsModalOpen} onClose={handleModalClose} currentRow={currentRow} /> */}
             <ModalUpdateComponent open={isModalOpen} setIsModalOpen={setIsModalOpen} onClose={handleModalClose} currentRow={currentRow} executionDetails={executionDetails} />
-            <ModalViewHistoryComponent open={isViewModalOpen} setIsViewModalOpen={setIsViewModalOpen} onClose={handleViewModalClose} />
+            <ModalViewHistoryComponent open={isViewModalOpen} setIsViewModalOpen={setIsViewModalOpen} onClose={handleViewModalClose} viewExecution={viewExecution} />
         </Box>
 
 
