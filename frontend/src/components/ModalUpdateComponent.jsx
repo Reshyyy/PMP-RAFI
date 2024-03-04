@@ -44,7 +44,10 @@ const ModalUpdateComponent = (props) => {
     const [date, setDate] = useState(null);
     const [targetDateUpdate, setTargetDateUpdate] = useState(null);
     const [recurring, setRecurring] = useState(0);
+    const [dateReq, setDateReq] = useState(null);
     const [prno, setPR] = useState(null);
+    const [pono, setPO] = useState(null);
+    const [status, setStatus] = useState(null);
 
     const handleTabChange = (event, newValue) => {
         setTabVal(newValue);
@@ -93,6 +96,10 @@ const ModalUpdateComponent = (props) => {
         setPR(e.target.value)
     }
 
+    const handlePOChange = (e) => {
+        setPO(e.target.value)
+    }
+
     const handleExecutionDateChange = (date) => {
         console.log('Selected date:', date);
         setTargetDateUpdate(date)
@@ -136,7 +143,6 @@ const ModalUpdateComponent = (props) => {
             console.log('execution ID', executionDetails.Execution?.executionId)
             setPR(executionDetails.Execution?.prno)
         }
-
     }, [executionDetails])
 
     const fetchTypes = () => {
@@ -176,6 +182,10 @@ const ModalUpdateComponent = (props) => {
                 // Handle errors here, such as displaying an error message to the user
             });
     };
+
+    const handleUpdateExecution = () => {
+        console.log('Update button clicked');
+    }
 
     return (
         <div>
@@ -356,7 +366,8 @@ const ModalUpdateComponent = (props) => {
                                 <Stack justifyContent='center' alignItems='center'>
                                     <Stack sx={{ width: '50%' }}>
                                         {/* Target Date */}
-                                        <BasicDatePickerExecution onDateChange={handleDateChange} style={{ maxWidth: '100px' }} />
+                            
+                                        <BasicDatePickerExecution date={date} onDateChange={handleDateChange} style={{ maxWidth: '100px' }} />
                                     </Stack>
 
                                     <Stack sx={{ mt: 2, width: '50%' }}>
@@ -382,6 +393,8 @@ const ModalUpdateComponent = (props) => {
                                             fullWidth
                                             id="outlined-required"
                                             label="PO #"
+                                            value={pono || ''}
+                                            onChange={handlePOChange}
                                             defaultValue=""
                                             required
                                         />
@@ -400,7 +413,7 @@ const ModalUpdateComponent = (props) => {
                                             <Select
                                                 labelId="demo-simple-select-label"
                                                 id="demo-simple-select"
-                                                value=""
+                                                value={status || ''}
                                                 label="Team"
                                                 onChange={handleStatusDropdown}
                                                 fullWidth  // Add this to make the select field fullWidth
@@ -417,7 +430,7 @@ const ModalUpdateComponent = (props) => {
 
                                 <Stack direction='row' justifyContent='flex-end' marginTop={2} spacing={2}>
                                     <Button onClick={() => setIsModalOpen(false)} variant="outlined" sx={{ width: '80px' }}>Cancel</Button>
-                                    <Button variant="contained" sx={{ width: '80px', bgcolor: '#FFD23F', '&:hover': { backgroundColor: '#FFA732' } }}>Update</Button>
+                                    <Button onClick={handleUpdateExecution} variant="contained" sx={{ width: '80px', bgcolor: '#FFD23F', '&:hover': { backgroundColor: '#FFA732' } }}>Update</Button>
                                 </Stack>
 
                             </TabPanel>
