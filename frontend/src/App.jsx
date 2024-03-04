@@ -38,22 +38,6 @@ function App({ msalInstance }) {
         </BrowserRouter>
 
       </MsalProvider>
-
-      {/* <MsalProvider instance={msalInstance}>
-
-
-        <div className='h-screen bg-purple-500 flex justify-center items-center bg-gradient-to-r from-indigo-500'>
-          <div className='bg-white p-10 flex justify-center items-center flex-col'>
-            <div>
-              <img style={{ width: '100px', height: '100px' }} src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/azure/azure-original.svg" />
-            </div>
-            <h1 className='font-bold mb-5 '>Sign In to Microsoft</h1>
-            <NavBar />
-
-          </div>
-
-        </div>
-      </MsalProvider> */}
     </div>
 
   )

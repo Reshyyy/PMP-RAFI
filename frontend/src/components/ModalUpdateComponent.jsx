@@ -6,6 +6,8 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import BasicDatePicker from './BasicDatePicker';
 import BasicDatePickerUpdate from './BasicDatePickerUpdate';
+import BasicDatePickerExecution from './BasicDatePickerExecution';
+import ExecutionDeliveryDate from './ExecutionDeliveryDate';
 
 // Define enum for team
 const Team = [
@@ -19,10 +21,17 @@ const Team = [
 const FinDim = ['ASD', 'ZXC', 'QWE'];
 
 // enum for Recurring
-const Recurring = [1, 0]
+const Recurring = [1, 0];
+
+// Define enum for type
+const Status = {
+    delivered: 'DELIVERED',
+    notDelivered: 'NOT DELIVERED'
+};
+
 const ModalUpdateComponent = (props) => {
     const [tabVal, setTabVal] = React.useState('1');
-    const { open, setIsModalOpen, onClose, currentRow } = props;
+    const { open, setIsModalOpen, onClose, currentRow, executionDetails, executionRow } = props;
     const [description, setDescription] = useState(null);
     const [specs, setSpecs] = useState(null);
     const [type, setType] = useState(null);
@@ -35,7 +44,7 @@ const ModalUpdateComponent = (props) => {
     const [date, setDate] = useState(null);
     const [targetDateUpdate, setTargetDateUpdate] = useState(null);
     const [recurring, setRecurring] = useState(0);
-
+    const [prno, setPR] = useState(null);
 
     const handleTabChange = (event, newValue) => {
         setTabVal(newValue);
@@ -80,6 +89,18 @@ const ModalUpdateComponent = (props) => {
         console.log(value)
     }
 
+    const handlePRChange = (e) => {
+        setPR(e.target.value)
+    }
+
+    const handleExecutionDateChange = (date) => {
+        console.log('Selected date:', date);
+        setTargetDateUpdate(date)
+    };
+
+    const handleStatusDropdown = (e) => {
+        setStatus(e.target.value);
+    }
 
     const style = {
         position: 'absolute',
@@ -106,8 +127,17 @@ const ModalUpdateComponent = (props) => {
             setDate(currentRow.targetDateNeed);
             setRecurring(currentRow.recurring);
         }
+
         fetchTypes();
-    }, [currentRow]);
+    }, [currentRow, executionDetails]);
+
+    useEffect(() => {
+        if(executionDetails) {
+            console.log('execution ID', executionDetails.Execution?.executionId)
+            setPR(executionDetails.Execution?.prno)
+        }
+
+    }, [executionDetails])
 
     const fetchTypes = () => {
         axios.get('http://20.188.123.92:82/ProcurementManagement/Planning/Type')
@@ -123,7 +153,6 @@ const ModalUpdateComponent = (props) => {
     }
 
     const handleUpdatePlanning = () => {
-
         const formData = {
             planningId: currentRow.planningId,
             description: description,
@@ -148,8 +177,6 @@ const ModalUpdateComponent = (props) => {
             });
     };
 
-
-
     return (
         <div>
             {currentRow && (
@@ -162,7 +189,7 @@ const ModalUpdateComponent = (props) => {
                         <TabContext value={tabVal} >
                             <TabList onChange={handleTabChange} aria-label="lab API tabs example">
                                 <Tab label="Planning" value="1" />
-                                <Tab label="Execution" value="2" disabled/>
+                                <Tab label="Execution" value="2" />
                             </TabList>
                             <TabPanel value="1">
                                 <Stack sx={{ mb: 2 }} spacing={2}>
@@ -305,6 +332,7 @@ const ModalUpdateComponent = (props) => {
                                                 aria-labelledby="demo-row-radio-buttons-group-label"
                                                 name="row-radio-buttons-group"
                                                 // value={recurring || ''}
+                                                defaultValue={currentRow.recurring}
                                                 onChange={handleRecurringChange}
                                             >
                                                 {/* {Recurring.map((recur) => {
@@ -325,8 +353,75 @@ const ModalUpdateComponent = (props) => {
                             </TabPanel>
 
                             <TabPanel value="2">
+                                <Stack justifyContent='center' alignItems='center'>
+                                    <Stack sx={{ width: '50%' }}>
+                                        {/* Target Date */}
+                                        <BasicDatePickerExecution onDateChange={handleDateChange} style={{ maxWidth: '100px' }} />
+                                    </Stack>
+
+                                    <Stack sx={{ mt: 2, width: '50%' }}>
+                                        {/* PR # */}
+                                        <TextField
+                                            sx={{ flexGrow: 1 }}
+                                            onChange={handlePRChange}
+                                            fullWidth
+                                            id="outlined-required"
+                                            label="PR #"
+                                            value={prno || ''}
+                                            defaultValue=''
+                                            required
+                                        />
+                                    </Stack>
+
+
+
+                                    <Stack sx={{ mt: 2, width: '50%' }}>
+                                        {/* PO # */}
+                                        <TextField
+                                            sx={{ flexGrow: 1 }}
+                                            fullWidth
+                                            id="outlined-required"
+                                            label="PO #"
+                                            defaultValue=""
+                                            required
+                                        />
+                                    </Stack>
+
+                                    <Stack sx={{ width: '50%', mt: 2 }}>
+                                        {/* Target Date */}
+                                        <ExecutionDeliveryDate onDateChange={handleExecutionDateChange} style={{ maxWidth: '100px' }} required />
+
+                                    </Stack>
+
+                                    <Stack width="50%" sx={{ mt: 2 }}>
+                                        {/* Status */}
+                                        <FormControl sx={{ mb: 2 }}>
+                                            <InputLabel id="demo-simple-select-label" required>Status</InputLabel>
+                                            <Select
+                                                labelId="demo-simple-select-label"
+                                                id="demo-simple-select"
+                                                value=""
+                                                label="Team"
+                                                onChange={handleStatusDropdown}
+                                                fullWidth  // Add this to make the select field fullWidth
+                                            >
+                                                <MenuItem value={Status.delivered}>DELIVERED</MenuItem>
+                                                <MenuItem value={Status.notDelivered}>NOT DELIVERED</MenuItem>
+                                            </Select>
+                                        </FormControl>
+                                    </Stack>
+
+                                </Stack>
+
+                                <Divider />
+
+                                <Stack direction='row' justifyContent='flex-end' marginTop={2} spacing={2}>
+                                    <Button onClick={() => setIsModalOpen(false)} variant="outlined" sx={{ width: '80px' }}>Cancel</Button>
+                                    <Button variant="contained" sx={{ width: '80px', bgcolor: '#FFD23F', '&:hover': { backgroundColor: '#FFA732' } }}>Update</Button>
+                                </Stack>
 
                             </TabPanel>
+
                         </TabContext>
                     </Box>
                 </Modal>

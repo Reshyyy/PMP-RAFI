@@ -438,7 +438,6 @@ const ModalAddCOmponent = (props) => {
                                     <Stack sx={{ width: '50%', mt: 2 }}>
                                         {/* Target Date */}
                                         <ExecutionDeliveryDate onDateChange={handleDateChange} style={{ maxWidth: '100px' }} required />
-
                                     </Stack>
 
                                     <Stack width="50%" sx={{ mt: 2 }}>

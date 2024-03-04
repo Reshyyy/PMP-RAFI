@@ -148,6 +148,7 @@ const FullFeaturedCrudGrid = () => {
         return boolValue ? "Yes" : "No";
     }
     const [currentRow, setCurrentRow] = useState(null);
+    const [executionRow, setExecutionRow] = useState(null);
 
 
     const [records, setRecords] = useState([])
@@ -209,11 +210,40 @@ const FullFeaturedCrudGrid = () => {
         fetchData()
     }, [page, pageSize])
 
+    // Execution
+    const [executionDetails, setExecutionDetails] = useState();
+    const fetchExecutionDetails = async (id) => {
+        try {
+            const res = await axios.get(`http://20.188.123.92:82/ProcurementManagement/Execution/GetExecution/${id}`)
+            setExecutionDetails(res.data);
+            console.log(executionDetails)
+        } catch (err) {
+            console.error('Error fetching execution details', err);
+        }
+    }
 
+    const handleViewClick = (id) => () => {
+        console.log('Viewing row:', id);
+        setIsViewModalOpen(true);
+        fetchExecutionDetails(id);
+    };
 
     const handleEditClick = (id) => () => {
         setIsModalOpen(true);
         fetchData();
+        // fetchExecutionDetails(id);
+
+        axios.get(`http://20.188.123.92:82/ProcurementManagement/Execution/GetExecution/${id}`)
+            .then(response => {
+                // If the request is successful, extract type data from the response
+                const executionDetails = response.data;
+                // Set the fetched types to the state
+                setExecutionDetails(executionDetails);
+                console.log('Execution Details:', executionDetails)
+            })
+            .catch(error => {
+                console.error(error); // Handle any errors
+            });
 
         let row = apiRef.current.getRowWithUpdatedValues(id)
         setCurrentRow(row);
@@ -236,7 +266,6 @@ const FullFeaturedCrudGrid = () => {
     };
 
     const handleSaveClick = (id) => () => {
-
         console.log('selected ID', id)
 
         let row = apiRef.current.getRowWithUpdatedValues(id)
@@ -295,11 +324,6 @@ const FullFeaturedCrudGrid = () => {
         setIsModalOpen(false);
     };
 
-    const handleViewClick = (id) => () => {
-        console.log('Viewing row:');
-        setIsViewModalOpen(true);
-        // You can perform any additional actions here, such as displaying a modal with row details
-    };
 
     const handlePageChange = (newPage) => {
         setPage(newPage);
@@ -506,15 +530,16 @@ const FullFeaturedCrudGrid = () => {
                     },
                     bgcolor: 'white'
                 }}
-                pagination
                 paginationMode="client"
+                pagination
+                pageSizeOptions={[5, 10, 25]}
                 autoPageSize
                 keepNonExistentRowsSelected
             />
 
 
             {/* <ModalAddCOmponent open={isModalOpen} setIsModalOpen={setIsModalOpen} onClose={handleModalClose} currentRow={currentRow} /> */}
-            <ModalUpdateComponent open={isModalOpen} setIsModalOpen={setIsModalOpen} onClose={handleModalClose} currentRow={currentRow} />
+            <ModalUpdateComponent open={isModalOpen} setIsModalOpen={setIsModalOpen} onClose={handleModalClose} currentRow={currentRow} executionDetails={executionDetails} />
             <ModalViewHistoryComponent open={isViewModalOpen} setIsViewModalOpen={setIsViewModalOpen} onClose={handleViewModalClose} />
         </Box>
 

@@ -209,7 +209,18 @@ const AddButton = () => {
             });
 
         // auto-refresh
+        fetchData();
     };
+
+    const [data, setData] = useState(null);
+    const fetchData = async () => {
+        try {
+            const response = await axios.get('http://20.188.123.92:82/ProcurementManagement/Planning/Filter?page=1');
+            setData(response.data);
+        } catch (error) {
+            console.error('Error fetching data', error);
+        }
+    }
 
     return (
         <>

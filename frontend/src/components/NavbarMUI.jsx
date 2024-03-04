@@ -5,6 +5,7 @@ import { Link as RouterLink } from 'react-router-dom';
 import rafiLogo from './../assets/rafiLogo.png'
 import { useIsAuthenticated, useMsal } from "@azure/msal-react";
 import SignOutButton from './SignOutButton';
+import './fonts.css';
 
 function NavbarMUI() {
     const isAuthenticated = useIsAuthenticated(); // Get the authentication status
@@ -22,7 +23,7 @@ function NavbarMUI() {
                                 PROCUREMENT MANAGEMENT PLAN
                             </Typography>
                             <Typography component="div" variant='body2'>
-                                <Box sx={{ fontWeight: 'bold', color: '#000', fontSize: 16 }}>
+                                <Box sx={{ fontFamily: 'HelveticaNeueBold', fontWeight: 'bold', color: '#000', fontSize: '15px' }}>
                                     RAFI - RAMON ABOITIZ FOUNDATION INC.
                                 </Box>
                             </Typography>
