@@ -215,8 +215,12 @@ const FullFeaturedCrudGrid = () => {
     const [viewExecution, setViewExecution] = useState(null);
 
     const handleViewClick = (id) => () => {
-        console.log('Viewing row:', id);
         setIsViewModalOpen(true);
+        setModalClicked('view')
+        console.log('Viewing row:', id);
+
+        let row = apiRef.current.getRowWithUpdatedValues(id);
+        setCurrentRow(row);
 
         axios.get(`http://20.188.123.92:82/ProcurementManagement/Execution/GetExecution/${id}`)
             .then(response => {
@@ -232,8 +236,10 @@ const FullFeaturedCrudGrid = () => {
 
     };
 
+    const[modalClicked, setModalClicked] = useState('')
     const handleEditClick = (id) => () => {
         setIsModalOpen(true);
+        setModalClicked('edit')
         fetchData();
         // fetchExecutionDetails(id);
 
@@ -265,8 +271,6 @@ const FullFeaturedCrudGrid = () => {
                 console.error(error); // Handle any errors
             });
 
-        // Update the row mode to Edit mode
-        // setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
     };
 
     const handleSaveClick = (id) => () => {
@@ -301,13 +305,7 @@ const FullFeaturedCrudGrid = () => {
         // setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
     };
 
-    const [tabVal, setTabVal] = React.useState('2');
-
-    const handleTabChange = (event, newValue) => {
-        setTabVal(newValue);
-    };
-
-    const [isModalOpen, setIsModalOpen] = React.useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const [isViewModalOpen, setIsViewModalOpen] = useState(false);
 
     const handleViewModalOpen = () => {
@@ -327,7 +325,6 @@ const FullFeaturedCrudGrid = () => {
     const handleModalClose = () => {
         setIsModalOpen(false);
     };
-
 
     const handlePageChange = (newPage) => {
         setPage(newPage);
@@ -543,8 +540,11 @@ const FullFeaturedCrudGrid = () => {
 
 
             {/* <ModalAddCOmponent open={isModalOpen} setIsModalOpen={setIsModalOpen} onClose={handleModalClose} currentRow={currentRow} /> */}
-            <ModalUpdateComponent open={isModalOpen} setIsModalOpen={setIsModalOpen} onClose={handleModalClose} currentRow={currentRow} executionDetails={executionDetails} />
-            <ModalViewHistoryComponent open={isViewModalOpen} setIsViewModalOpen={setIsViewModalOpen} onClose={handleViewModalClose} viewExecution={viewExecution} />
+            
+            {modalClicked === 'edit' && <ModalUpdateComponent open={isModalOpen} setIsModalOpen={setIsModalOpen} onClose={handleModalClose} currentRow={currentRow} executionDetails={executionDetails} />}
+            
+            {modalClicked === 'view' && <ModalViewHistoryComponent openView={isViewModalOpen} setIsViewModalOpen={setIsViewModalOpen} onCloseView={handleViewModalClose} currentRow={currentRow} viewExecution={viewExecution} />}
+
         </Box>
 
 

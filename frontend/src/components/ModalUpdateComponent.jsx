@@ -30,8 +30,8 @@ const Status = {
 };
 
 const ModalUpdateComponent = (props) => {
+    const { open, setIsModalOpen, onClose, currentRow, executionDetails } = props;
     const [tabVal, setTabVal] = React.useState('1');
-    const { open, setIsModalOpen, onClose, currentRow, executionDetails, executionRow } = props;
     const [description, setDescription] = useState(null);
     const [specs, setSpecs] = useState(null);
     const [type, setType] = useState(null);
@@ -354,7 +354,9 @@ const ModalUpdateComponent = (props) => {
                                         </FormControl>
                                     </Stack>
                                 </Stack>
+
                                 <Divider />
+
                                 <Stack direction='row' justifyContent='flex-end' marginTop={2} spacing={2}>
                                     <Button onClick={() => setIsModalOpen(false)} variant="outlined" sx={{ width: '80px' }}>Cancel</Button>
                                     <Button onClick={handleUpdatePlanning} variant="contained" sx={{ width: '80px', bgcolor: '#FFD23F', '&:hover': { backgroundColor: '#FFA732' } }}>Update</Button>

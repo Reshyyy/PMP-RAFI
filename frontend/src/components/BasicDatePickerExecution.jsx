@@ -5,24 +5,24 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
 
-export default function BasicDatePickerExecution({ onDateChange, date }) {
+export default function BasicDatePickerExecution({ onDateReqChange, dateReq }) {
   const [selectedDate, setSelectedDate] = useState(null);
 
-  const handleDateChange = (date) => {
-    setSelectedDate(date)
-    if (onDateChange) {
-      onDateChange(date);
+  const handleDateChange = (dateReq) => {
+    setSelectedDate(dateReq)
+    if (onDateReqChange) {
+      onDateChange(dateReq);
     }
   }
 
   // Format the date using dayjs to "YYYY-MM-DDTHH:mm:ss.SS"
-  const formattedDate = date ? dayjs(date || selectedDate).format("YYYY-MM-DDTHH:mm:ss.SS") : null;
+  // const formattedDate = date ? dayjs(date || selectedDate).format("YYYY-MM-DDTHH:mm:ss.SS") : null;
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <DatePicker
         label="Date of Request"
-        value={dayjs(date || selectedDate)}
+        value={dayjs(dateReq || selectedDate)}
         onChange={handleDateChange}
         format="YYYY-MM-DD"
         animateYearScrolling
