@@ -34,6 +34,7 @@ import ModalAddCOmponent from './ModalAddComponent';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import ModalUpdateComponent from './ModalUpdateComponent';
 import ModalViewHistoryComponent from './ModalViewHistoryComponent';
+import { useMsal } from '@azure/msal-react';
 
 const roles = ['Market', 'Finance', 'Development'];
 const randomRole = () => {
@@ -152,6 +153,38 @@ const FullFeaturedCrudGrid = () => {
 
 
     const [records, setRecords] = useState([])
+    const [getFinDim, setGetFinDim] = useState(null);
+
+    const fetchFinDim = async () => {
+        const formData = {
+            "RAFIPayIntegration":
+            {
+                "TargetFinDim": "Department",
+                "LegalEntity": "RAFI",
+                "CurBusinessUnit": "ITU",
+                "EmployeeID": "ID000005606"
+            }
+        }
+        try {
+            const res = await axios.post('http://20.188.123.92:82/api/services/RAFIPAYIntegration/RAFIPAYJournalAPI/GetFinancialDimensionList', formData);
+            setGetFinDim('fetched findim:', res.data);
+        } catch (error) {
+            console.error('error fetching findim', error)
+        }
+    }
+
+    const [getMainAcc, setGetMainAcc] = useState(null);
+
+    const fetchMainAccount = async () => {
+        try {
+            const res = await axios.get('http://20.188.123.92:82/api/services/RAFIPAYIntegration/RAFIPAYJournalAPI/GetMainAccountList');
+            setGetMainAcc(res.data);
+        } catch (error) {
+            console.error('Erro Fetching Main Account', error)
+        }
+    }
+
+
 
     const fetchTypes = () => {
         axios.get('http://20.188.123.92:82/ProcurementManagement/Planning/Type')
@@ -185,6 +218,10 @@ const FullFeaturedCrudGrid = () => {
     useEffect(() => {
         fetchRecords();
         fetchTypes();
+        // fetchFinDim();
+        // fetchMainAccount();
+        // fetchAuthorize();
+        fetchAuthorize();
     }, [page, pageSize]);
 
     const handleRowEditStop = (params, event) => {
@@ -192,6 +229,30 @@ const FullFeaturedCrudGrid = () => {
             event.defaultMuiPrevented = true;
         }
     };
+
+    const [getAuthorize, setGetAuthorize] = useState(null);
+    const fetchAuthorize = async () => {
+        console.log(localStorage.getItem('username'))
+        const formData = {
+            "RAFIPayIntegration":
+            {
+                "EmailAddress": localStorage.getItem('username')
+            }
+        }
+        try {
+            const res = await axios.post('http://20.188.123.92:82/api/services/RAFIPAYIntegration/RAFIPayUserAPI/Authorization', formData, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${accessToken}`,
+                },
+            })
+
+            setGetAuthorize(res.data);
+            console.log('test:', getAuthorize);
+        } catch (error) {
+            console.error(error)
+        }
+    }
 
     const [dataToUpdate, setDataToUpdate] = useState(null)
     const [totalRows, setTotalRows] = useState(0);
@@ -236,7 +297,7 @@ const FullFeaturedCrudGrid = () => {
 
     };
 
-    const[modalClicked, setModalClicked] = useState('')
+    const [modalClicked, setModalClicked] = useState('')
     const handleEditClick = (id) => () => {
         setIsModalOpen(true);
         setModalClicked('edit')
@@ -540,9 +601,9 @@ const FullFeaturedCrudGrid = () => {
 
 
             {/* <ModalAddCOmponent open={isModalOpen} setIsModalOpen={setIsModalOpen} onClose={handleModalClose} currentRow={currentRow} /> */}
-            
+
             {modalClicked === 'edit' && <ModalUpdateComponent open={isModalOpen} setIsModalOpen={setIsModalOpen} onClose={handleModalClose} currentRow={currentRow} executionDetails={executionDetails} />}
-            
+
             {modalClicked === 'view' && <ModalViewHistoryComponent openView={isViewModalOpen} setIsViewModalOpen={setIsViewModalOpen} onCloseView={handleViewModalClose} currentRow={currentRow} viewExecution={viewExecution} />}
 
         </Box>

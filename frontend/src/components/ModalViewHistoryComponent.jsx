@@ -8,6 +8,8 @@ import BasicDatePicker from './BasicDatePicker';
 import BasicDatePickerUpdate from './BasicDatePickerUpdate';
 import BasicDatePickerExecution from './BasicDatePickerExecution';
 import ExecutionDeliveryDate from './ExecutionDeliveryDate';
+import ExecTargetDate from './ExecTargetDate';
+import ExecDateOfRequest from './ExecDateOfRequest';
 
 // Define enum for type
 const Status = {
@@ -48,6 +50,7 @@ const ModalViewHistoryComponent = (props) => {
     const [dateReq, setDateReq] = useState(null);
     const [prno, setPR] = useState(null);
     const [pono, setPO] = useState(null);
+    const [deliveryDate, setDeliveryDate] = useState(null);
     const [status, setStatus] = useState(null);
 
     const handleTabViewChange = (event, newValue) => {
@@ -55,8 +58,8 @@ const ModalViewHistoryComponent = (props) => {
     };
 
     const handleExecutionDateChange = (date) => {
-        console.log('Selected date:', date);
-        setTargetDateUpdate(date)
+        console.log('Selected delivery date:', date);
+        setDeliveryDate(date);
     };
 
     const handlePRChange = (e) => {
@@ -104,9 +107,9 @@ const ModalViewHistoryComponent = (props) => {
         setTargetDateUpdate(date)
     };
 
-    const handleDateOfRequest = (date) => {
-        console.log('Selected date:', date);
-        setDateReq(date)
+    const handleDateOfRequest = (dateReq) => {
+        console.log('Selected date of request:', dateReq);
+        setDateReq(dateReq)
     };
 
     const handleRecurringChange = (e) => {
@@ -165,11 +168,40 @@ const ModalViewHistoryComponent = (props) => {
             });
     }
 
+    const [updateExecData, setUpdateExecData] = useState(null);
+    const handleUpdateExecution = () => {
+        const formData = {
+            planningId: currentRow.planningId,
+            description: description,
+            specifcation: specs,
+            type: type,
+            businessUnit: businessUnit,
+            recurring: Boolean(recurring),
+            quantity: parseInt(qty),
+            totalEstAmt: parseFloat(totalEstAmt),
+            finDim: finDim,
+            targetDateNeed: targetDateUpdate.toISOString().substring(0, 10),
+            executionId: viewExecution.executionId, // Execution
+            dateOfRequest: dateReq,
+            prno: prno,
+            pono: pono,
+            // deliveryDate: deliveryDate.toISOString().substring(0, 10),
+            status: status
+        };
 
+        axios.put('http://20.188.123.92:82/ProcurementManagement/Planning/Update', formData)
+            .then(response => {
+                console.log('Update execution successful:', response.data);
+                setIsViewModalOpen(false); // Close the modal after successful submission
+            })
+            .catch(error => {
+                console.error('Error execution update planning:', error);
+                // Handle errors here, such as displaying an error message to the user
+            });
+    };
 
     return (
         <div>
-
             <Modal
                 open={openView}
                 onClose={onCloseView}
@@ -308,12 +340,11 @@ const ModalViewHistoryComponent = (props) => {
                                     </Stack>
                                     <Stack sx={{ width: '30%' }}>
                                         {/* Target Date */}
-                                        <BasicDatePickerUpdate date={date} onDateChange={handleDateChange} style={{ maxWidth: '100px' }} />
+                                        <ExecTargetDate date={date} onDateChange={handleDateChange} style={{ maxWidth: '100px' }} />
                                     </Stack>
-
                                     <Stack sx={{ width: '30%' }}>
                                         {/* Recurring */}
-                                        <FormControl disabled>
+                                        <FormControl>
                                             <FormLabel id="recurring-rb" required>Recurring</FormLabel>
                                             <RadioGroup
                                                 row
@@ -338,7 +369,7 @@ const ModalViewHistoryComponent = (props) => {
                                 <Divider />
                                 <Stack direction='row' justifyContent='flex-end' marginTop={2} spacing={2}>
                                     <Button onClick={() => setIsViewModalOpen(false)} variant="outlined" sx={{ width: '80px' }}>Cancel</Button>
-                                    <Button variant="contained" sx={{ width: '80px', bgcolor: '#FFD23F', '&:hover': { backgroundColor: '#FFA732' } }}>Update</Button>
+                                    <Button onClick={handleUpdateExecution} variant="contained" sx={{ width: '80px', bgcolor: '#FFD23F', '&:hover': { backgroundColor: '#FFA732' } }}>Update</Button>
                                 </Stack>
                             </TabPanel>
                         )}
@@ -409,13 +440,11 @@ const ModalViewHistoryComponent = (props) => {
 
                                 <Stack direction='row' justifyContent='flex-end' marginTop={2} spacing={2}>
                                     <Button onClick={() => setIsViewModalOpen(false)} variant="outlined" sx={{ width: '80px' }}>Cancel</Button>
-                                    <Button variant="contained" sx={{ width: '80px', bgcolor: '#FFD23F', '&:hover': { backgroundColor: '#FFA732' } }}>Update</Button>
+                                    <Button onClick={handleUpdateExecution} variant="contained" sx={{ width: '80px', bgcolor: '#FFD23F', '&:hover': { backgroundColor: '#FFA732' } }}>Update</Button>
                                 </Stack>
 
                             </TabPanel>
                         )}
-
-
                     </TabContext>
                 </Box>
             </Modal>
