@@ -36,8 +36,9 @@ const ModalUpdateComponent = (props) => {
     const [specs, setSpecs] = useState(null);
     const [type, setType] = useState(null);
     const [types, setTypes] = useState([]);
-    const [businessUnit, setBusinessUnit] = useState(null);
     const [bUnit, setBUnit] = useState([]);
+    const [teams, setTeams] = useState([]);
+    const [businessUnit, setBusinessUnit] = useState(null);
     const [qty, setQty] = useState(0);
     const [totalEstAmt, setTotalEstAmt] = useState(0.00);
     const [finDim, setFinDim] = useState(null);
@@ -139,7 +140,7 @@ const ModalUpdateComponent = (props) => {
     }, [currentRow, executionDetails]);
 
     useEffect(() => {
-        if(executionDetails) {
+        if (executionDetails) {
             console.log('execution ID', executionDetails.Execution?.executionId)
             setPR(executionDetails.Execution?.prno)
         }
@@ -186,6 +187,37 @@ const ModalUpdateComponent = (props) => {
     const handleUpdateExecution = () => {
         console.log('Update button clicked');
     }
+
+    const [units, setUnits] = useState([]);
+    const fetchBU = async () => {
+        const accessToken = localStorage.getItem('accessToken');
+
+        const formData = {
+            "RAFIPayIntegration":
+            {
+                "TargetFinDim": "Department",
+                "LegalEntity": "RAFI",
+                "CurBusinessUnit": "ITU",
+                "EmployeeID": "ID000005606"
+            }
+        }
+        try {
+            const res = await axios.post('/api/services/RAFIPAYIntegration/RAFIPAYJournalAPI/GetFinancialDimensionList', formData, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${accessToken}`,
+                }
+            })
+            const fetchedUnits = res.data.FinancialDimensionValues;
+            setUnits(fetchedUnits)
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    useEffect(() => {
+        fetchBU();
+    }, [])
 
     return (
         <div>
@@ -260,12 +292,20 @@ const ModalUpdateComponent = (props) => {
                                                 onChange={handleBusinessUnitDropdown}
                                                 fullWidth  // Add this to make the select field fullWidth
                                             >
-                                                {
+                                                {/* {Teams.map((item) => (
+                                                    <MenuItem key={type.ID} value={type.Name}>
+                                                        {type.Name}
+                                                    </MenuItem>
+                                                ))} */}
 
-                                                }
-                                                {Team.map((item) => {
+                                                {units.map((unit) => (
+                                                    <MenuItem key={unit.$id} value={unit.FinancialDimension}>
+                                                        {unit.FinancialDimension}
+                                                    </MenuItem>
+                                                ))}
+                                                {/* {Team.map((item) => {
                                                     return <MenuItem value={item}>{item}</MenuItem>
-                                                })}
+                                                })} */}
                                             </Select>
                                         </FormControl>
                                     </Stack>

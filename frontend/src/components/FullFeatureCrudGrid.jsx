@@ -226,31 +226,31 @@ const FullFeaturedCrudGrid = () => {
         }
     };
 
-    const [bU, setBU] = useState(null);
-    const fetchBU = async () => {
-        const accessToken = localStorage.getItem('accessToken');
+    // const [bU, setBU] = useState(null);
+    // const fetchBU = async () => {
+    //     const accessToken = localStorage.getItem('accessToken');
         
-        const formData = {
-            "RAFIPayIntegration":
-            {
-                "TargetFinDim": "Department",
-                "LegalEntity": "RAFI",
-                "CurBusinessUnit": "ITU",
-                "EmployeeID": "ID000005606"
-            }
-        }
-        try {
-            const res = await axios.post('/api/services/RAFIPAYIntegration/RAFIPAYJournalAPI/GetFinancialDimensionList', formData, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${accessToken}`,
-                }
-            })
-            setBU(res.data)
-        } catch (error) {
-            console.error(error);
-        }
-    }
+    //     const formData = {
+    //         "RAFIPayIntegration":
+    //         {
+    //             "TargetFinDim": "Department",
+    //             "LegalEntity": "RAFI",
+    //             "CurBusinessUnit": "ITU",
+    //             "EmployeeID": "ID000005606"
+    //         }
+    //     }
+    //     try {
+    //         const res = await axios.post('/api/services/RAFIPAYIntegration/RAFIPAYJournalAPI/GetFinancialDimensionList', formData, {
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //                 'Authorization': `Bearer ${accessToken}`,
+    //             }
+    //         })
+    //         setBU(res.data)
+    //     } catch (error) {
+    //         console.error(error);
+    //     }
+    // }
 
 
     const [dataToUpdate, setDataToUpdate] = useState(null)
@@ -268,7 +268,7 @@ const FullFeaturedCrudGrid = () => {
 
     useEffect(() => {
         fetchData()
-        fetchBU();
+        // fetchBU();
     }, [])
 
     // Execution
