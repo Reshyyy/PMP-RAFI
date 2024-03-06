@@ -3,8 +3,9 @@ import { useState } from 'react'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import dayjs from 'dayjs';
 
-export default function ExecutionDeliveryDate({ onDateChange }) {
+export default function ExecutionDeliveryDate({ onDateChange, date }) {
   const [selectedDate, setSelectedDate] = useState(null);
 
   const handleDateChange = (date) => {
@@ -16,7 +17,7 @@ export default function ExecutionDeliveryDate({ onDateChange }) {
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <DatePicker
       label="Delivery Date"
-      value={selectedDate}
+      value={selectedDate != null ? dayjs(selectedDate) : null}
       onChange={handleDateChange}
       inputFormat="yyyy-MM-dd"
       animateYearScrolling

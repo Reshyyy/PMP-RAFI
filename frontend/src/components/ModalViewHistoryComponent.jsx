@@ -32,7 +32,7 @@ const FinDim = ['ASD', 'ZXC', 'QWE'];
 const Recurring = [1, 0];
 
 const ModalViewHistoryComponent = (props) => {
-    const [tabView, setTabView] = React.useState('2');
+    const [tabView, setTabView] = React.useState('1');
     const { openView, setIsViewModalOpen, onCloseView, currentRow, viewExecution } = props;
     const [description, setDescription] = useState(null);
     const [specs, setSpecs] = useState(null);
@@ -58,6 +58,11 @@ const ModalViewHistoryComponent = (props) => {
     };
 
     const handleExecutionDateChange = (date) => {
+        console.log('Selected delivery date:', date);
+        setDeliveryDate(date);
+    };
+
+    const handleDeliveryDateChange = (date) => {
         console.log('Selected delivery date:', date);
         setDeliveryDate(date);
     };
@@ -171,25 +176,32 @@ const ModalViewHistoryComponent = (props) => {
     const [updateExecData, setUpdateExecData] = useState(null);
     const handleUpdateExecution = () => {
         const formData = {
-            planningId: currentRow.planningId,
-            description: description,
-            specifcation: specs,
-            type: type,
-            businessUnit: businessUnit,
-            recurring: Boolean(recurring),
-            quantity: parseInt(qty),
-            totalEstAmt: parseFloat(totalEstAmt),
-            finDim: finDim,
-            targetDateNeed: targetDateUpdate.toISOString().substring(0, 10),
-            executionId: viewExecution.executionId, // Execution
-            dateOfRequest: dateReq,
-            prno: prno,
-            pono: pono,
-            // deliveryDate: deliveryDate.toISOString().substring(0, 10),
-            status: status
+
+            "pmodel": {
+                planningId: currentRow.planningId,
+                description: description,
+                specifcation: specs,
+                type: type,
+                businessUnit: businessUnit,
+                recurring: Boolean(recurring),
+                quantity: parseInt(qty),
+                totalEstAmt: parseFloat(totalEstAmt),
+                finDim: finDim,
+                targetDateNeed: targetDateUpdate ? targetDateUpdate.toISOString().substring(0, 10) : null,
+            },
+
+            "emodel": {
+                executionId: viewExecution.executionId,
+                planningId:  currentRow.planningId,
+                dateOfRequest: dateReq ? dateReq.toISOString().substring(0, 10) : null,
+                prno: prno,
+                pono: pono,
+                deliveryDate: deliveryDate ? deliveryDate.toISOString().substring(0, 10) : null,
+                status: status
+            }
         };
 
-        axios.put('http://20.188.123.92:82/ProcurementManagement/Planning/Update', formData)
+        axios.post('http://20.188.123.92:82/ProcurementManagement/Execution/Update', formData)
             .then(response => {
                 console.log('Update execution successful:', response.data);
                 setIsViewModalOpen(false); // Close the modal after successful submission
@@ -393,7 +405,7 @@ const ModalViewHistoryComponent = (props) => {
                                                         {acc.MainAccount}
                                                     </MenuItem>
                                                 ))}
-                                                
+
                                             </Select>
                                         </FormControl>
                                     </Stack>
@@ -422,8 +434,6 @@ const ModalViewHistoryComponent = (props) => {
                                         </FormControl>
                                     </Stack>
                                 </Stack>
-
-
 
                                 <Divider />
                                 <Stack direction='row' justifyContent='flex-end' marginTop={2} spacing={2}>
@@ -472,8 +482,8 @@ const ModalViewHistoryComponent = (props) => {
                                     </Stack>
 
                                     <Stack sx={{ width: '50%', mt: 2 }}>
-                                        {/* Target Date */}
-                                        <ExecutionDeliveryDate onDateChange={handleExecutionDateChange} style={{ maxWidth: '100px' }} required />
+                                        {/* Delivery Date */}
+                                        <ExecutionDeliveryDate onDateChange={handleDeliveryDateChange} style={{ maxWidth: '100px' }} required />
                                     </Stack>
 
                                     <Stack width="50%" sx={{ mt: 2 }}>

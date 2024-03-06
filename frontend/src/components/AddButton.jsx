@@ -192,7 +192,7 @@ const AddButton = () => {
             quantity: parseInt(qty),
             totalEstAmt: parseFloat(totalEstAmt),
             finDim: finDim,
-            targetDateNeed: targetDateNeed.toISOString().substring(0, 10) // Format: YYYY-MM-DD
+            targetDateNeed: targetDateNeed ? targetDateNeed.toISOString().substring(0, 10) : null // Format: YYYY-MM-DD
         };
 
         axios.post('http://20.188.123.92:82/ProcurementManagement/Planning/Save', formData)

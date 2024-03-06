@@ -22,10 +22,12 @@ export default function BasicDatePickerExecution({ onDateReqChange, dateReq }) {
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <DatePicker
         label="Date of Request"
-        value={dayjs(dateReq || selectedDate)}
+        value={selectedDate != null ? dayjs(selectedDate) : null}
         onChange={handleDateChange}
         inputFormat="yyyy-MM-dd"
         animateYearScrolling
+        emptyLabel="yeet"
+        placeholder={"Date of Birth"}
       />
     </LocalizationProvider>
   );
