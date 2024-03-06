@@ -215,8 +215,33 @@ const ModalUpdateComponent = (props) => {
         }
     }
 
+    const [mainAccs, setMainAccs] = useState([]);
+    const fetchMainAccountList = async () => {
+        const accessToken = localStorage.getItem('accessToken');
+
+        const formData = {
+            "RAFIPayIntegration":
+            {
+                "LegalEntity": "rafi"
+            }
+        }
+        try {
+            const res = await axios.post('/api/services/RAFIPAYIntegration/RAFIPAYJournalAPI/GetMainAccountList', formData, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${accessToken}`,
+                }
+            })
+            const fetchedMainAccounts = res.data.MainAccountList;
+            setMainAccs(fetchedMainAccounts)
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
     useEffect(() => {
         fetchBU();
+        fetchMainAccountList();
     }, [])
 
     return (
@@ -292,11 +317,7 @@ const ModalUpdateComponent = (props) => {
                                                 onChange={handleBusinessUnitDropdown}
                                                 fullWidth  // Add this to make the select field fullWidth
                                             >
-                                                {/* {Teams.map((item) => (
-                                                    <MenuItem key={type.ID} value={type.Name}>
-                                                        {type.Name}
-                                                    </MenuItem>
-                                                ))} */}
+
 
                                                 {units.map((unit) => (
                                                     <MenuItem key={unit.$id} value={unit.FinancialDimension}>
@@ -347,7 +368,7 @@ const ModalUpdateComponent = (props) => {
                                 <Stack sx={{ width: '100%' }} flexDirection='row' justifyContent='space-between' gap='30px'>
                                     <Stack sx={{ width: '60%' }}>
 
-                                        {/* Financial Dimension */}
+                                        {/* Main Account List */}
                                         <FormControl sx={{ mb: 2 }}>
                                             <InputLabel id="finDim-dropdown">Main Account</InputLabel>
                                             <Select
@@ -358,9 +379,15 @@ const ModalUpdateComponent = (props) => {
                                                 onChange={handleFinDimDropdown}
                                                 fullWidth  // Add this to make the select field fullWidth
                                             >
-                                                {
+                                                {/* {
                                                     FinDim.map((option) => <MenuItem value={option}>{option}</MenuItem>)
-                                                }
+                                                } */}
+
+                                                {mainAccs.map((acc) => (
+                                                    <MenuItem key={acc.$id} value={acc.MainAccount}>
+                                                        {acc.MainAccount}
+                                                    </MenuItem>
+                                                ))}
                                                 {/* <MenuItem value={FinDim.ASD}>ASDASD</MenuItem>
                                         <MenuItem value={FinDim.QWE}>QWEQWE</MenuItem>
                                         <MenuItem value={FinDim.ZXC}>ZXCZXC</MenuItem> */}
