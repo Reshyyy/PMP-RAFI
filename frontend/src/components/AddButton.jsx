@@ -222,6 +222,62 @@ const AddButton = () => {
         }
     }
 
+    const [units, setUnits] = useState([]);
+    const fetchBU = async () => {
+        const accessToken = localStorage.getItem('accessToken');
+
+        const formData = {
+            "RAFIPayIntegration":
+            {
+                "TargetFinDim": "Department",
+                "LegalEntity": "RAFI",
+                "CurBusinessUnit": "ITU",
+                "EmployeeID": "ID000005606"
+            }
+        }
+        try {
+            const res = await axios.post('/api/services/RAFIPAYIntegration/RAFIPAYJournalAPI/GetFinancialDimensionList', formData, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${accessToken}`,
+                }
+            })
+            const fetchedUnits = res.data.FinancialDimensionValues;
+            setUnits(fetchedUnits)
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    const [mainAccs, setMainAccs] = useState([]);
+    const fetchMainAccountList = async () => {
+        const accessToken = localStorage.getItem('accessToken');
+
+        const formData = {
+            "RAFIPayIntegration":
+            {
+                "LegalEntity": "rafi"
+            }
+        }
+        try {
+            const res = await axios.post('/api/services/RAFIPAYIntegration/RAFIPAYJournalAPI/GetMainAccountList', formData, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${accessToken}`,
+                }
+            })
+            const fetchedMainAccounts = res.data.MainAccountList;
+            setMainAccs(fetchedMainAccounts)
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    useEffect(() => {
+        fetchBU();
+        fetchMainAccountList();
+    }, []);
+
     return (
         <>
             {/* ADD BUTTON */}
@@ -328,10 +384,16 @@ const AddButton = () => {
                                             onChange={handleBusinessUnitDropdown}
                                             fullWidth  // Add this to make the select field fullWidth
                                         >
-                                            <MenuItem value={Team.ITU_OPS}>ITU-OPS</MenuItem>
+
+                                            {units.map((unit) => (
+                                                <MenuItem key={unit.$id} value={unit.FinancialDimension}>
+                                                    {unit.FinancialDimension}
+                                                </MenuItem>
+                                            ))}
+                                            {/* <MenuItem value={Team.ITU_OPS}>ITU-OPS</MenuItem>
                                             <MenuItem value={Team.ITU_INF}>ITU-INF</MenuItem>
                                             <MenuItem value={Team.ITU_SEC}>ITU-SEC</MenuItem>
-                                            <MenuItem value={Team.ITU_ETI}>ITU/ETI</MenuItem>
+                                            <MenuItem value={Team.ITU_ETI}>ITU/ETI</MenuItem> */}
                                         </Select>
                                     </FormControl>
                                 </Stack>
@@ -390,9 +452,13 @@ const AddButton = () => {
                                             onChange={handleFinDimDropdown}
                                             fullWidth  // Add this to make the select field fullWidth
                                         >
-                                            <MenuItem value={FinDim.ASD}>ASDASD</MenuItem>
-                                            <MenuItem value={FinDim.QWE}>QWEQWE</MenuItem>
-                                            <MenuItem value={FinDim.ZXC}>ZXCZXC</MenuItem>
+
+                                            {mainAccs.map((acc) => (
+                                                <MenuItem key={acc.$id} value={acc.MainAccount}>
+                                                    {acc.MainAccount}
+                                                </MenuItem>
+                                            ))}
+                                            
                                         </Select>
                                     </FormControl>
                                 </Stack>

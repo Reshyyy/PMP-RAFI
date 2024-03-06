@@ -242,7 +242,7 @@ const ModalUpdateComponent = (props) => {
     useEffect(() => {
         fetchBU();
         fetchMainAccountList();
-    }, [])
+    }, []);
 
     return (
         <div>
@@ -379,18 +379,13 @@ const ModalUpdateComponent = (props) => {
                                                 onChange={handleFinDimDropdown}
                                                 fullWidth  // Add this to make the select field fullWidth
                                             >
-                                                {/* {
-                                                    FinDim.map((option) => <MenuItem value={option}>{option}</MenuItem>)
-                                                } */}
 
                                                 {mainAccs.map((acc) => (
                                                     <MenuItem key={acc.$id} value={acc.MainAccount}>
                                                         {acc.MainAccount}
                                                     </MenuItem>
                                                 ))}
-                                                {/* <MenuItem value={FinDim.ASD}>ASDASD</MenuItem>
-                                        <MenuItem value={FinDim.QWE}>QWEQWE</MenuItem>
-                                        <MenuItem value={FinDim.ZXC}>ZXCZXC</MenuItem> */}
+
                                             </Select>
                                         </FormControl>
                                     </Stack>

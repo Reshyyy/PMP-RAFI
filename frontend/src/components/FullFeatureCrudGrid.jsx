@@ -229,7 +229,7 @@ const FullFeaturedCrudGrid = () => {
     // const [bU, setBU] = useState(null);
     // const fetchBU = async () => {
     //     const accessToken = localStorage.getItem('accessToken');
-        
+
     //     const formData = {
     //         "RAFIPayIntegration":
     //         {
@@ -532,14 +532,14 @@ const FullFeaturedCrudGrid = () => {
 
                 return [
                     <GridActionsCellItem
-                        icon={<EditIcon />}
+                        icon={<EditIcon sx={{ color: '#e5f6eb' }} />}
                         label="Edit"
                         className="textPrimary"
                         onClick={handleEditClick(id)}
                         color="inherit"
                     />,
                     <GridActionsCellItem
-                        icon={<RemoveRedEyeSharpIcon />}
+                        icon={<RemoveRedEyeSharpIcon sx={{ color: '#9fcdff' }} />}
                         label="View"
                         onClick={handleViewClick(id)}
                         color="inherit"
