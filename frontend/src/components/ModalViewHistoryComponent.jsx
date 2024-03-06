@@ -52,6 +52,9 @@ const ModalViewHistoryComponent = (props) => {
     const [pono, setPO] = useState(null);
     const [deliveryDate, setDeliveryDate] = useState(null);
     const [status, setStatus] = useState(null);
+    const [method, setMethod] = useState(null);
+    const [methods, setMethods] = useState([]);
+    const [contractDuration, setContractDuration] = useState(null);
 
     const handleTabViewChange = (event, newValue) => {
         setTabView(newValue);
@@ -123,6 +126,14 @@ const ModalViewHistoryComponent = (props) => {
         console.log(value)
     }
 
+    const handleMethodChange = (e) => {
+        setMethod(e.target.value);
+    }
+
+    const handleContractDurationChange = (e) => {
+        setContractDuration(e.target.value);
+    }
+
     const style = {
         position: 'absolute',
         top: '50%',
@@ -153,10 +164,15 @@ const ModalViewHistoryComponent = (props) => {
 
     useEffect(() => {
         if (viewExecution) {
-            console.log('view execution ID', viewExecution.Execution?.executionId)
-            setDateReq(viewExecution.Execution?.dateOfRequest)
-            setPR(viewExecution.Execution?.prno)
-            setPO(viewExecution.Execution?.pono)
+            console.log('view execution ID', viewExecution.Execution?.executionId);
+            setDateReq(viewExecution.Execution?.dateOfRequest);
+            setMethod(viewExecution.Execution?.method);
+            setContractDuration(viewExecution.Execution?.contractDuration);
+            setPR(viewExecution.Execution?.prno);
+            setPO(viewExecution.Execution?.pono);
+            setDeliveryDate(viewExecution.Execution?.deliveryDate);
+            setStatus(viewExecution.Execution?.status)
+            
         }
     }, [viewExecution])
 
@@ -192,8 +208,10 @@ const ModalViewHistoryComponent = (props) => {
 
             "emodel": {
                 executionId: viewExecution.executionId,
-                planningId:  currentRow.planningId,
+                planningId: currentRow.planningId,
                 dateOfRequest: dateReq ? dateReq.toISOString().substring(0, 10) : null,
+                method: method,
+                contractDuration: contractDuration,
                 prno: prno,
                 pono: pono,
                 deliveryDate: deliveryDate ? deliveryDate.toISOString().substring(0, 10) : null,
@@ -263,9 +281,21 @@ const ModalViewHistoryComponent = (props) => {
         }
     }
 
+    const fetchMethod = async () => {
+
+        try {
+            const res = await axios.get('http://20.188.123.92:82/ProcurementManagement/Execution/Method')
+            const fetchedMethod = res.data;
+            setMethods(fetchedMethod)
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
     useEffect(() => {
         fetchBU();
         fetchMainAccountList();
+        fetchMethod();
     }, []);
 
     return (
@@ -450,7 +480,43 @@ const ModalViewHistoryComponent = (props) => {
                                 <Stack justifyContent='center' alignItems='center'>
                                     <Stack sx={{ width: '50%' }}>
                                         {/* Date of Request */}
-                                        <BasicDatePickerExecution dateReq={dateReq} onDateReqChange={handleDateOfRequest} style={{ maxWidth: '100px' }} />
+                                        <BasicDatePickerExecution dateReq={dateReq} onDateChange={handleDateOfRequest} style={{ maxWidth: '100px' }} />
+                                    </Stack>
+
+                                    <Stack sx={{ mt: 2, width: '50%' }}>
+                                        {/* Method */}
+                                        <FormControl>
+                                            <InputLabel id="type-dropdown" required>Method</InputLabel>
+                                            <Select
+                                                labelId="type-dropdown"
+                                                id="type-dropdown"
+                                                value={method || ''}
+                                                label="Method"
+                                                onChange={handleMethodChange}
+                                                fullWidth
+                                            >
+                                                {methods.map((method) => (
+                                                    <MenuItem key={method.ID} value={method.Name}>
+                                                        {method.Name}
+                                                    </MenuItem>
+                                                ))}
+
+                                            </Select>
+                                        </FormControl>
+                                    </Stack>
+
+                                    <Stack sx={{ mt: 2, width: '50%' }}>
+                                        {/* Contract Duration */}
+                                        <TextField
+                                            sx={{ flexGrow: 1 }}
+                                            onChange={handleContractDurationChange}
+                                            fullWidth
+                                            id="outlined-required"
+                                            label="Contract Duration"
+                                            defaultValue=""
+                                            required
+                                            value={contractDuration || ''}
+                                        />
                                     </Stack>
 
                                     <Stack sx={{ mt: 2, width: '50%' }}>
@@ -483,7 +549,7 @@ const ModalViewHistoryComponent = (props) => {
 
                                     <Stack sx={{ width: '50%', mt: 2 }}>
                                         {/* Delivery Date */}
-                                        <ExecutionDeliveryDate onDateChange={handleDeliveryDateChange} style={{ maxWidth: '100px' }} required />
+                                        <ExecutionDeliveryDate date={date} onDateChange={handleDeliveryDateChange} style={{ maxWidth: '100px' }} required />
                                     </Stack>
 
                                     <Stack width="50%" sx={{ mt: 2 }}>

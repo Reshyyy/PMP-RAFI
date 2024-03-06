@@ -170,7 +170,7 @@ const ModalUpdateComponent = (props) => {
             quantity: parseInt(qty),
             totalEstAmt: parseFloat(totalEstAmt),
             finDim: finDim,
-            targetDateNeed: targetDateUpdate.toISOString().substring(0, 10) // Format: YYYY-MM-DD
+            targetDateNeed: targetDateUpdate ? targetDateUpdate.toISOString().substring(0, 10) : null
         };
 
         axios.put('http://20.188.123.92:82/ProcurementManagement/Planning/Update', formData)

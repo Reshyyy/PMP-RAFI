@@ -17,7 +17,8 @@ export default function ExecutionDeliveryDate({ onDateChange, date }) {
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <DatePicker
       label="Delivery Date"
-      value={selectedDate != null ? dayjs(selectedDate) : null}
+      // value={selectedDate != null ? dayjs(selectedDate) : null}
+      value={dayjs(date || selectedDate)}
       onChange={handleDateChange}
       inputFormat="yyyy-MM-dd"
       animateYearScrolling
