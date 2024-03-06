@@ -6,6 +6,8 @@ import rafiLogo from './../assets/rafiLogo.png'
 import { useIsAuthenticated, useMsal } from "@azure/msal-react";
 import SignOutButton from './SignOutButton';
 import './fonts.css';
+import WelcomeName from './WelcomeName';
+import Profile from '../pages/Profile';
 
 function NavbarMUI() {
     const isAuthenticated = useIsAuthenticated(); // Get the authentication status

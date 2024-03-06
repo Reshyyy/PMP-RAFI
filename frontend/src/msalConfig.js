@@ -6,5 +6,5 @@ export const msalConfig = {
       authority: import.meta.env.VITE_RAFI_AUTHORITY,
       redirectUri: '/',
     },
-  };
+};
   

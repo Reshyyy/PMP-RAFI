@@ -26,9 +26,9 @@ const SignInButton = () => {
                     'Authorization': `Bearer ${accessToken}`,
                 },
             })
-
-            setGetAuthorize(res.data);
-            console.log(getAuthorize)
+            const buData = res.data
+            console.log(buData)
+            // setGetAuthorize(res.data);
         } catch (error) {
             console.error(error)
         }

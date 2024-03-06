@@ -1,13 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Sidebar from '../components/Sidebar';
 import { Typography, Grid, Stack } from '@mui/material';
 import SearchBarMUI from '../components/SearchBarMUI';
 import AddButton from '../components/AddButton';
 import FullFeaturedCrudGrid from '../components/FullFeatureCrudGrid';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { useMsal } from "@azure/msal-react";
 
 const HomePage = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const { instance } = useMsal();
+
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);

@@ -3,6 +3,7 @@ import { useMsalAuthentication } from '@azure/msal-react'
 import { InteractionType } from '@azure/msal-browser'
 import { useEffect, useState } from 'react'
 import { retrieveData } from "../Fetch";
+import ProfileData from "../components/ProfileData";
 
 
 const Profile = () => {
@@ -21,7 +22,7 @@ const Profile = () => {
       return;
     }
     if (result) {
-      const accessToken = result.accessToken;
+      const accessToken  = result.accessToken;
       console.log(accessToken);
       retrieveData("https://graph.microsoft.com/v1.0/me", accessToken)
         .then((response) => setDisplayData(response))

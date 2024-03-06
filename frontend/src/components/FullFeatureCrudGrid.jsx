@@ -218,10 +218,6 @@ const FullFeaturedCrudGrid = () => {
     useEffect(() => {
         fetchRecords();
         fetchTypes();
-        // fetchFinDim();
-        // fetchMainAccount();
-        // fetchAuthorize();
-        fetchAuthorize();
     }, [page, pageSize]);
 
     const handleRowEditStop = (params, event) => {
@@ -230,29 +226,32 @@ const FullFeaturedCrudGrid = () => {
         }
     };
 
-    const [getAuthorize, setGetAuthorize] = useState(null);
-    const fetchAuthorize = async () => {
-        console.log(localStorage.getItem('username'))
+    const [bU, setBU] = useState(null);
+    const fetchBU = async () => {
+        const accessToken = localStorage.getItem('accessToken');
+        
         const formData = {
             "RAFIPayIntegration":
             {
-                "EmailAddress": localStorage.getItem('username')
+                "TargetFinDim": "Department",
+                "LegalEntity": "RAFI",
+                "CurBusinessUnit": "ITU",
+                "EmployeeID": "ID000005606"
             }
         }
         try {
-            const res = await axios.post('http://20.188.123.92:82/api/services/RAFIPAYIntegration/RAFIPayUserAPI/Authorization', formData, {
+            const res = await axios.post('/api/services/RAFIPAYIntegration/RAFIPAYJournalAPI/GetFinancialDimensionList', formData, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${accessToken}`,
-                },
+                }
             })
-
-            setGetAuthorize(res.data);
-            console.log('test:', getAuthorize);
+            setBU(res.data)
         } catch (error) {
-            console.error(error)
+            console.error(error);
         }
     }
+
 
     const [dataToUpdate, setDataToUpdate] = useState(null)
     const [totalRows, setTotalRows] = useState(0);
@@ -269,7 +268,8 @@ const FullFeaturedCrudGrid = () => {
 
     useEffect(() => {
         fetchData()
-    }, [page, pageSize])
+        fetchBU();
+    }, [])
 
     // Execution
     const [executionDetails, setExecutionDetails] = useState();
