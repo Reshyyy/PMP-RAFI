@@ -11,6 +11,40 @@ const HomePage = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { instance } = useMsal();
 
+  // const [getDefaultBU, setGetDefaultBU] = useState([]);
+
+  // const fetchDefaultBusinessUnit = async () => {
+  //   const accessToken = localStorage.getItem('accessToken')
+  //   const getEmail = localStorage.getItem('username')
+
+  //   const formData = {
+  //     "RAFIPayIntegration":
+  //     {
+  //       // "EmailAddress": "ian.lavadia@rafi.ph"
+  //       "EmailAddress": `${getEmail}`
+  //     }
+  //   }
+
+  //   try {
+  //     const res = await axios.post('/api/services/RAFIPAYIntegration/RAFIPayUserAPI/Authorization', formData, {
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         'Authorization': `Bearer ${accessToken}`,
+  //       }
+  //     });
+  //     // setGetDefaultBU(res.data);
+  //     localStorage.setItem('userInfo', JSON.stringify(res.data))
+
+  //   } catch (error) {
+  //     console.error('Error fetching Default Business Unit', error);
+  //   }
+  // }
+
+
+  // useEffect(() => {
+  //   fetchDefaultBusinessUnit();
+  // }, [])
+
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -27,6 +61,9 @@ const HomePage = () => {
       },
     },
   });
+
+
+
 
   return (
     <ThemeProvider theme={theme}>

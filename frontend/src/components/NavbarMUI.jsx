@@ -8,11 +8,14 @@ import SignOutButton from './SignOutButton';
 import './fonts.css';
 import WelcomeName from './WelcomeName';
 import Profile from '../pages/Profile';
+import { useEffect } from 'react';
+import axios from 'axios';
 
 function NavbarMUI() {
-    const isAuthenticated = useIsAuthenticated(); // Get the authentication status
+    const isAuthenticated = useIsAuthenticated();
     const theme = useTheme();
     const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
+    
 
     return (
         <Box sx={{ backgroundColor: '#fff' }}>

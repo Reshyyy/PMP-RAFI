@@ -8,6 +8,7 @@ import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Close';
 import RemoveRedEyeSharpIcon from '@mui/icons-material/RemoveRedEyeSharp';
+import FilterListIcon from '@mui/icons-material/FilterList';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import {
     GridRowModes,
@@ -25,7 +26,7 @@ import {
     randomId,
     randomArrayItem,
 } from '@mui/x-data-grid-generator';
-import { FormControl, InputLabel, MenuItem, Modal, Select, Stack, Tab, TextField } from '@mui/material';
+import { FormControl, FormHelperText, InputLabel, MenuItem, Modal, Select, Stack, Tab, TextField } from '@mui/material';
 import axios from 'axios';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
@@ -42,7 +43,7 @@ const randomRole = () => {
 };
 
 const EditToolbar = (props) => {
-    const { setRows, setRowModesModel } = props;
+    const { setRows, setRowModesModel, userDeptInfo } = props;
 
     const apiRef = useGridApiContext(0);
 
@@ -56,9 +57,10 @@ const EditToolbar = (props) => {
     };
 
     const [records, setRecords] = useState([]);
-
+    const asd = localStorage.getItem('userInfo') != null ? JSON.parse(localStorage.getItem('userInfo')) : ''
     const fetchUpdatedData = () => {
-        axios.get('http://20.188.123.92:82/ProcurementManagement/Planning/Filter?page=1')
+        // axios.get('http://20.188.123.92:82/ProcurementManagement/Planning/Filter?page=1')
+        axios.get(`http://20.188.123.92:82/ProcurementManagement/Planning/Filter?Department=${asd.DefaultDepartment}&page=1`)
             .then(response => {
                 // Transform the values in the 'targetDateNeed' field into Date objects
                 const transformedRows = response.data.map(row => ({
@@ -72,13 +74,47 @@ const EditToolbar = (props) => {
                 setError(error); // Handle any errors
             });
     }
-    const handleRefreshButton = () => {
+
+    const handleRefreshButton = async () => {
         fetchUpdatedData();
     }
+    const [bUnit, setBUnit] = useState();
+    const handleUnitsDropdown = (e) => {
+        setBUnit(e.target.value)
+    }
 
+    const [units, setUnits] = useState([]);
+    const fetchBU = async () => {
+        const accessToken = localStorage.getItem('accessToken');
+
+        const formData = {
+            "RAFIPayIntegration":
+            {
+                "TargetFinDim": "Department",
+                "LegalEntity": "RAFI",
+                "CurBusinessUnit": "ITU",
+                "EmployeeID": "ID000005606"
+            }
+        }
+        try {
+            const res = await axios.post('/api/services/RAFIPAYIntegration/RAFIPAYJournalAPI/GetFinancialDimensionList', formData, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${accessToken}`,
+                }
+            })
+            const fetchedUnits = res.data.FinancialDimensionValues;
+            setUnits(fetchedUnits)
+        } catch (error) {
+            console.error(error);
+        }
+    }
+    useEffect(() => {
+        fetchBU();
+    }, [])
 
     return (
-        <Stack flexDirection='row'>
+        <Stack flexDirection='row' justifyContent='justify-between'>
             <GridToolbarContainer>
                 {/* <Button color="primary" startIcon={<AddIcon />} onClick={handleClick}>
                     Add record
@@ -100,11 +136,11 @@ const EditToolbar = (props) => {
                 }} color="primary" startIcon={<ArrowUpwardIcon onClick={handleUploadClick}/>}>
                     Upload
                 </Button> */}
-
-                <Button color="primary" startIcon={<RefreshIcon />} onClick={handleRefreshButton}>
-                    Refresh
-                </Button>
-
+                <Stack flexDirection='row'>
+                    <Button color="primary" startIcon={<RefreshIcon />} onClick={handleRefreshButton}>
+                        Refresh
+                    </Button>
+                </Stack>
                 <GridToolbarExport
                     csvOptions={{
                         fileName: 'PMP',
@@ -114,9 +150,33 @@ const EditToolbar = (props) => {
                         hideFooter: true,
                         hideToolbar: true,
                     }}
-
                 />
-            </GridToolbarContainer >
+
+
+                <Stack>
+                    {asd.DefaultDepartment === "ITU-GEN" &&
+                        <FormControl sx={{ m: 1, minWidth: 100 }}>
+                            <InputLabel id="demo-simple-select-label" required>None</InputLabel>
+                            <Select
+                                displayEmpty
+                                inputProps={{ 'aria-label': 'Without label' }}
+                                onChange={handleUnitsDropdown}
+                                placeholder='none'
+                            >
+                                {console.log(units)}
+                                {units.map((unit) => (
+                                    <MenuItem key={unit.$id} value={unit.FinancialDimension}>
+                                        {unit.FinancialDimension}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    }
+
+                </Stack>
+
+
+            </GridToolbarContainer>
         </Stack>
     );
 }
@@ -153,25 +213,6 @@ const FullFeaturedCrudGrid = () => {
 
 
     const [records, setRecords] = useState([])
-    const [getFinDim, setGetFinDim] = useState(null);
-
-    const fetchFinDim = async () => {
-        const formData = {
-            "RAFIPayIntegration":
-            {
-                "TargetFinDim": "Department",
-                "LegalEntity": "RAFI",
-                "CurBusinessUnit": "ITU",
-                "EmployeeID": "ID000005606"
-            }
-        }
-        try {
-            const res = await axios.post('http://20.188.123.92:82/api/services/RAFIPAYIntegration/RAFIPAYJournalAPI/GetFinancialDimensionList', formData);
-            setGetFinDim('fetched findim:', res.data);
-        } catch (error) {
-            console.error('error fetching findim', error)
-        }
-    }
 
     const [getMainAcc, setGetMainAcc] = useState(null);
 
@@ -180,7 +221,7 @@ const FullFeaturedCrudGrid = () => {
             const res = await axios.get('http://20.188.123.92:82/api/services/RAFIPAYIntegration/RAFIPAYJournalAPI/GetMainAccountList');
             setGetMainAcc(res.data);
         } catch (error) {
-            console.error('Erro Fetching Main Account', error)
+            console.error('Error Fetching Main Account', error)
         }
     }
 
@@ -199,8 +240,11 @@ const FullFeaturedCrudGrid = () => {
             });
     }
 
+
+
     const fetchRecords = () => {
-        axios.get('http://20.188.123.92:82/ProcurementManagement/Planning/Filter?page=1')
+        // axios.get('http://20.188.123.92:82/ProcurementManagement/Planning/Filter')
+        axios.get(`http://20.188.123.92:82/ProcurementManagement/Planning/Filter?Department=${userDeptInfo.DefaultDepartment}&page=1`)
             .then(response => {
                 // Transform the values in the 'targetDateNeed' field into Date objects
                 const transformedRows = response.data.map(row => ({
@@ -218,7 +262,7 @@ const FullFeaturedCrudGrid = () => {
     useEffect(() => {
         fetchRecords();
         fetchTypes();
-    }, [page, pageSize]);
+    }, []);
 
     const handleRowEditStop = (params, event) => {
         if (params.reason === GridRowEditStopReasons.rowFocusOut) {
@@ -255,30 +299,32 @@ const FullFeaturedCrudGrid = () => {
 
     const [dataToUpdate, setDataToUpdate] = useState(null)
     const [totalRows, setTotalRows] = useState(0);
-    const fetchData = () => {
-        axios.get('http://20.188.123.92:82/ProcurementManagement/Planning/Filter')
-            .then((res) => {
-                setDataToUpdate(res.data)
-                console.log('fetched data', dataToUpdate)
-            })
-            .catch((err) => {
-                console.error(err)
-            })
-    }
+    // const fetchData = () => {
+    //     axios.get('http://20.188.123.92:82/ProcurementManagement/Planning/Filter?Search=""')
+    //         .then((res) => {
+    //             setDataToUpdate(res.data)
+    //         })
+    //         .catch((err) => {
+    //             console.error(err)
+    //         })
+    // }
 
-    useEffect(() => {
-        fetchData()
-        // fetchBU();
-    }, [])
+    // useEffect(() => {
+    //     fetchData()
+    //     // fetchBU();
+    // }, [])
 
     // Execution
     const [executionDetails, setExecutionDetails] = useState();
     const [viewExecution, setViewExecution] = useState(null);
+    const userDeptInfo = localStorage.getItem('userInfo') != null ? JSON.parse(localStorage.getItem('userInfo')) : ''
 
     const handleViewClick = (id) => () => {
         setIsViewModalOpen(true);
         setModalClicked('view')
         console.log('Viewing row:', id);
+
+        // console.log(DefaultBusinessUnit)
 
         let row = apiRef.current.getRowWithUpdatedValues(id);
         setCurrentRow(row);
@@ -289,21 +335,20 @@ const FullFeaturedCrudGrid = () => {
                 const viewExecution = response.data;
                 // Set the fetched types to the state
                 setViewExecution(viewExecution);
-                console.log('View Execution Details:', viewExecution)
+                console.log('View Execution Details:', viewExecution);
             })
             .catch(error => {
                 console.error(error); // Handle any errors
             });
-
     };
 
     const [modalClicked, setModalClicked] = useState('')
     const handleEditClick = (id) => () => {
         setIsModalOpen(true);
         setModalClicked('edit')
-        fetchData();
-        // fetchExecutionDetails(id);
+        // fetchData();
 
+        // fetchExecutionDetails(id);
         axios.get(`http://20.188.123.92:82/ProcurementManagement/Execution/GetExecution/${id}`)
             .then(response => {
                 // If the request is successful, extract type data from the response
@@ -319,7 +364,7 @@ const FullFeaturedCrudGrid = () => {
         let row = apiRef.current.getRowWithUpdatedValues(id)
         setCurrentRow(row);
 
-        console.log('Selected ID', id)
+        console.log('Edit - Selected ID', id)
         axios.get('http://20.188.123.92:82/ProcurementManagement/Planning/Type')
             .then(response => {
                 // If the request is successful, extract type data from the response
@@ -404,7 +449,6 @@ const FullFeaturedCrudGrid = () => {
             .catch(error => {
                 console.error(error);
             })
-
     };
 
     const handleCancelClick = (id) => () => {
@@ -532,14 +576,14 @@ const FullFeaturedCrudGrid = () => {
 
                 return [
                     <GridActionsCellItem
-                        icon={<EditIcon sx={{ color: '#e5f6eb' }} />}
+                        icon={<EditIcon />}
                         label="Edit"
                         className="textPrimary"
                         onClick={handleEditClick(id)}
                         color="inherit"
                     />,
                     <GridActionsCellItem
-                        icon={<RemoveRedEyeSharpIcon sx={{ color: '#9fcdff' }} />}
+                        icon={<RemoveRedEyeSharpIcon />}
                         label="View"
                         onClick={handleViewClick(id)}
                         color="inherit"
@@ -580,7 +624,7 @@ const FullFeaturedCrudGrid = () => {
                 onRowEditStop={handleRowEditStop}
                 processRowUpdate={processRowUpdate}
                 slots={{
-                    toolbar: EditToolbar
+                    toolbar: EditToolbar, GridToolbar
                 }}
                 slotProps={{
                     toolbar: { setRows, setRowModesModel },
@@ -594,7 +638,7 @@ const FullFeaturedCrudGrid = () => {
                 }}
                 paginationMode="client"
                 pagination
-                pageSizeOptions={[5, 10, 25]}
+                // pageSizeOptions={[5, 10, 25]}
                 autoPageSize
                 keepNonExistentRowsSelected
             />
@@ -604,7 +648,7 @@ const FullFeaturedCrudGrid = () => {
 
             {modalClicked === 'edit' && <ModalUpdateComponent open={isModalOpen} setIsModalOpen={setIsModalOpen} onClose={handleModalClose} currentRow={currentRow} executionDetails={executionDetails} />}
 
-            {modalClicked === 'view' && <ModalViewHistoryComponent openView={isViewModalOpen} setIsViewModalOpen={setIsViewModalOpen} onCloseView={handleViewModalClose} currentRow={currentRow} viewExecution={viewExecution} />}
+            {modalClicked === 'view' && <ModalViewHistoryComponent isFPGPRO={userDeptInfo?.DefaultDepartment} isITU={userDeptInfo?.DefaultBusinessUnit} openView={isViewModalOpen} setIsViewModalOpen={setIsViewModalOpen} onCloseView={handleViewModalClose} currentRow={currentRow} viewExecution={viewExecution} />}
 
         </Box>
 

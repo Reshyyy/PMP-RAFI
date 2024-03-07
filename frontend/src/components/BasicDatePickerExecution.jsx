@@ -22,6 +22,7 @@ export default function BasicDatePickerExecution({ onDateChange, dateReq }) {
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <DatePicker
         label="Date of Request"
+        readOnly
         value={dayjs(dateReq || selectedDate)}
         onChange={handleDateChange}
         inputFormat="yyyy-MM-dd"
