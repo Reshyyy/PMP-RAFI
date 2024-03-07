@@ -160,7 +160,7 @@ const AddButton = () => {
                 setTypes(fetchedTypes);
             })
             .catch(error => {
-                console.error(error); // Handle any errors
+                console.error('Error fetching business unit',error); // Handle any errors
             });
     }, []);
 
@@ -272,6 +272,11 @@ const AddButton = () => {
             console.error(error);
         }
     }
+
+
+
+
+
 
     useEffect(() => {
         fetchBU();
@@ -458,7 +463,7 @@ const AddButton = () => {
                                                     {acc.MainAccount}
                                                 </MenuItem>
                                             ))}
-                                            
+
                                         </Select>
                                     </FormControl>
                                 </Stack>

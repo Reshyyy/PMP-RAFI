@@ -33,7 +33,7 @@ const Recurring = [1, 0];
 
 const ModalViewHistoryComponent = (props) => {
     const [tabView, setTabView] = React.useState('1');
-    const { openView, setIsViewModalOpen, onCloseView, currentRow, viewExecution } = props;
+    const { openView, setIsViewModalOpen, onCloseView, currentRow, viewExecution, isITU, isFPGPRO } = props;
     const [description, setDescription] = useState(null);
     const [specs, setSpecs] = useState(null);
     const [type, setType] = useState(null);
@@ -172,7 +172,7 @@ const ModalViewHistoryComponent = (props) => {
             setPO(viewExecution.Execution?.pono);
             setDeliveryDate(viewExecution.Execution?.deliveryDate);
             setStatus(viewExecution.Execution?.status)
-            
+
         }
     }, [viewExecution])
 
@@ -298,15 +298,313 @@ const ModalViewHistoryComponent = (props) => {
         fetchMethod();
     }, []);
 
+
+
     return (
         <div>
-            <Modal
+            {isITU === "ITU" && <Modal
                 open={openView}
                 onClose={onCloseView}
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description">
                 <Box sx={style}>
                     <TabContext value={tabView} >
+                        <p>READONLY</p>
+                        <TabList onChange={handleTabViewChange} aria-label="lab API tabs example">
+                            <Tab label="Planning" value="1" />
+                            <Tab label="Execution" value="2" />
+                        </TabList>
+                        {currentRow && (
+                            <TabPanel value="1">
+                                <Stack sx={{ mb: 2 }} spacing={2}>
+                                    {/* Description */}
+                                    <TextField
+                                        sx={{ flexGrow: 1 }}
+                                        fullWidth
+                                        id="outlined-required"
+                                        label="Description"
+                                        defaultValue=""
+                                        required
+                                        value={description || ''}
+                                        inputProps={{ readOnly: true }}
+                                    ></TextField>
+                                    {/* Specs */}
+                                    <TextField
+                                        sx={{ flexGrow: 1 }}
+                                        fullWidth
+                                        id="outlined-required"
+                                        label="Specs"
+                                        defaultValue=""
+                                        value={specs || ''}
+                                        inputProps={{ readOnly: true }}
+                                    ></TextField>
+                                </Stack>
+
+                                <Stack sx={{ width: '100%' }} flexDirection='row' justifyContent='space-between' gap='16px'>
+                                    <Stack sx={{ width: '33%' }}>
+                                        {/* Type */}
+                                        <FormControl sx={{ mb: 2 }}>
+                                            <InputLabel id="type-dropdown" required>Type</InputLabel>
+                                            <Select
+                                                labelId="type-dropdown"
+                                                id="type-dropdown"
+                                                value={type || ''}
+                                                label="Type"
+                                                onChange={handleTypeChangeDropdown} x
+                                                inputProps={{ readOnly: true }}
+                                                fullWidth
+                                            >
+                                                {types.map((type) => (
+                                                    <MenuItem key={type.ID} value={type.Name}>
+                                                        {type.Name}
+                                                    </MenuItem>
+                                                ))}
+                                            </Select>
+                                        </FormControl>
+                                    </Stack>
+
+                                    <Stack sx={{ width: '33%' }}>
+                                        {/* Business Unit */}
+                                        <FormControl sx={{ mb: 2 }}>
+                                            <InputLabel id="demo-simple-select-label" required>Business Unit</InputLabel>
+                                            <Select
+                                                labelId="demo-simple-select-label"
+                                                id="demo-simple-select"
+                                                value={businessUnit || ''}
+                                                label="Business Unit"
+                                                onChange={handleBusinessUnitDropdown}
+                                                fullWidth  // Add this to make the select field fullWidth
+                                                inputProps={{ readOnly: true }}
+                                            >
+
+                                                {units.map((unit) => (
+                                                    <MenuItem key={unit.$id} value={unit.FinancialDimension}>
+                                                        {unit.FinancialDimension}
+                                                    </MenuItem>
+                                                ))}
+
+                                            </Select>
+                                        </FormControl>
+                                    </Stack>
+                                    <Stack sx={{ width: '33%' }}>
+                                        {/* Quantity */}
+                                        <TextField
+                                            sx={{ mb: 2 }}
+                                            id="outlined-number"
+                                            label="Quantity"
+                                            type="number"
+                                            InputLabelProps={{
+                                                shrink: true,
+                                            }}
+                                            fullWidth  // Add this to make the text field fullWidth
+                                            placeholder='0'
+                                            onChange={handleQtyChange}
+                                            value={qty}
+                                            inputProps={{ readOnly: true }}
+                                        />
+                                    </Stack>
+                                    <Stack sx={{ width: '33%' }}>
+                                        {/* Total Estimated Amount */}
+                                        <TextField
+                                            sx={{ mb: 2 }}
+                                            id="outlined-number"
+                                            label="Total Estimated Amount"
+                                            type="number"
+                                            InputLabelProps={{
+                                                shrink: true,
+                                            }}
+                                            fullWidth
+                                            placeholder='0.00'
+                                            required
+                                            onChange={handleTotalChange}
+                                            value={totalEstAmt || ''}
+                                            inputProps={{ readOnly: true }}
+                                        />
+                                    </Stack>
+                                </Stack>
+
+                                <Stack sx={{ width: '100%' }} flexDirection='row' justifyContent='space-between' gap='30px'>
+                                    <Stack sx={{ width: '60%' }}>
+
+                                        {/* Financial Dimension */}
+                                        <FormControl sx={{ mb: 2 }}>
+                                            <InputLabel id="finDim-dropdown">Main Account</InputLabel>
+                                            <Select
+                                                labelId="finDim-dropdown"
+                                                id="finDim-dropdown"
+                                                value={finDim || ''}
+                                                label="Main Account"
+                                                onChange={handleFinDimDropdown}
+                                                fullWidth  // Add this to make the select field fullWidth
+                                                inputProps={{ readOnly: true }}
+                                            >
+                                                {mainAccs.map((acc) => (
+                                                    <MenuItem key={acc.$id} value={acc.MainAccount}>
+                                                        {acc.MainAccount}
+                                                    </MenuItem>
+                                                ))}
+
+                                            </Select>
+                                        </FormControl>
+                                    </Stack>
+                                    <Stack sx={{ width: '30%' }}>
+                                        {/* Target Date */}
+                                        <ExecTargetDate date={date} onDateChange={handleDateChange} style={{ maxWidth: '100px' }} />
+                                    </Stack>
+                                    <Stack sx={{ width: '30%' }}>
+                                        {/* Recurring */}
+                                        <FormControl readOnly>
+                                            <FormLabel id="recurring-rb" required>Recurring</FormLabel>
+                                            <RadioGroup
+                                                row
+                                                aria-labelledby="demo-row-radio-buttons-group-label"
+                                                name="row-radio-buttons-group"
+                                                // value={recurring || ''}
+                                                defaultValue={currentRow.recurring}
+                                                onChange={handleRecurringChange}
+                                            >
+                                                {/* {Recurring.map((recur) => {
+                                                    <FormControlLabel key={recur} value={recur} control={<Radio />} label="Yes" />
+                                                })} */}
+                                                <FormControlLabel disabled control={<Radio value={1} />} label="Yes" />
+                                                <FormControlLabel disabled control={<Radio value={0} />} label="No" />
+                                            </RadioGroup>
+                                        </FormControl>
+                                    </Stack>
+                                </Stack>
+
+                                <Divider />
+                                <Stack direction='row' justifyContent='flex-end' marginTop={2} spacing={2}>
+                                    <Button onClick={() => setIsViewModalOpen(false)} variant="outlined" sx={{ width: '80px' }}>Cancel</Button>
+                                    <Button disabled onClick={handleUpdateExecution} variant="contained" sx={{ width: '80px', bgcolor: '#FFD23F', '&:hover': { backgroundColor: '#FFA732' } }}>Update</Button>
+                                </Stack>
+                            </TabPanel>
+                        )}
+
+
+                        {viewExecution && (
+                            // EXECUTION TAB
+                            <TabPanel value="2">
+                                <Stack justifyContent='center' alignItems='center'>
+                                    <Stack sx={{ width: '50%' }}>
+                                        {/* Date of Request */}
+                                        <BasicDatePickerExecution dateReq={dateReq} onDateChange={handleDateOfRequest} style={{ maxWidth: '100px' }} />
+                                    </Stack>
+
+                                    <Stack sx={{ mt: 2, width: '50%' }}>
+                                        {/* Method */}
+                                        <FormControl>
+                                            <InputLabel id="type-dropdown" required>Method</InputLabel>
+                                            <Select
+                                                labelId="type-dropdown"
+                                                id="type-dropdown"
+                                                value={method || ''}
+                                                label="Method"
+                                                onChange={handleMethodChange}
+                                                fullWidth
+                                                inputProps={{ readOnly: true }}
+                                            >
+                                                {methods.map((method) => (
+                                                    <MenuItem key={method.ID} value={method.Name}>
+                                                        {method.Name}
+                                                    </MenuItem>
+                                                ))}
+
+                                            </Select>
+                                        </FormControl>
+                                    </Stack>
+
+                                    <Stack sx={{ mt: 2, width: '50%' }}>
+                                        {/* Contract Duration */}
+                                        <TextField
+                                            sx={{ flexGrow: 1 }}
+                                            onChange={handleContractDurationChange}
+                                            fullWidth
+                                            id="outlined-required"
+                                            label="Contract Duration"
+                                            defaultValue=""
+                                            required
+                                            value={contractDuration || ''}
+                                            inputProps={{ readOnly: true }}
+                                        />
+                                    </Stack>
+
+                                    <Stack sx={{ mt: 2, width: '50%' }}>
+                                        {/* PR # */}
+                                        <TextField
+                                            sx={{ flexGrow: 1 }}
+                                            onChange={handlePRChange}
+                                            fullWidth
+                                            id="outlined-required"
+                                            label="PR #"
+                                            defaultValue=""
+                                            required
+                                            value={prno || ''}
+                                            inputProps={{ readOnly: true }}
+                                        />
+                                    </Stack>
+
+                                    <Stack sx={{ mt: 2, width: '50%' }}>
+                                        {/* PO # */}
+                                        <TextField
+                                            sx={{ flexGrow: 1 }}
+                                            fullWidth
+                                            id="outlined-required"
+                                            label="PO #"
+                                            defaultValue=""
+                                            required
+                                            value={pono || ''}
+                                            onChange={handlePOChange}
+                                            readOnly
+                                            inputProps={{ readOnly: true }}
+                                        />
+                                    </Stack>
+
+                                    <Stack sx={{ width: '50%', mt: 2 }}>
+                                        {/* Delivery Date */}
+                                        <ExecutionDeliveryDate date={date} onDateChange={handleDeliveryDateChange} style={{ maxWidth: '100px' }} required />
+                                    </Stack>
+
+                                    <Stack width="50%" sx={{ mt: 2 }}>
+                                        {/* Status */}
+                                        <FormControl sx={{ mb: 2 }}>
+                                            <InputLabel id="demo-simple-select-label" required>Status</InputLabel>
+                                            <Select
+                                                labelId="demo-simple-select-label"
+                                                id="demo-simple-select"
+                                                value={status || ''}
+                                                label="Team"
+                                                onChange={handleStatusDropdown}
+                                                fullWidth  // Add this to make the select field fullWidth
+                                                readOnly
+                                            >
+                                                <MenuItem value={Status.delivered}>DELIVERED</MenuItem>
+                                                <MenuItem value={Status.notDelivered}>NOT DELIVERED</MenuItem>
+                                            </Select>
+                                        </FormControl>
+                                    </Stack>
+                                </Stack>
+
+                                <Divider />
+
+                                <Stack direction='row' justifyContent='flex-end' marginTop={2} spacing={2}>
+                                    <Button onClick={() => setIsViewModalOpen(false)} variant="outlined" sx={{ width: '80px' }}>Cancel</Button>
+                                    <Button disabled onClick={handleUpdateExecution} variant="contained" sx={{ width: '80px', bgcolor: '#FFD23F', '&:hover': { backgroundColor: '#FFA732' } }}>Update</Button>
+                                </Stack>
+
+                            </TabPanel>
+                        )}
+                    </TabContext>
+                </Box>
+            </Modal>}
+            {isFPGPRO === "FPG-PRO" && <Modal
+                open={openView}
+                onClose={onCloseView}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description">
+                <Box sx={style}>
+                    <TabContext value={tabView} >
+                        <p>sfsfsfsfsf</p>
                         <TabList onChange={handleTabViewChange} aria-label="lab API tabs example">
                             <Tab label="Planning" value="1" />
                             <Tab label="Execution" value="2" />
@@ -582,7 +880,8 @@ const ModalViewHistoryComponent = (props) => {
                         )}
                     </TabContext>
                 </Box>
-            </Modal>
+            </Modal>}
+
         </div>
     )
 }

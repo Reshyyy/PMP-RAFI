@@ -124,7 +124,7 @@ const ModalUpdateComponent = (props) => {
 
     useEffect(() => {
         if (currentRow) {
-            console.log('selected ID', currentRow.planningId)
+            // console.log('selected ID', currentRow.planningId)
             setDescription(currentRow.description);
             setSpecs(currentRow.specifcation);
             setType(currentRow.type);
@@ -256,7 +256,7 @@ const ModalUpdateComponent = (props) => {
                         <TabContext value={tabVal} >
                             <TabList onChange={handleTabChange} aria-label="lab API tabs example">
                                 <Tab label="Planning" value="1" />
-                                <Tab label="Execution" value="2" />
+                                <Tab label="Execution" value="2" disabled/>
                             </TabList>
                             <TabPanel value="1">
                                 <Stack sx={{ mb: 2 }} spacing={2}>

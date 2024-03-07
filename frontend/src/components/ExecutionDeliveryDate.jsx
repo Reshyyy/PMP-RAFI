@@ -9,7 +9,7 @@ export default function ExecutionDeliveryDate({ onDateChange, date }) {
   const [selectedDate, setSelectedDate] = useState(null);
 
   const handleDateChange = (date) => {
-    setSelectedDate(date)
+    setSelectedDate(date);
     onDateChange(date);
   }
 
@@ -17,6 +17,7 @@ export default function ExecutionDeliveryDate({ onDateChange, date }) {
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <DatePicker
       label="Delivery Date"
+      readOnly
       // value={selectedDate != null ? dayjs(selectedDate) : null}
       value={dayjs(date || selectedDate)}
       onChange={handleDateChange}

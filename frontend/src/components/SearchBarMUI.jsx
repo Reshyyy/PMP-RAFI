@@ -1,13 +1,22 @@
-import { Box, Container, InputAdornment, TextField } from "@mui/material";
+import { Box, Container, IconButton, InputAdornment, TextField } from "@mui/material";
 import { useState } from "react";
 import SearchIcon from "@mui/icons-material/Search";
+import FullFeaturedCrudGrid from "./FullFeatureCrudGrid";
 
 export default function SearchBarMUI() {
   const [searchTerm, setSearchTerm] = useState("");
+  const [filteredResults, setFilteredResults] = useState([]);
 
-  const handleChange = (event) => {
-    setSearchTerm(event.target.value);
+  const handleChange = (e) => {
+    setSearchTerm(e.target.value);
   };
+
+  const handleSearchClick = () => {
+    const results = data.filter(item => {
+      item.name.toLowerCase().includes(searchTerm.toLowerCase())
+    })
+    setFilteredResults(results);
+  }
 
   return (
     <>
@@ -21,7 +30,10 @@ export default function SearchBarMUI() {
         InputProps={{
           endAdornment: (
             <InputAdornment position="end">
-              <SearchIcon />
+              <IconButton onClick={handleSearchClick}>
+                <SearchIcon />
+              </IconButton>
+
             </InputAdornment>
           ),
         }}

@@ -8,35 +8,60 @@ import { msalInstance } from '../msalInstance';
 const SignInButton = () => {
     const { instance, accounts } = useMsal();
     const [username, setUsername] = useState('')
-
     const [getAuthorize, setGetAuthorize] = useState(null);
+    const accessToken = localStorage.getItem('accessToken')
 
-    const fetchAuthorize = async () => {
-        console.log(localStorage.getItem('username'))
+    // const fetchAuthorize = async () => {
+    //     console.log(localStorage.getItem('username'))
+    //     const formData = {
+    //         "RAFIPayIntegration":
+    //         {
+    //             "EmailAddress": localStorage.getItem('username')
+    //         }
+    //     }
+    //     try {
+    //         const res = await axios.post('http://20.188.123.92:82/api/services/RAFIPAYIntegration/RAFIPayUserAPI/Authorization', formData, {
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //                 'Authorization': `Bearer ${accessToken}`,
+    //             },
+    //         })
+    //         const buData = res.data
+    //         console.log(buData)
+    //         localStorage.setItem('userInfo', JSON.stringify(res.data))
+    //         // setGetAuthorize(res.data);
+    //     } catch (error) {
+    //         console.error('Error fetching Department', error)
+    //     }
+    // }
+
+    const fetchDefaultBusinessUnit = async () => {
+        const accessToken = localStorage.getItem('accessToken')
+        const getEmail = localStorage.getItem('username')
+
         const formData = {
             "RAFIPayIntegration":
             {
-                "EmailAddress": localStorage.getItem('username')
+                "EmailAddress": "ian.lavadia@rafi.ph"
+                // "EmailAddress": `${getEmail}`
             }
         }
+
         try {
-            const res = await axios.post('http://20.188.123.92:82/api/services/RAFIPAYIntegration/RAFIPayUserAPI/Authorization', formData, {
+            const res = await axios.post('/api/services/RAFIPAYIntegration/RAFIPayUserAPI/Authorization', formData, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${accessToken}`,
-                },
-            })
-            const buData = res.data
-            console.log(buData)
-            // setGetAuthorize(res.data);
+                }
+            });
+            // setGetDefaultBU(res.data);
+            localStorage.setItem('userInfo', JSON.stringify(res.data))
+
         } catch (error) {
-            console.error(error)
+            console.error('Error fetching Default Business Unit', error);
         }
     }
 
-    useEffect(() => {
-        fetchAuthorize();
-    }, [])
 
     useEffect(() => {
         // Check if there's a signed-in account
@@ -53,7 +78,9 @@ const SignInButton = () => {
             await instance.loginPopup({
                 scopes: ["user.read"],
             })
-            fetchToken();
+            await fetchToken();
+            // fetchAuthorize();
+            await fetchDefaultBusinessUnit();
 
         } catch (error) {
             console.log(error);
