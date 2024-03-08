@@ -49,6 +49,7 @@ const ModalUpdateComponent = (props) => {
     const [prno, setPR] = useState(null);
     const [pono, setPO] = useState(null);
     const [status, setStatus] = useState(null);
+    const [isChecked, setIsChecked] = useState(null);
 
     const handleTabChange = (event, newValue) => {
         setTabVal(newValue);
@@ -134,6 +135,7 @@ const ModalUpdateComponent = (props) => {
             setFinDim(currentRow.finDim);
             setDate(currentRow.targetDateNeed);
             setRecurring(currentRow.recurring);
+            console.log('recurring', currentRow.recurring)
         }
 
         fetchTypes();
@@ -256,7 +258,7 @@ const ModalUpdateComponent = (props) => {
                         <TabContext value={tabVal} >
                             <TabList onChange={handleTabChange} aria-label="lab API tabs example">
                                 <Tab label="Planning" value="1" />
-                                <Tab label="Execution" value="2" disabled/>
+                                <Tab label="Execution" value="2" disabled />
                             </TabList>
                             <TabPanel value="1">
                                 <Stack sx={{ mb: 2 }} spacing={2}>
@@ -317,8 +319,6 @@ const ModalUpdateComponent = (props) => {
                                                 onChange={handleBusinessUnitDropdown}
                                                 fullWidth  // Add this to make the select field fullWidth
                                             >
-
-
                                                 {units.map((unit) => (
                                                     <MenuItem key={unit.$id} value={unit.FinancialDimension}>
                                                         {unit.FinancialDimension}
@@ -406,12 +406,13 @@ const ModalUpdateComponent = (props) => {
                                                 // value={recurring || ''}
                                                 defaultValue={currentRow.recurring}
                                                 onChange={handleRecurringChange}
+
                                             >
                                                 {/* {Recurring.map((recur) => {
                                                     <FormControlLabel key={recur} value={recur} control={<Radio />} label="Yes" />
                                                 })} */}
-                                                <FormControlLabel control={<Radio value={1} />} label="Yes" />
-                                                <FormControlLabel control={<Radio value={0} />} label="No" />
+                                                <FormControlLabel defaultChecked={currentRow.recurring === true} control={<Radio value={1} />} label="Yes" />
+                                                <FormControlLabel defaultChecked={currentRow.recurring === false} control={<Radio value={0} />} label="No" />
                                             </RadioGroup>
                                         </FormControl>
                                     </Stack>

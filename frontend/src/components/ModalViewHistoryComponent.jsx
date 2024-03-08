@@ -299,7 +299,6 @@ const ModalViewHistoryComponent = (props) => {
     }, []);
 
 
-
     return (
         <div>
             {isITU === "ITU" && <Modal

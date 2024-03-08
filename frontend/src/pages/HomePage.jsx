@@ -1,50 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import Sidebar from '../components/Sidebar';
-import { Typography, Grid, Stack } from '@mui/material';
+import { Typography, Grid, Stack, TextField, InputAdornment, IconButton } from '@mui/material';
 import SearchBarMUI from '../components/SearchBarMUI';
 import AddButton from '../components/AddButton';
 import FullFeaturedCrudGrid from '../components/FullFeatureCrudGrid';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { useMsal } from "@azure/msal-react";
+import SearchIcon from "@mui/icons-material/Search";
 
 const HomePage = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { instance } = useMsal();
-
-  // const [getDefaultBU, setGetDefaultBU] = useState([]);
-
-  // const fetchDefaultBusinessUnit = async () => {
-  //   const accessToken = localStorage.getItem('accessToken')
-  //   const getEmail = localStorage.getItem('username')
-
-  //   const formData = {
-  //     "RAFIPayIntegration":
-  //     {
-  //       // "EmailAddress": "ian.lavadia@rafi.ph"
-  //       "EmailAddress": `${getEmail}`
-  //     }
-  //   }
-
-  //   try {
-  //     const res = await axios.post('/api/services/RAFIPAYIntegration/RAFIPayUserAPI/Authorization', formData, {
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //         'Authorization': `Bearer ${accessToken}`,
-  //       }
-  //     });
-  //     // setGetDefaultBU(res.data);
-  //     localStorage.setItem('userInfo', JSON.stringify(res.data))
-
-  //   } catch (error) {
-  //     console.error('Error fetching Default Business Unit', error);
-  //   }
-  // }
-
-
-  // useEffect(() => {
-  //   fetchDefaultBusinessUnit();
-  // }, [])
-
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -62,6 +28,23 @@ const HomePage = () => {
     },
   });
 
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+
+  const handleSearch = async () => {
+    console.log(searchTerm)
+    try {
+      const response = await fetch(`http://20.188.123.92:82/ProcurementManagement/Planning/Filter?Search=${searchTerm}&Department=${asd.DefaultDepartment}&page=1`);
+      const data = await response.json();
+      setSearchResults(data);
+    } catch (error) {
+      console.error('Error fetching search results:', error);
+    }
+  };
+
+  const handleChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
 
 
 
@@ -82,12 +65,30 @@ const HomePage = () => {
             </Stack>
             {/* Searchbar Component */}
             <Stack>
-              <SearchBarMUI />
+              {/* <SearchBarMUI /> */}
+              {/* <TextField
+                id="search"
+                type="search"
+                label="Search"
+                value={searchTerm}
+                onChange={handleChange}
+                sx={{ width: 300, bgcolor: 'white', borderRadius: 1 }}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton onClick={handleSearch}>
+                        <SearchIcon />
+                      </IconButton>
+
+                    </InputAdornment>
+                  ),
+                }}
+              /> */}
             </Stack>
           </Stack>
 
           <Stack mt={1}>
-            <FullFeaturedCrudGrid />
+            <FullFeaturedCrudGrid searchTerm={searchTerm} searchResults={searchResults} />
           </Stack>
         </Grid>
       </Grid>

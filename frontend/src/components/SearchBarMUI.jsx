@@ -3,20 +3,24 @@ import { useState } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import FullFeaturedCrudGrid from "./FullFeatureCrudGrid";
 
-export default function SearchBarMUI() {
+export default function SearchBarMUI(sr) {
   const [searchTerm, setSearchTerm] = useState("");
-  const [filteredResults, setFilteredResults] = useState([]);
+  const [searchResults, setSearchResults] = useState([]);
+
+  const handleSearch = async () => {
+    try {
+      const response = await fetch(`http://20.188.123.92:82/ProcurementManagement/Filter?Search=${searchTerm}&page=1`);
+      const data = await response.json();
+      setSearchResults(data);
+      sr(searchResults)
+    } catch (error) {
+      console.error('Error fetching search results:', error);
+    } 
+  };
 
   const handleChange = (e) => {
     setSearchTerm(e.target.value);
   };
-
-  const handleSearchClick = () => {
-    const results = data.filter(item => {
-      item.name.toLowerCase().includes(searchTerm.toLowerCase())
-    })
-    setFilteredResults(results);
-  }
 
   return (
     <>
@@ -30,7 +34,7 @@ export default function SearchBarMUI() {
         InputProps={{
           endAdornment: (
             <InputAdornment position="end">
-              <IconButton onClick={handleSearchClick}>
+              <IconButton onClick={handleSearch}>
                 <SearchIcon />
               </IconButton>
 

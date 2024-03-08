@@ -18,7 +18,8 @@ import {
     GridRowEditStopReasons,
     useGridApiContext,
     GridToolbar,
-    GridToolbarExport
+    GridToolbarExport,
+    GridToolbarFilterButton
 } from '@mui/x-data-grid';
 import {
     randomCreatedDate,
@@ -26,7 +27,7 @@ import {
     randomId,
     randomArrayItem,
 } from '@mui/x-data-grid-generator';
-import { FormControl, FormHelperText, InputLabel, MenuItem, Modal, Select, Stack, Tab, TextField } from '@mui/material';
+import { FormControl, FormHelperText, IconButton, InputAdornment, InputLabel, MenuItem, Modal, Select, Stack, Tab, TextField } from '@mui/material';
 import axios from 'axios';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
@@ -35,6 +36,7 @@ import ModalAddCOmponent from './ModalAddComponent';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import ModalUpdateComponent from './ModalUpdateComponent';
 import ModalViewHistoryComponent from './ModalViewHistoryComponent';
+import SearchIcon from "@mui/icons-material/Search";
 import { useMsal } from '@azure/msal-react';
 
 const roles = ['Market', 'Finance', 'Development'];
@@ -44,30 +46,20 @@ const randomRole = () => {
 
 const EditToolbar = (props) => {
     const { setRows, setRowModesModel, userDeptInfo } = props;
-
     const apiRef = useGridApiContext(0);
-
-    const handleClick = () => {
-        const id = randomId();
-        setRows((oldRows) => [...oldRows, { id, description: '', specs: '', type: '', qty: '', total: '', finDim: '', targetDate: '', recurring: '', isNew: true }]);
-        setRowModesModel((oldModel) => ({
-            ...oldModel,
-            [id]: { mode: GridRowModes.Edit, fieldToFocus: 'description' },
-        }));
-    };
+    const [searchTerm, setSearchTerm] = useState("");
+    const [searchResults, setSearchResults] = useState([]);
 
     const [records, setRecords] = useState([]);
     const asd = localStorage.getItem('userInfo') != null ? JSON.parse(localStorage.getItem('userInfo')) : ''
     const fetchUpdatedData = () => {
-        // axios.get('http://20.188.123.92:82/ProcurementManagement/Planning/Filter?page=1')
-        axios.get(`http://20.188.123.92:82/ProcurementManagement/Planning/Filter?Department=${asd.DefaultDepartment}&page=1`)
+        axios.get(`http://20.188.123.92:82/ProcurementManagement/Planning/Filter?&Department=${asd.DefaultDepartment}&page=1`)
             .then(response => {
                 // Transform the values in the 'targetDateNeed' field into Date objects
                 const transformedRows = response.data.map(row => ({
                     ...row,
                     targetDateNeed: new Date(row.targetDateNeed),
                 }));
-                // Update state with transformed data
                 setRows(transformedRows);
             })
             .catch(error => {
@@ -88,7 +80,7 @@ const EditToolbar = (props) => {
 
         // Make API call to fetch data based on selected value
         try {
-            const response = await fetch(`http://20.188.123.92:82/ProcurementManagement/Planning/Filter?Department=${selectedValue}&page=1`);
+            const response = await fetch(`http://20.188.123.92:82/ProcurementManagement/Planning/Filter?Search=${searchTerm}&Department=${selectedValue}&page=1`);
             if (!response.ok) {
                 throw new Error('Failed to fetch data');
             }
@@ -135,6 +127,37 @@ const EditToolbar = (props) => {
         fetchBU();
     }, [])
 
+    // const handleSearch = async () => {
+    //     try {
+    //         const response = await fetch(`http://20.188.123.92:82/ProcurementManagement/Planning/Filter?Search=${searchTerm}&Department=${asd.DefaultDepartment}&page=1`);
+    //         const data = await response.json();
+    //         setSearchResults(data);
+    //         await fetchUpdatedData();
+    //     } catch (error) {
+    //         console.error('Error fetching search results:', error);
+    //     }
+    // };
+
+    const handleSearch = async () => {
+        try {
+            const response = await axios.get(`http://20.188.123.92:82/ProcurementManagement/Planning/Filter?Search=${searchTerm}&Department=${asd.DefaultDepartment}&page=1`);
+            const transformedRows = response.data.map(row => ({
+                ...row,
+                targetDateNeed: new Date(row.targetDateNeed),
+            }));
+            setRows(transformedRows); // Update state with transformed data
+        } catch (error) {
+            setError(error); // Handle any errors
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+
+    const handleSearchChange = (e) => {
+        setSearchTerm(e.target.value);
+    };
+
     return (
         <Stack flexDirection='row' justifyContent='justify-between'>
             <GridToolbarContainer>
@@ -154,9 +177,11 @@ const EditToolbar = (props) => {
                     }}
                 />
 
+                <GridToolbarFilterButton />
+
 
                 <Stack>
-                    {asd.DefaultDepartment === "ITU-GEN" &&
+                    {asd.DefaultDepartment === "FPG-PRO" &&
                         <FormControl sx={{ minWidth: 120 }} size="small">
                             {/* <InputLabel id="demo-select-small-label">Age</InputLabel> */}
                             <Select
@@ -178,19 +203,40 @@ const EditToolbar = (props) => {
 
                 </Stack>
 
+                <Stack>
+                    <TextField
+                        id="search"
+                        type="search"
+                        // label="Search"
+                        size='small'
+                        value={searchTerm}
+                        onChange={handleSearchChange}
+                        sx={{ width: 300, bgcolor: 'white', borderRadius: 1 }}
+                        InputProps={{
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                    <IconButton onClick={handleSearch}>
+                                        <SearchIcon />
+                                    </IconButton>
+                                </InputAdornment>
+                            ),
+                        }}
+                    />
+                </Stack>
+
 
             </GridToolbarContainer>
         </Stack>
     );
 }
 
-const FullFeaturedCrudGrid = () => {
+const FullFeaturedCrudGrid = ({ searchResults }) => {
     const [rows, setRows] = React.useState([]);
     const [rowModesModel, setRowModesModel] = useState({});
     const [page, setPage] = useState(1);
     const [pageSize, setPageSize] = useState(10);
     const apiRef = React.useRef(null);
-
+    const [searchTerm, setSearchTerm] = useState('')
 
     // State for storing fetched types
     const [types, setTypes] = useState([]);

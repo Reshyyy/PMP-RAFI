@@ -1,8 +1,19 @@
 import { Box, Divider, Link, Typography } from '@mui/material';
-import React from 'react';
+import React, { useState } from 'react';
 
 
 const Sidebar = () => {
+    const [searchQuery, setSearchQuery] = useState('');
+    const [filteredItems, setFilteredItems] = useState([]);
+
+    const handleSearch = (query) => {
+        setSearchQuery(query);
+        const filtered = items.filter(item =>
+            item.name.toLowerCase().includes(query.toLowerCase())
+        );
+        setFilteredItems(filtered);
+    };
+
     return (
         <Box
             sx={{
@@ -18,7 +29,7 @@ const Sidebar = () => {
                 <Typography variant="h4" fontWeight="bold" mb={4}>
                     PMP
                 </Typography>
-                <Divider sx={{mb:3, backgroundColor:'rgba(255, 255, 255, 0.5)' }}/>
+                <Divider sx={{ mb: 3, backgroundColor: 'rgba(255, 255, 255, 0.5)' }} />
                 <nav>
                     <Link href="#" underline="none" sx={{ display: 'block', py: 2.5, px: 4, borderRadius: 1, transition: 'background-color 200ms', color: 'white', fontSize: '1.2rem', '&:hover': { backgroundColor: '#4b5563' } }}>Home</Link>
                     {/* <Divider sx={{ backgroundColor: 'rgba(255, 255, 255, 0.5)' }} /> */}
