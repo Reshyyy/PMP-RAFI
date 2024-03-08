@@ -201,9 +201,11 @@ const FullFeaturedCrudGrid = ({ searchResults }) => {
     const [rows, setRows] = React.useState([]);
     const [rowModesModel, setRowModesModel] = useState({});
     const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(0);
     const [pageSize, setPageSize] = useState(10);
     const apiRef = React.useRef(null);
     const [searchTerm, setSearchTerm] = useState('')
+
 
     // State for storing fetched types
     const [types, setTypes] = useState([]);
@@ -246,7 +248,7 @@ const FullFeaturedCrudGrid = ({ searchResults }) => {
     // Fetching of Data
     const fetchRecords = () => {
         // axios.get('http://20.188.123.92:82/ProcurementManagement/Planning/Filter')
-        axios.get(`http://20.188.123.92:82/ProcurementManagement/Planning/Filter?Department=${userDeptInfo.DefaultDepartment}&page=1`)
+        axios.get(`http://20.188.123.92:82/ProcurementManagement/Planning/Filter?Department=${userDeptInfo.DefaultDepartment}&page=${page}`)
             .then(response => {
                 // Transform the values in the 'targetDateNeed' field into Date objects
                 const transformedRows = response.data.map(row => ({
@@ -255,6 +257,7 @@ const FullFeaturedCrudGrid = ({ searchResults }) => {
                 }));
                 // Update state with transformed data
                 setRows(transformedRows);
+                setTotalPages(transformedRows.totalPages)
             })
             .catch(error => {
                 console.error(error); // Handle any errors
@@ -265,6 +268,10 @@ const FullFeaturedCrudGrid = ({ searchResults }) => {
         fetchRecords();
         fetchTypes();
     }, []);
+
+    const handlePageChange = (newPage) => {
+        setPage(newPage);
+    };
 
     const handleRowEditStop = (params, event) => {
         if (params.reason === GridRowEditStopReasons.rowFocusOut) {
@@ -390,10 +397,6 @@ const FullFeaturedCrudGrid = ({ searchResults }) => {
 
     const handleModalClose = () => {
         setIsModalOpen(false);
-    };
-
-    const handlePageChange = (newPage) => {
-        setPage(newPage);
     };
 
     const handlePageSizeChange = (newPageSize) => {
@@ -595,11 +598,13 @@ const FullFeaturedCrudGrid = ({ searchResults }) => {
                     },
                     bgcolor: 'white'
                 }}
-                paginationMode="client"
-                pagination
-                // pageSizeOptions={[5, 10, 25]}
-                autoPageSize
                 keepNonExistentRowsSelected
+                pagination
+                pageSize={20}
+                rowCount={totalPages * 20}
+                paginationMode="server"
+                onPaginationModelChange={(newPage) => handlePageChange(newPage)}
+
             />
 
             {modalClicked === 'edit' && <ModalUpdateComponent open={isModalOpen} setIsModalOpen={setIsModalOpen} onClose={handleModalClose} currentRow={currentRow} executionDetails={executionDetails} />}
