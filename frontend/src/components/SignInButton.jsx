@@ -81,6 +81,7 @@ const SignInButton = () => {
             await fetchToken();
             // fetchAuthorize();
             await fetchDefaultBusinessUnit();
+            location.reload();
 
         } catch (error) {
             console.log(error);

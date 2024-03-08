@@ -78,9 +78,31 @@ const EditToolbar = (props) => {
     const handleRefreshButton = async () => {
         fetchUpdatedData();
     }
-    const [bUnit, setBUnit] = useState();
-    const handleUnitsDropdown = (e) => {
-        setBUnit(e.target.value)
+
+    const [bUnit, setBUnit] = useState(asd.DefaultDepartment);
+    const [gridData, setGridData] = useState([]);
+
+    const handleUnitsDropdown = async (e) => {
+        const selectedValue = e.target.value;
+        setBUnit(selectedValue)
+
+        // Make API call to fetch data based on selected value
+        try {
+            const response = await fetch(`http://20.188.123.92:82/ProcurementManagement/Planning/Filter?Department=${selectedValue}&page=1`);
+            if (!response.ok) {
+                throw new Error('Failed to fetch data');
+            }
+            const data = await response.json();
+            // Convert 'targetDateNeed' field to Date objects
+            const modifiedData = data.map(row => ({
+                ...row,
+                targetDateNeed: new Date(row.targetDateNeed)
+            }));
+
+            setRows(modifiedData);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
     }
 
     const [units, setUnits] = useState([]);
@@ -116,26 +138,6 @@ const EditToolbar = (props) => {
     return (
         <Stack flexDirection='row' justifyContent='justify-between'>
             <GridToolbarContainer>
-                {/* <Button color="primary" startIcon={<AddIcon />} onClick={handleClick}>
-                    Add record
-                </Button> */}
-
-                {/* <Button variant='outlined' sx={{
-                    position: 'absolute',
-                    top: '-53px',
-                    backgroundColor: '#f6e05e',
-                    '&:hover': {
-                        backgroundColor: '#90cdf4',
-                    },
-                    color: '#1a202c',
-                    fontWeight: 'bold',
-                    padding: '8px 16px',
-                    borderRadius: '9999px',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                }} color="primary" startIcon={<ArrowUpwardIcon onClick={handleUploadClick}/>}>
-                    Upload
-                </Button> */}
                 <Stack flexDirection='row'>
                     <Button color="primary" startIcon={<RefreshIcon />} onClick={handleRefreshButton}>
                         Refresh
@@ -155,15 +157,15 @@ const EditToolbar = (props) => {
 
                 <Stack>
                     {asd.DefaultDepartment === "ITU-GEN" &&
-                        <FormControl sx={{ m: 1, minWidth: 100 }}>
-                            <InputLabel id="demo-simple-select-label" required>None</InputLabel>
+                        <FormControl sx={{ minWidth: 120 }} size="small">
+                            {/* <InputLabel id="demo-select-small-label">Age</InputLabel> */}
                             <Select
                                 displayEmpty
-                                inputProps={{ 'aria-label': 'Without label' }}
+                                value={bUnit || ''}
                                 onChange={handleUnitsDropdown}
-                                placeholder='none'
+                                inputProps={{ 'aria-label': 'Without label' }}
                             >
-                                {console.log(units)}
+
                                 {units.map((unit) => (
                                     <MenuItem key={unit.$id} value={unit.FinancialDimension}>
                                         {unit.FinancialDimension}
@@ -171,6 +173,7 @@ const EditToolbar = (props) => {
                                 ))}
                             </Select>
                         </FormControl>
+
                     }
 
                 </Stack>
@@ -186,22 +189,8 @@ const FullFeaturedCrudGrid = () => {
     const [rowModesModel, setRowModesModel] = useState({});
     const [page, setPage] = useState(1);
     const [pageSize, setPageSize] = useState(10);
-
-
-
     const apiRef = React.useRef(null);
 
-    const style = {
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        width: 800,
-        bgcolor: 'background.paper',
-        border: '1px solid #000',
-        boxShadow: 24,
-        p: 4,
-    };
 
     // State for storing fetched types
     const [types, setTypes] = useState([]);
@@ -241,7 +230,7 @@ const FullFeaturedCrudGrid = () => {
     }
 
 
-
+    // Fetching of Data
     const fetchRecords = () => {
         // axios.get('http://20.188.123.92:82/ProcurementManagement/Planning/Filter')
         axios.get(`http://20.188.123.92:82/ProcurementManagement/Planning/Filter?Department=${userDeptInfo.DefaultDepartment}&page=1`)
@@ -269,50 +258,8 @@ const FullFeaturedCrudGrid = () => {
             event.defaultMuiPrevented = true;
         }
     };
-
-    // const [bU, setBU] = useState(null);
-    // const fetchBU = async () => {
-    //     const accessToken = localStorage.getItem('accessToken');
-
-    //     const formData = {
-    //         "RAFIPayIntegration":
-    //         {
-    //             "TargetFinDim": "Department",
-    //             "LegalEntity": "RAFI",
-    //             "CurBusinessUnit": "ITU",
-    //             "EmployeeID": "ID000005606"
-    //         }
-    //     }
-    //     try {
-    //         const res = await axios.post('/api/services/RAFIPAYIntegration/RAFIPAYJournalAPI/GetFinancialDimensionList', formData, {
-    //             headers: {
-    //                 'Content-Type': 'application/json',
-    //                 'Authorization': `Bearer ${accessToken}`,
-    //             }
-    //         })
-    //         setBU(res.data)
-    //     } catch (error) {
-    //         console.error(error);
-    //     }
-    // }
-
-
     const [dataToUpdate, setDataToUpdate] = useState(null)
     const [totalRows, setTotalRows] = useState(0);
-    // const fetchData = () => {
-    //     axios.get('http://20.188.123.92:82/ProcurementManagement/Planning/Filter?Search=""')
-    //         .then((res) => {
-    //             setDataToUpdate(res.data)
-    //         })
-    //         .catch((err) => {
-    //             console.error(err)
-    //         })
-    // }
-
-    // useEffect(() => {
-    //     fetchData()
-    //     // fetchBU();
-    // }, [])
 
     // Execution
     const [executionDetails, setExecutionDetails] = useState();
@@ -473,8 +420,6 @@ const FullFeaturedCrudGrid = () => {
         setRowModesModel(newRowModesModel);
     };
 
-
-
     const columns = [
         { field: 'description', headerName: 'Description', width: 200, editable: false },
         {
@@ -508,7 +453,7 @@ const FullFeaturedCrudGrid = () => {
             headerName: 'Recurring',
             type: 'singleSelect',
             valueOptions: ['No', 'Yes'],
-            width: 120,
+            width: 100,
             editable: false,
             valueGetter: (params) => params.value ? 'Yes' : 'No'
         },
@@ -613,6 +558,7 @@ const FullFeaturedCrudGrid = () => {
 
             }}
         >
+
             <DataGrid
                 rows={rows}
                 columns={columns}
@@ -642,9 +588,6 @@ const FullFeaturedCrudGrid = () => {
                 autoPageSize
                 keepNonExistentRowsSelected
             />
-
-
-            {/* <ModalAddCOmponent open={isModalOpen} setIsModalOpen={setIsModalOpen} onClose={handleModalClose} currentRow={currentRow} /> */}
 
             {modalClicked === 'edit' && <ModalUpdateComponent open={isModalOpen} setIsModalOpen={setIsModalOpen} onClose={handleModalClose} currentRow={currentRow} executionDetails={executionDetails} />}
 
