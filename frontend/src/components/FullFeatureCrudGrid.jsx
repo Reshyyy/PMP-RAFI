@@ -159,13 +159,12 @@ const EditToolbar = (props) => {
     };
 
     return (
-        <Stack flexDirection='row' justifyContent='justify-between'>
-            <GridToolbarContainer>
-                <Stack flexDirection='row'>
-                    <Button color="primary" startIcon={<RefreshIcon />} onClick={handleRefreshButton}>
-                        Refresh
-                    </Button>
-                </Stack>
+        <GridToolbarContainer>
+            {/* Left side */}
+            <Stack direction="row" spacing={1}>
+                <Button color="primary" startIcon={<RefreshIcon />} onClick={handleRefreshButton}>
+                    Refresh
+                </Button>
                 <GridToolbarExport
                     csvOptions={{
                         fileName: 'PMP',
@@ -176,57 +175,25 @@ const EditToolbar = (props) => {
                         hideToolbar: true,
                     }}
                 />
+            </Stack>
 
-                <GridToolbarFilterButton />
-
-
-                <Stack>
-                    {asd.DefaultDepartment === "FPG-PRO" &&
-                        <FormControl sx={{ minWidth: 120 }} size="small">
-                            {/* <InputLabel id="demo-select-small-label">Age</InputLabel> */}
-                            <Select
-                                displayEmpty
-                                value={bUnit || ''}
-                                onChange={handleUnitsDropdown}
-                                inputProps={{ 'aria-label': 'Without label' }}
-                            >
-
-                                {units.map((unit) => (
-                                    <MenuItem key={unit.$id} value={unit.FinancialDimension}>
-                                        {unit.FinancialDimension}
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
-
-                    }
-
-                </Stack>
-
-                <Stack>
-                    <TextField
-                        id="search"
-                        type="search"
-                        // label="Search"
-                        size='small'
-                        value={searchTerm}
-                        onChange={handleSearchChange}
-                        sx={{ width: 300, bgcolor: 'white', borderRadius: 1 }}
-                        InputProps={{
-                            endAdornment: (
-                                <InputAdornment position="end">
-                                    <IconButton onClick={handleSearch}>
-                                        <SearchIcon />
-                                    </IconButton>
-                                </InputAdornment>
-                            ),
-                        }}
-                    />
-                </Stack>
-
-
-            </GridToolbarContainer>
-        </Stack>
+            {/* Right side */}
+            <Stack direction="row" alignItems="center" spacing={1} sx={{ marginLeft: 'auto', top: -50, position: 'relative', bgcolor: '#fff' }}>
+                <TextField
+                    id="search"
+                    type="search"
+                    size="small"
+                    onChange={handleSearchChange}
+                    InputProps={{
+                        endAdornment: (
+                            <IconButton onClick={handleSearch}>
+                                <SearchIcon />
+                            </IconButton>
+                        ),
+                    }}
+                />
+            </Stack>
+        </GridToolbarContainer>
     );
 }
 
