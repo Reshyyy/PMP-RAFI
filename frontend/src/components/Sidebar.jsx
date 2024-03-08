@@ -1,5 +1,6 @@
-import { Box, Divider, Link, Typography } from '@mui/material';
+import { Box, Divider, Link, Stack, Typography } from '@mui/material';
 import React, { useState } from 'react';
+import pmpLogoSBasd from './../assets/pmpLogoSBasd.png'
 
 
 const Sidebar = () => {
@@ -26,9 +27,18 @@ const Sidebar = () => {
             }}
         >
             <Box sx={{ padding: '16px' }}>
-                <Typography variant="h4" fontWeight="bold" mb={4}>
-                    PMP
-                </Typography>
+                <Stack flexDirection="row" mb={2}>
+                    <Stack>
+                        <img src={pmpLogoSBasd} style={{ width: '100px', height: '70px' }} />
+                    </Stack>
+                    <Stack justifyContent='center' alignItems='center' textAlign='center'>
+                        <Typography sx={{ textAlign: 'center', alignSelf: 'centerd' }} variant="h4" fontWeight="bold" mb={1}>
+                            PMP
+                        </Typography>
+                    </Stack>
+                </Stack>
+
+
                 <Divider sx={{ mb: 3, backgroundColor: 'rgba(255, 255, 255, 0.5)' }} />
                 <nav>
                     <Link href="#" underline="none" sx={{ display: 'block', py: 2.5, px: 4, borderRadius: 1, transition: 'background-color 200ms', color: 'white', fontSize: '1.2rem', '&:hover': { backgroundColor: '#4b5563' } }}>Home</Link>

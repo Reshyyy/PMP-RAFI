@@ -22,7 +22,7 @@ function NavbarMUI() {
             <Toolbar>
                 <Grid container spacing={1}>
                     <Grid item xs={10} sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'start', alignItems: 'center' }}>
-                        <img src={rafiLogo} style={{ width: '100px', height: '50px' }} />
+                        <img src={rafiLogo} style={{ width: '115px', height: '60px' }} />
                         <Box>
                             <Typography variant={isSmallScreen ? 'subtitle2' : 'subtitle1'} style={{ color: '#000', fontWeight: 'bold' }}>
                                 PROCUREMENT MANAGEMENT PLAN

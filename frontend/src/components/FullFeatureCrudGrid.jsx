@@ -178,7 +178,7 @@ const EditToolbar = (props) => {
             </Stack>
 
             {/* Right side */}
-            <Stack direction="row" alignItems="center" spacing={1} sx={{ marginLeft: 'auto', top: -50, position: 'relative', bgcolor: '#fff' }}>
+            <Stack direction="row" alignItems="center" spacing={1} sx={{ marginLeft: 'auto', top: -50, left: 5, position: 'relative', bgcolor: '#fff' }}>
                 <TextField
                     id="search"
                     type="search"
@@ -481,9 +481,9 @@ const FullFeaturedCrudGrid = ({ searchResults }) => {
         },
         {
             field: 'totalEstAmt',
-            headerName: 'Total Estimated Amount',
+            headerName: 'Total Est. Amount',
             type: 'number',
-            width: 150,
+            width: 120,
             align: 'left',
             headerAlign: 'left',
             editable: false,
@@ -491,7 +491,7 @@ const FullFeaturedCrudGrid = ({ searchResults }) => {
         {
             field: 'finDim',
             headerName: 'Main Account',
-            width: 150,
+            width: 180,
             align: 'left',
             headerAlign: 'left',
             editable: false,
@@ -500,7 +500,7 @@ const FullFeaturedCrudGrid = ({ searchResults }) => {
             field: 'targetDateNeed',
             headerName: 'Target Date',
             type: 'date',
-            width: 120,
+            width: 100,
             editable: false,
         },
         {

@@ -79,8 +79,10 @@ const SignInButton = () => {
             await instance.loginPopup({
                 scopes: ["user.read"],
             })
+            
             await fetchToken();
             // fetchAuthorize();
+            
             await fetchDefaultBusinessUnit();
             location.reload();
 

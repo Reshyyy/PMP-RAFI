@@ -317,7 +317,7 @@ const AddButton = () => {
                     <TabContext value={tabVal} >
                         <TabList onChange={handleTabChange} aria-label="lab API tabs example">
                             <Tab label="Planning" value="1" />
-                            <Tab label="Execution" value="2" />
+                            {/* <Tab label="Execution" value="2" /> */}
                         </TabList>
                         <TabPanel value="1">
                             <Stack sx={{ mb: 2 }} spacing={2}>
@@ -501,72 +501,7 @@ const AddButton = () => {
                             </Stack>
                         </TabPanel>
 
-                        {/* Execution Tab */}
-                        <TabPanel value="2">
-                            <Stack justifyContent='center' alignItems='center'>
-                                <Stack sx={{ width: '50%' }}>
-                                    {/* Target Date */}
-                                    <BasicDatePickerExecution onDateChange={handleDateChange} style={{ maxWidth: '100px' }} />
-                                </Stack>
-
-                                <Stack sx={{ mt: 2, width: '50%' }}>
-                                    {/* PR # */}
-                                    <TextField
-                                        sx={{ flexGrow: 1 }}
-                                        onChange={handlePRChange}
-                                        fullWidth
-                                        id="outlined-required"
-                                        label="PR #"
-                                        defaultValue=""
-                                        required
-                                    />
-                                </Stack>
-
-                                <Stack sx={{ mt: 2, width: '50%' }}>
-                                    {/* PO # */}
-                                    <TextField
-                                        sx={{ flexGrow: 1 }}
-                                        fullWidth
-                                        id="outlined-required"
-                                        label="PO #"
-                                        defaultValue=""
-                                        required
-                                    />
-                                </Stack>
-
-                                <Stack sx={{ width: '50%', mt: 2 }}>
-                                    {/* Target Date */}
-                                    <ExecutionDeliveryDate onDateChange={handleDateChange} style={{ maxWidth: '100px' }} required />
-
-                                </Stack>
-
-                                <Stack width="50%" sx={{ mt: 2 }}>
-                                    {/* Status */}
-                                    <FormControl sx={{ mb: 2 }}>
-                                        <InputLabel id="demo-simple-select-label" required>Status</InputLabel>
-                                        <Select
-                                            labelId="demo-simple-select-label"
-                                            id="demo-simple-select"
-                                            value={status}
-                                            label="Team"
-                                            onChange={handleStatusDropdown}
-                                            fullWidth  // Add this to make the select field fullWidth
-                                        >
-                                            <MenuItem value={Status.delivered}>DELIVERED</MenuItem>
-                                            <MenuItem value={Status.notDelivered}>NOT DELIVERED</MenuItem>
-                                        </Select>
-                                    </FormControl>
-                                </Stack>
-                            </Stack>
-
-                            <Divider />
-
-                            <Stack direction='row' justifyContent='flex-end' marginTop={2} spacing={2}>
-                                <Button onClick={handleClose} variant="outlined" sx={{ width: '80px' }}>Cancel</Button>
-                                <Button variant="contained" sx={{ width: '80px', bgcolor: '#FFD23F', '&:hover': { backgroundColor: '#FFA732' } }}>Update</Button>
-                            </Stack>
-
-                        </TabPanel>
+                        
                     </TabContext>
 
                 </Box>
