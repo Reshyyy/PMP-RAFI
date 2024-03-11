@@ -7,6 +7,7 @@ import FullFeaturedCrudGrid from '../components/FullFeatureCrudGrid';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { useMsal } from "@azure/msal-react";
 import SearchIcon from "@mui/icons-material/Search";
+import rafiBG from './../assets/rafiBG.png'
 
 const HomePage = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);

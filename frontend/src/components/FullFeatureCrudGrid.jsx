@@ -53,7 +53,7 @@ const EditToolbar = (props) => {
     const [records, setRecords] = useState([]);
     const asd = localStorage.getItem('userInfo') != null ? JSON.parse(localStorage.getItem('userInfo')) : ''
     const fetchUpdatedData = () => {
-        axios.get(`http://20.188.123.92:82/ProcurementManagement/Planning/Filter?&Department=${asd.DefaultDepartment}&page=1`)
+        axios.get(`http://20.188.123.92:82/ProcurementManagement/Planning/Filter?Department=${asd.DefaultDepartment}&page=1`)
             .then(response => {
                 // Transform the values in the 'targetDateNeed' field into Date objects
                 const transformedRows = response.data.map(row => ({
@@ -139,18 +139,20 @@ const EditToolbar = (props) => {
     // };
 
     const handleSearch = async () => {
-        try {
-            const response = await axios.get(`http://20.188.123.92:82/ProcurementManagement/Planning/Filter?Search=${searchTerm}&Department=${asd.DefaultDepartment}&page=1`);
-            const transformedRows = response.data.map(row => ({
-                ...row,
-                targetDateNeed: new Date(row.targetDateNeed),
-            }));
-            setRows(transformedRows); // Update state with transformed data
-        } catch (error) {
-            setError(error); // Handle any errors
-        } finally {
-            setIsLoading(false);
+        if (searchTerm) {
+            try {
+                const response = await axios.get(`http://20.188.123.92:82/ProcurementManagement/Planning/Filter?Search=${searchTerm}&Department=${asd.DefaultDepartment}&page=1`);
+                const transformedRows = response.data.map(row => ({
+                    ...row,
+                    targetDateNeed: new Date(row.targetDateNeed),
+                }));
+                setRows(transformedRows);
+                // await fetchUpdatedData(); // Update state with transformed data
+            } catch (error) {
+                console.error(error); // Handle any errors
+            }
         }
+
     };
 
 
@@ -177,6 +179,29 @@ const EditToolbar = (props) => {
                 />
             </Stack>
 
+            <Stack>
+                {asd.DefaultDepartment === "FPG-PRO" &&
+                    <FormControl sx={{ minWidth: 120 }} size="small">
+                        {/* <InputLabel id="demo-select-small-label">Age</InputLabel> */}
+                        <Select
+                            displayEmpty
+                            value={bUnit || ''}
+                            onChange={handleUnitsDropdown}
+                            inputProps={{ 'aria-label': 'Without label' }}
+                        >
+
+                            {units.map((unit) => (
+                                <MenuItem key={unit.$id} value={unit.FinancialDimension}>
+                                    {unit.FinancialDimension}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+
+                }
+
+            </Stack>
+
             {/* Right side */}
             <Stack direction="row" alignItems="center" spacing={1} sx={{ marginLeft: 'auto', top: -50, left: 5, position: 'relative', bgcolor: '#fff' }}>
                 <TextField
@@ -193,11 +218,14 @@ const EditToolbar = (props) => {
                     }}
                 />
             </Stack>
+
+
         </GridToolbarContainer>
     );
 }
 
 const FullFeaturedCrudGrid = ({ searchResults }) => {
+    console.log(searchResults)
     const [rows, setRows] = React.useState([]);
     const [rowModesModel, setRowModesModel] = useState({});
     const [page, setPage] = useState(1);
@@ -206,7 +234,6 @@ const FullFeaturedCrudGrid = ({ searchResults }) => {
     const apiRef = React.useRef(null);
     const [searchTerm, setSearchTerm] = useState('')
 
-
     // State for storing fetched types
     const [types, setTypes] = useState([]);
     const mapBooleanToYesNo = (boolValue) => {
@@ -214,7 +241,6 @@ const FullFeaturedCrudGrid = ({ searchResults }) => {
     }
     const [currentRow, setCurrentRow] = useState(null);
     const [executionRow, setExecutionRow] = useState(null);
-
 
     const [records, setRecords] = useState([])
 
@@ -248,7 +274,7 @@ const FullFeaturedCrudGrid = ({ searchResults }) => {
     // Fetching of Data
     const fetchRecords = () => {
         // axios.get('http://20.188.123.92:82/ProcurementManagement/Planning/Filter')
-        axios.get(`http://20.188.123.92:82/ProcurementManagement/Planning/Filter?Department=${userDeptInfo.DefaultDepartment}&page=${page}`)
+        axios.get(`http://20.188.123.92:82/ProcurementManagement/Planning/Filter?Department=${userDeptInfo.DefaultDepartment}&page=1`)
             .then(response => {
                 // Transform the values in the 'targetDateNeed' field into Date objects
                 const transformedRows = response.data.map(row => ({
@@ -257,7 +283,7 @@ const FullFeaturedCrudGrid = ({ searchResults }) => {
                 }));
                 // Update state with transformed data
                 setRows(transformedRows);
-                setTotalPages(transformedRows.totalPages)
+
             })
             .catch(error => {
                 console.error(error); // Handle any errors
@@ -599,11 +625,11 @@ const FullFeaturedCrudGrid = ({ searchResults }) => {
                     bgcolor: 'white'
                 }}
                 keepNonExistentRowsSelected
-                pagination
-                pageSize={20}
-                rowCount={totalPages * 20}
-                paginationMode="server"
-                onPaginationModelChange={(newPage) => handlePageChange(newPage)}
+            // pagination
+            // pageSize={20}
+            // rowCount={totalPages * 20}
+            // paginationMode="server"
+            // onPaginationModelChange={(newPage) => handlePageChange(newPage)}
 
             />
 
