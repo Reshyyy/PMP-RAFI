@@ -42,8 +42,8 @@ const SignInButton = () => {
         const formData = {
             "RAFIPayIntegration":
             {
-                // "EmailAddress": "joan.ruiz@rafi.ph"
-                "EmailAddress": "ian.lavadia@rafi.ph"
+                "EmailAddress": "joan.ruiz@rafi.ph"
+                // "EmailAddress": "ian.lavadia@rafi.ph"
                 // "EmailAddress": `${getEmail}`
             }
         }

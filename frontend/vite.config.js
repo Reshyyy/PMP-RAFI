@@ -7,7 +7,13 @@ export default defineConfig({
   server: {
     proxy: {
       '/rafi.ph': 'http://20.188.123.92:3000/',
-      '/api' : 'https://rafi-sat.sandbox.operations.dynamics.com'
+      '/api' : 'https://rafi-sat.sandbox.operations.dynamics.com',
+      '/pmp.api' : {
+        target: 'https://dxcore-qat.rafi.org.ph:82',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/pmp.api/, ''),
+      }
+
     }
   },
   plugins: [react()],

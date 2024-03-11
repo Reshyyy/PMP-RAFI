@@ -152,7 +152,7 @@ const AddButton = () => {
     // State for storing fetched types
     useEffect(() => {
         // Fetch data from the API
-        axios.get('http://20.188.123.92:82/ProcurementManagement/Planning/Type')
+        axios.get('/pmp.api/ProcurementManagement/Planning/Type')
             .then(response => {
                 // If the request is successful, extract type data from the response
                 const fetchedTypes = response.data;
@@ -160,7 +160,7 @@ const AddButton = () => {
                 setTypes(fetchedTypes);
             })
             .catch(error => {
-                console.error('Error fetching business unit',error); // Handle any errors
+                console.error('Error fetching business unit', error); // Handle any errors
             });
     }, []);
 
@@ -195,7 +195,7 @@ const AddButton = () => {
             targetDateNeed: targetDateNeed ? targetDateNeed.toISOString().substring(0, 10) : null // Format: YYYY-MM-DD
         };
 
-        axios.post('http://20.188.123.92:82/ProcurementManagement/Planning/Save', formData)
+        axios.post('/pmp.api/ProcurementManagement/Planning/Save', formData)
             .then(response => {
                 console.log('POST request successful:', response.data);
                 if (onRefresh) {
@@ -215,7 +215,7 @@ const AddButton = () => {
     const [data, setData] = useState(null);
     const fetchData = async () => {
         try {
-            const response = await axios.get('http://20.188.123.92:82/ProcurementManagement/Planning/Filter?page=1');
+            const response = await axios.get('/pmp.api/ProcurementManagement/Planning/Filter?page=1');
             setData(response.data);
         } catch (error) {
             console.error('Error fetching data', error);
@@ -501,7 +501,7 @@ const AddButton = () => {
                             </Stack>
                         </TabPanel>
 
-                        
+
                     </TabContext>
 
                 </Box>

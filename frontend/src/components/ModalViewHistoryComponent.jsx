@@ -10,6 +10,10 @@ import BasicDatePickerExecution from './BasicDatePickerExecution';
 import ExecutionDeliveryDate from './ExecutionDeliveryDate';
 import ExecTargetDate from './ExecTargetDate';
 import ExecDateOfRequest from './ExecDateOfRequest';
+import BasicDatePickerExecutionView from './BasicDatePickerExecutionView';
+import ExecutionDeliveryDateView from './ExecutionDeliveryDateView';
+import ExecTargetDateView from './ExecTargetDateView';
+import BasicDateTimePicker from './BasicDateTimePicker';
 
 // Define enum for type
 const Status = {
@@ -47,7 +51,10 @@ const ModalViewHistoryComponent = (props) => {
     const [targetDateUpdate, setTargetDateUpdate] = useState(null);
     const [recurring, setRecurring] = useState(0);
     const [executionData, setExecutionData] = useState(null);
+    const [targetDate, setTargetDate] = useState(null);
     const [dateReq, setDateReq] = useState(null);
+    const [dateOfReq, setDateOfReq] = useState(null);
+    const [dateDDate, setDateDDate] = useState(null)
     const [prno, setPR] = useState(null);
     const [pono, setPO] = useState(null);
     const [deliveryDate, setDeliveryDate] = useState(null);
@@ -65,9 +72,9 @@ const ModalViewHistoryComponent = (props) => {
         setDeliveryDate(date);
     };
 
-    const handleDeliveryDateChange = (date) => {
-        console.log('Selected delivery date:', date);
-        setDeliveryDate(date);
+    const handleDeliveryDateChange = (dateDDate) => {
+        console.log('Selected delivery date:', dateDDate);
+        setDateDDate(dateDDate);
     };
 
     const handlePRChange = (e) => {
@@ -111,14 +118,25 @@ const ModalViewHistoryComponent = (props) => {
     }
 
     const handleDateChange = (date) => {
-        console.log('Selected date:', date);
+        console.log('Selected Target Date:', date);
         setTargetDateUpdate(date)
+    };
+
+    const handleTargetDateChange = (targetDate) => {
+        console.log('Selected Target Date:', targetDate);
+        setTargetDateUpdate(targetDate)
     };
 
     const handleDateOfRequest = (dateReq) => {
         console.log('Selected date of request:', dateReq);
         setDateReq(dateReq)
     };
+
+    const handleDateOfRequestChange = (dateOfReq) => {
+        console.log('Selected Date of Request', dateOfReq);
+        setDateOfReq(dateOfReq);
+    }
+
 
     const handleRecurringChange = (e) => {
         const value = e.target.value === "1" ? true : false;
@@ -166,6 +184,7 @@ const ModalViewHistoryComponent = (props) => {
         if (viewExecution) {
             console.log('view execution ID', viewExecution.Execution?.executionId);
             setDateReq(viewExecution.Execution?.dateOfRequest);
+            setDateOfReq(viewExecution.Execution?.dateOfRequest)
             setMethod(viewExecution.Execution?.method);
             setContractDuration(viewExecution.Execution?.contractDuration);
             setPR(viewExecution.Execution?.prno);
@@ -173,11 +192,13 @@ const ModalViewHistoryComponent = (props) => {
             setDeliveryDate(viewExecution.Execution?.deliveryDate);
             setStatus(viewExecution.Execution?.status)
 
+            // Planning
+            setTargetDate(viewExecution.Planning?.targetDateNeed)
         }
     }, [viewExecution])
 
     const fetchTypes = () => {
-        axios.get('http://20.188.123.92:82/ProcurementManagement/Planning/Type')
+        axios.get('/pmp.api/ProcurementManagement/Planning/Type')
             .then(response => {
                 // If the request is successful, extract type data from the response
                 const fetchedTypes = response.data;
@@ -209,17 +230,17 @@ const ModalViewHistoryComponent = (props) => {
             "emodel": {
                 executionId: viewExecution.executionId,
                 planningId: currentRow.planningId,
-                dateOfRequest: dateReq ? dateReq.toISOString().substring(0, 10) : null,
+                dateOfRequest: dateReq instanceof Date ? dateReq.toISOString().substring(0, 10) : null,
                 method: method,
                 contractDuration: contractDuration,
                 prno: prno,
                 pono: pono,
-                deliveryDate: deliveryDate ? deliveryDate.toISOString().substring(0, 10) : null,
+                deliveryDate: deliveryDate instanceof Date ? deliveryDate.toISOString().substring(0, 10) : null,
                 status: status
             }
         };
 
-        axios.post('http://20.188.123.92:82/ProcurementManagement/Execution/Update', formData)
+        axios.post('/pmp.api/ProcurementManagement/Execution/Update', formData)
             .then(response => {
                 console.log('Update execution successful:', response.data);
                 setIsViewModalOpen(false); // Close the modal after successful submission
@@ -284,7 +305,7 @@ const ModalViewHistoryComponent = (props) => {
     const fetchMethod = async () => {
 
         try {
-            const res = await axios.get('http://20.188.123.92:82/ProcurementManagement/Execution/Method')
+            const res = await axios.get('/pmp.api/ProcurementManagement/Execution/Method')
             const fetchedMethod = res.data;
             setMethods(fetchedMethod)
         } catch (error) {
@@ -738,7 +759,7 @@ const ModalViewHistoryComponent = (props) => {
                                     </Stack>
                                     <Stack sx={{ width: '30%' }}>
                                         {/* Target Date */}
-                                        <ExecTargetDate date={date} onDateChange={handleDateChange} style={{ maxWidth: '100px' }} />
+                                        <ExecTargetDateView targetDate={targetDate} onTargetDateChange={handleTargetDateChange} style={{ maxWidth: '100px' }} />
                                     </Stack>
                                     <Stack sx={{ width: '30%' }}>
                                         {/* Recurring */}
@@ -777,7 +798,8 @@ const ModalViewHistoryComponent = (props) => {
                                 <Stack justifyContent='center' alignItems='center'>
                                     <Stack sx={{ width: '50%' }}>
                                         {/* Date of Request */}
-                                        <BasicDatePickerExecution dateReq={dateReq} onDateChange={handleDateOfRequest} style={{ maxWidth: '100px' }} />
+                                        {/* <BasicDatePickerExecutionView dateOfReq={dateOfReq} onDateRequestChange={handleDateOfRequestChange} style={{ maxWidth: '100px' }} /> */}
+                                        <BasicDateTimePicker dateOfReq={dateOfReq} onDateRequestChange={handleDateOfRequestChange} style={{ maxWidth: '100px' }} />
                                     </Stack>
 
                                     <Stack sx={{ mt: 2, width: '50%' }}>
@@ -846,7 +868,7 @@ const ModalViewHistoryComponent = (props) => {
 
                                     <Stack sx={{ width: '50%', mt: 2 }}>
                                         {/* Delivery Date */}
-                                        <ExecutionDeliveryDate date={date} onDateChange={handleDeliveryDateChange} style={{ maxWidth: '100px' }} required />
+                                        <ExecutionDeliveryDateView dateDDate={dateDDate} onDateDeliveryDateChange={handleDeliveryDateChange} style={{ maxWidth: '100px' }} required />
                                     </Stack>
 
                                     <Stack width="50%" sx={{ mt: 2 }}>

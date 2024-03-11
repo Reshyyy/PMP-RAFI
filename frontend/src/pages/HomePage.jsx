@@ -35,7 +35,7 @@ const HomePage = () => {
   const handleSearch = async () => {
     console.log(searchTerm)
     try {
-      const response = await fetch(`http://20.188.123.92:82/ProcurementManagement/Planning/Filter?Search=${searchTerm}&Department=${asd.DefaultDepartment}&page=1`);
+      const response = await fetch(`/pmp.api/ProcurementManagement/Planning/Filter?Search=${searchTerm}&Department=${asd.DefaultDepartment}&page=1`);
       const data = await response.json();
       setSearchResults(data);
     } catch (error) {

@@ -53,7 +53,7 @@ const EditToolbar = (props) => {
     const [records, setRecords] = useState([]);
     const asd = localStorage.getItem('userInfo') != null ? JSON.parse(localStorage.getItem('userInfo')) : ''
     const fetchUpdatedData = () => {
-        axios.get(`http://20.188.123.92:82/ProcurementManagement/Planning/Filter?Department=${asd.DefaultDepartment}&page=1`)
+        axios.get(`/pmp.api/ProcurementManagement/Planning/Filter?Department=${asd.DefaultDepartment}&page=1`)
             .then(response => {
                 // Transform the values in the 'targetDateNeed' field into Date objects
                 const transformedRows = response.data.map(row => ({
@@ -80,7 +80,7 @@ const EditToolbar = (props) => {
 
         // Make API call to fetch data based on selected value
         try {
-            const response = await fetch(`http://20.188.123.92:82/ProcurementManagement/Planning/Filter?Search=${searchTerm}&Department=${selectedValue}&page=1`);
+            const response = await fetch(`/pmp.api/ProcurementManagement/Planning/Filter?Search=${searchTerm}&Department=${selectedValue}&page=1`);
             if (!response.ok) {
                 throw new Error('Failed to fetch data');
             }
@@ -141,7 +141,7 @@ const EditToolbar = (props) => {
     const handleSearch = async () => {
         if (searchTerm) {
             try {
-                const response = await axios.get(`http://20.188.123.92:82/ProcurementManagement/Planning/Filter?Search=${searchTerm}&Department=${asd.DefaultDepartment}&page=1`);
+                const response = await axios.get(`/pmp.api/ProcurementManagement/Planning/Filter?Search=${searchTerm}&Department=${asd.DefaultDepartment}&page=1`);
                 const transformedRows = response.data.map(row => ({
                     ...row,
                     targetDateNeed: new Date(row.targetDateNeed),
@@ -248,7 +248,7 @@ const FullFeaturedCrudGrid = ({ searchResults }) => {
 
     const fetchMainAccount = async () => {
         try {
-            const res = await axios.get('http://20.188.123.92:82/api/services/RAFIPAYIntegration/RAFIPAYJournalAPI/GetMainAccountList');
+            const res = await axios.get('/pmp.api/api/services/RAFIPAYIntegration/RAFIPAYJournalAPI/GetMainAccountList');
             setGetMainAcc(res.data);
         } catch (error) {
             console.error('Error Fetching Main Account', error)
@@ -258,7 +258,7 @@ const FullFeaturedCrudGrid = ({ searchResults }) => {
 
 
     const fetchTypes = () => {
-        axios.get('http://20.188.123.92:82/ProcurementManagement/Planning/Type')
+        axios.get('/pmp.api/ProcurementManagement/Planning/Type')
             .then(response => {
                 // If the request is successful, extract type data from the response
                 const fetchedTypes = response.data;
@@ -274,7 +274,7 @@ const FullFeaturedCrudGrid = ({ searchResults }) => {
     // Fetching of Data
     const fetchRecords = () => {
         // axios.get('http://20.188.123.92:82/ProcurementManagement/Planning/Filter')
-        axios.get(`http://20.188.123.92:82/ProcurementManagement/Planning/Filter?Department=${userDeptInfo.DefaultDepartment}&page=1`)
+        axios.get(`/pmp.api/ProcurementManagement/Planning/Filter?Department=${userDeptInfo.DefaultDepartment}&page=1`)
             .then(response => {
                 // Transform the values in the 'targetDateNeed' field into Date objects
                 const transformedRows = response.data.map(row => ({
@@ -322,7 +322,7 @@ const FullFeaturedCrudGrid = ({ searchResults }) => {
         let row = apiRef.current.getRowWithUpdatedValues(id);
         setCurrentRow(row);
 
-        axios.get(`http://20.188.123.92:82/ProcurementManagement/Execution/GetExecution/${id}`)
+        axios.get(`/pmp.api/ProcurementManagement/Execution/GetExecution/${id}`)
             .then(response => {
                 // If the request is successful, extract type data from the response
                 const viewExecution = response.data;
@@ -342,7 +342,7 @@ const FullFeaturedCrudGrid = ({ searchResults }) => {
         // fetchData();
 
         // fetchExecutionDetails(id);
-        axios.get(`http://20.188.123.92:82/ProcurementManagement/Execution/GetExecution/${id}`)
+        axios.get(`/pmp.api/ProcurementManagement/Execution/GetExecution/${id}`)
             .then(response => {
                 // If the request is successful, extract type data from the response
                 const executionDetails = response.data;
@@ -358,7 +358,7 @@ const FullFeaturedCrudGrid = ({ searchResults }) => {
         setCurrentRow(row);
 
         console.log('Edit - Selected ID', id)
-        axios.get('http://20.188.123.92:82/ProcurementManagement/Planning/Type')
+        axios.get('/pmp.api/ProcurementManagement/Planning/Type')
             .then(response => {
                 // If the request is successful, extract type data from the response
                 const fetchedTypes = response.data;
@@ -391,7 +391,7 @@ const FullFeaturedCrudGrid = ({ searchResults }) => {
             targetDateNeed: new Date(row.targetDateNeed).toISOString().substring(0, 10) // Format: YYYY-MM-DD
         };
 
-        axios.put('http://20.188.123.92:82/ProcurementManagement/Planning/Update', formData)
+        axios.put('/pmp.api/ProcurementManagement/Planning/Update', formData)
             .then(response => {
                 console.log('Update Successful:', response.data);
                 // Set the row mode to View mode for the edited row
@@ -431,7 +431,7 @@ const FullFeaturedCrudGrid = ({ searchResults }) => {
 
     const handleDeleteClick = (id) => () => {
         console.log('Deleted Data with ID', id)
-        axios.delete(`http://20.188.123.92:82/ProcurementManagement/Planning/Cancel/${id}`)
+        axios.delete(`/pmp.api/ProcurementManagement/Planning/Cancel/${id}`)
             .then(res => {
                 setRows(rows.filter((row) => row.id !== id));
             })

@@ -149,7 +149,7 @@ const ModalUpdateComponent = (props) => {
     }, [executionDetails])
 
     const fetchTypes = () => {
-        axios.get('http://20.188.123.92:82/ProcurementManagement/Planning/Type')
+        axios.get('/pmp.api/ProcurementManagement/Planning/Type')
             .then(response => {
                 // If the request is successful, extract type data from the response
                 const fetchedTypes = response.data;
@@ -175,7 +175,7 @@ const ModalUpdateComponent = (props) => {
             targetDateNeed: targetDateUpdate ? targetDateUpdate.toISOString().substring(0, 10) : null
         };
 
-        axios.put('http://20.188.123.92:82/ProcurementManagement/Planning/Update', formData)
+        axios.put('/pmp.api/ProcurementManagement/Planning/Update', formData)
             .then(response => {
                 console.log('Update request successful:', response.data);
                 setIsModalOpen(false); // Close the modal after successful submission
