@@ -4,7 +4,7 @@ export const msalConfig = {
       clientId: import.meta.env.VITE_RAFI_CLIENT_ID,
       tenantId: import.meta.env.VITE_RAFI_TENANT_ID,
       authority: import.meta.env.VITE_RAFI_AUTHORITY,
-      redirectUri: '/',
+      redirectUri: '/home',
     },
 };
   

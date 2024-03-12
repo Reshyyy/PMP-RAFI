@@ -66,25 +66,7 @@ const HomePage = () => {
             </Stack>
             {/* Searchbar Component */}
             <Stack>
-              {/* <SearchBarMUI /> */}
-              {/* <TextField
-                id="search"
-                type="search"
-                label="Search"
-                value={searchTerm}
-                onChange={handleChange}
-                sx={{ width: 300, bgcolor: 'white', borderRadius: 1 }}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton onClick={handleSearch}>
-                        <SearchIcon />
-                      </IconButton>
-
-                    </InputAdornment>
-                  ),
-                }}
-              /> */}
+              
             </Stack>
           </Stack>
 

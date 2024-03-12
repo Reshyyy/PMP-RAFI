@@ -4,12 +4,14 @@ import { Button } from '@mui/material';
 import axios from 'axios';
 import { EventType } from "@azure/msal-browser";
 import { msalInstance } from '../msalInstance';
+import { useNavigate } from 'react-router-dom';
 
 const SignInButton = () => {
     const { instance, accounts } = useMsal();
     const [username, setUsername] = useState('')
     const [getAuthorize, setGetAuthorize] = useState(null);
     const accessToken = localStorage.getItem('accessToken')
+    const navigate = useNavigate();
 
     // const fetchAuthorize = async () => {
     //     console.log(localStorage.getItem('username'))
@@ -38,6 +40,7 @@ const SignInButton = () => {
     const fetchDefaultBusinessUnit = async () => {
         const accessToken = localStorage.getItem('accessToken')
         const getEmail = localStorage.getItem('username')
+        
 
         const formData = {
             "RAFIPayIntegration":
@@ -78,8 +81,9 @@ const SignInButton = () => {
         try {
             await instance.loginPopup({
                 scopes: ["user.read"],
+                
             })
-            
+            navigate('/home');
             await fetchToken();
             // fetchAuthorize();
             

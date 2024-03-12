@@ -25,7 +25,8 @@ function App({ msalInstance }) {
           <Routes>
             {/* Routes */}
             <Route exact path="/" element={<Home />} />
-            <Route exact path="/home" element={<HomePage />} />
+            <Route exact path="/home" element={<Home />} />
+            {/* <Route exact path="/" element={<LoginPage />} /> */}
 
             {/* Tests */}
             {/* <Route exact path="/test" element={<PageLayout />} />
