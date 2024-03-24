@@ -1,0 +1,6 @@
+.custom-div {
+    background-image: url('./../assets/rafiBG.png');
+    background-repeat: no-repeat; /* Prevent image repetition */
+    background-size: cover; /* Cover the whole page */
+    background-position: center; /* Keep the image in place on scroll */
+}

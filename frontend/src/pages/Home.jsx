@@ -6,11 +6,12 @@ import NavbarMUI from '../components/NavbarMUI'
 import { Box } from '@mui/material'
 import axios from 'axios'
 import rafiBG from './../assets/rafiBG.png'
+import './../pages/home.css'
 
 const Home = () => {
 
     return (
-        <Box sx={{ backgroundPosition: 'center', position: 'sticky' }} style={{ backgroundImage: `url(${rafiBG})`, backgroundSize: "cover" }}>
+        <div className='custom-div'>
             <NavbarMUI />
             <AuthenticatedTemplate>
                 {/* <p>You are signed-in. Select profile to call Microsoft Graph.</p> */}
@@ -20,7 +21,7 @@ const Home = () => {
             <UnauthenticatedTemplate>
                 <LoginPage />
             </UnauthenticatedTemplate>
-        </Box>
+        </div>
 
 
     )
