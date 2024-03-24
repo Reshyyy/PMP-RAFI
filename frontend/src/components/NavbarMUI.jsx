@@ -1,15 +1,9 @@
 import * as React from 'react';
-import { AppBar, Box, Button, Grid, Stack, Tab, Tabs, Toolbar, Typography, useTheme, useMediaQuery } from '@mui/material';
-import { useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import { Box, Grid, Toolbar, Typography, useTheme, useMediaQuery } from '@mui/material';
 import rafiLogo from './../assets/rafiLogo.png'
-import { useIsAuthenticated, useMsal } from "@azure/msal-react";
+import { useIsAuthenticated} from "@azure/msal-react";
 import SignOutButton from './SignOutButton';
 import './fonts.css';
-import WelcomeName from './WelcomeName';
-import Profile from '../pages/Profile';
-import { useEffect } from 'react';
-import axios from 'axios';
 
 function NavbarMUI() {
     const isAuthenticated = useIsAuthenticated();

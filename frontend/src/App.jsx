@@ -1,19 +1,8 @@
-import React, { useEffect, useState } from 'react'
-import reactLogo from './assets/react.svg'
+import React from 'react'
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import viteLogo from '/vite.svg'
 import './App.css'
-import { msalInstance } from './msalInstance';
 import { MsalProvider } from "@azure/msal-react";
-import PageLayout from './components/PageLayout';
 import Home from './pages/Home';
-import HomePage from './pages/HomePage';
-import LoginPage from './pages/LoginPage';
-import Upload from './pages/Upload';
-import CssBaseline from "@mui/material/CssBaseline";
-import UploadTest from './pages/UploadTest';
-import FullFeaturedCrudGrid from './components/FullFeatureCrudGrid';
-import ModalAddCOmponent from './components/ModalAddComponent';
 
 
 function App({ msalInstance }) {

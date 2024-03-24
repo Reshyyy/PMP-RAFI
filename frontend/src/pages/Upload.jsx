@@ -1,7 +1,7 @@
 import React from 'react'
 import { useState } from "react";
 import * as XLSX from 'xlsx';
-import { Card, Typography } from "@material-tailwind/react";
+import { Card } from "@material-tailwind/react";
 
 const Upload = () => {
     // onchange states

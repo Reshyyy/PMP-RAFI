@@ -1,7 +1,6 @@
-import { Box, Container, IconButton, InputAdornment, TextField } from "@mui/material";
+import { IconButton, InputAdornment, TextField } from "@mui/material";
 import { useState } from "react";
 import SearchIcon from "@mui/icons-material/Search";
-import FullFeaturedCrudGrid from "./FullFeatureCrudGrid";
 
 export default function SearchBarMUI(sr) {
   const [searchTerm, setSearchTerm] = useState("");
