@@ -1,13 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Sidebar from '../components/Sidebar';
-import { Typography, Grid, Stack, TextField, InputAdornment, IconButton } from '@mui/material';
-import SearchBarMUI from '../components/SearchBarMUI';
+import { Grid, Stack } from '@mui/material';
 import AddButton from '../components/AddButton';
 import FullFeaturedCrudGrid from '../components/FullFeatureCrudGrid';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { useMsal } from "@azure/msal-react";
-import SearchIcon from "@mui/icons-material/Search";
-import rafiBG from './../assets/rafiBG.png'
 
 const HomePage = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -66,7 +63,7 @@ const HomePage = () => {
             </Stack>
             {/* Searchbar Component */}
             <Stack>
-              
+
             </Stack>
           </Stack>
 

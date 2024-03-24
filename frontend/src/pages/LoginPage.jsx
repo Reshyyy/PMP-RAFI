@@ -1,10 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import SignInButton from '../components/SignInButton';
 import { useIsAuthenticated } from "@azure/msal-react";
 import SignOutButton from '../components/SignOutButton';
 import { Box, Typography } from '@mui/material';
-import axios from 'axios'
-import dotenv from 'dotenv'
 import pmpLogo2 from './../assets/pmpLogo2.png'
 import microsoftLogo from './../assets/microsoft.png'
 

@@ -2,8 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useMsal } from '@azure/msal-react';
 import { Button } from '@mui/material';
 import axios from 'axios';
-import { EventType } from "@azure/msal-browser";
-import { msalInstance } from '../msalInstance';
 import { useNavigate } from 'react-router-dom';
 
 const SignInButton = () => {
